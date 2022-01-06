@@ -1,0 +1,5 @@
+.App {
+  color: black;
+  background-color: white;
+  -webkit-overflow-scrolling: touch;
+}

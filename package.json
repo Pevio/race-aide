@@ -1,0 +1,64 @@
+{
+  "name": "race-aide-server",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/react": "^11.2.6",
+    "@testing-library/user-event": "^12.8.3",
+    "crypto-js": "^4.1.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "pg-native": "^3.0.0",
+    "python": "0.0.4",
+    "web-vitals": "^1.1.1"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|ts|tsx|css|json)\"",
+    "format": "npm run prettier -- --write",
+    "lint": "eslint --ext=.jsx,.js,.tsx,.ts --fix --max-warnings=0 ./src",
+    "heroku-postbuild": "cd client && npm install && npm run build",
+    "prepare": "husky install"
+  },
+  "eslintConfig": {
+    "extends": "react-app",
+    "rules": {
+      "react-hooks/exhaustive-deps": "off",
+      "no-empty": "warn"
+    },
+    "ignorePatterns": [
+      "**/src/tests/*"
+    ]
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown",
+    "*.--write": "prettier --write"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.14.3",
+    "@types/node-fetch": "^2.5.7",
+    "@types/pg": "^8.6.1",
+    "husky": "^6.0.0",
+    "lint-staged": "^10.5.3",
+    "node-fetch": "^2.6.1",
+    "nodemon": "^2.0.13",
+    "prettier": "^2.4.1",
+    "redux-mock-store": "^1.5.4"
+  }
+}
