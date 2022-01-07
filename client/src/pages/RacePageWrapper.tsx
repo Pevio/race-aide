@@ -43,14 +43,14 @@ export function RacePageWrapper(props: Props) {
     <>
       <div className="header">
         <p style={{
-          fontSize: 36, marginLeft: 50, paddingTop: 20
+          fontSize: 36, marginLeft: 32, paddingTop: 20
         }}>
-          <Link to="/" className="sider-link">{"<"}</Link>
-          {race?.raceName || "Race Aide"}
+          <Link to="/" className="sider-link" style={{fontSize: 28}}>{"<"}</Link>
+          <span style={{marginLeft: 10}}>{race?.raceName || "Race Aide"}</span>
+          
           &nbsp;&nbsp;&nbsp;
           <span style={{fontSize: 14}}>{race?.city}</span>
         </p>
-        <Link to="/" className="sider-link">Choose a different Race from Race Aide</Link>
       </div>
       <div className="sider">
         {getSideMenuItem("Race Home", `/${raceId}`)}
