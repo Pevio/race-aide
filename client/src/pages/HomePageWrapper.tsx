@@ -35,7 +35,7 @@ export function HomePageWrapper(props: Props) {
         {getSideMenuItem("Create Race", "/createrace")}
         {getSideMenuItem("About", "/about", false)}
       </div>
-      <div className="page-home">
+      <div className="page">
         {props.children}
       </div>
       

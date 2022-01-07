@@ -3,6 +3,7 @@ import { About } from "./HomePages/About";
 import { CreateRace } from "./HomePages/CreateRace";
 import { RaceList } from "./HomePages/RaceList";
 import { Checkpoint } from "./Race/Checkpoint";
+import { RaceAdmin } from "./Race/RaceAdmin";
 import { RaceHome } from "./Race/RaceHome";
 import { RaceParticipants } from "./Race/RaceParticipants";
 
@@ -17,6 +18,7 @@ const MainRouter = () => {
       <Route exact path="/:raceid/participants" component={RaceParticipants} />
       <Route exact path="/:raceid/results" component={RaceParticipants} />
       <Route exact path="/:raceid/checkpoint" component={Checkpoint} />
+      <Route exact path="/:raceid/admin" component={RaceAdmin} />
 
       <Route>
         <Redirect to="/" />
