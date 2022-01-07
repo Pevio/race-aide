@@ -13,3 +13,8 @@ body {
 .root {
   background-color: white;
 }
+
+:root {
+  --header-height: 100px;
+  --sider-width: 200px;
+}

@@ -1,5 +1,62 @@
 .App {
   color: black;
   background-color: white;
-  -webkit-overflow-scrolling: touch;
+  
+}
+
+.page-home {
+  margin: 32px 32px 32px calc(var(--sider-width) + 64px);
+  max-width: 1440px;
+}
+.page-race {
+  margin: 32px;
+  max-width: 1440px;
+}
+.header {
+  background-color: black;
+  height: var(--header-height);
+  color: lightgrey;
+  z-index: 4;
+}
+
+.sider {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  margin-top: var(--header-height);
+  height: calc(100% - var(--header-height));
+  padding-top: 32px;
+  background-color: #333333;
+  width: var(--sider-width);
+  color: white;
+  z-index: 0;
+  padding-left: 30px;
+}
+.sider hr {
+  background-color: lightgray;
+  height: 1px;
+  border: none;
+}
+
+.sider-link {
+  font-size: 16px;
+  border-left: 10px solid transparent;
+  color: lightblue;
+  padding-left: 10px;
+  min-width: 120px;
+  margin-top: 8px;
+}
+.sider-link:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+.sider-link:focus {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
 }

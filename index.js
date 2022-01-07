@@ -52,9 +52,11 @@ const decrypt = (encrypted, key) => {
 const responseMessages = {
   0: "GOOD",
   1: "Unknown Error",
-  2: "Database Error"
+  2: "Database Error",
+  3: "Unable to find information in database"
 }
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
+  console.log(returnCode);
   res.status(status)
   res.json({
     ...data,
@@ -85,17 +87,19 @@ app.get("/api/getracelist", (req, res) => {
   }
 
   try {
-    client.query("SELECT * from public.races", (err, res2) => {
+    client.query("SELECT race_id, race_name, city, start_time, timezone from public.races", (err, res2) => {
       if (err) {
         returnError(res, 2)
         return;
       }
       const newRaces = []
-      res2.rows().forEach((row) => {
+      res2.rows.forEach((row) => {
         newRaces.push({
           raceId: row.race_id,
           raceName: row.race_name,
-          raceStart: row.race_start
+          city: row.city,
+          startTime: Number.parseInt(row.start_time),
+          timezone: row.timezone
         })
       })
       raceListCache = newRaces
@@ -105,6 +109,70 @@ app.get("/api/getracelist", (req, res) => {
         returnCode: 0,
         races: newRaces,
       });
+    });
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
+  }
+});
+
+app.get("/api/getracedetails/:raceId", (req, res) => {
+  const raceId = req.params.raceId
+
+  let raceData = {}
+  let runners = {}
+  let checkpoints = []
+
+  // Pull race data
+  try {
+    client.query("SELECT race_id, race_name, race_details, city, start_time, timezone from public.races WHERE race_id=$1", [raceId], (err, res2) => {
+      if (err) {
+        returnError(res, 2)
+        return;
+      }
+      if (res2.rows.length === 0) {
+        returnError(res, 3);
+        return;
+      }
+      const dbData = res2.rows[0]
+      raceData = {
+        raceId: dbData.race_id,
+        raceName: dbData.race_name,
+        race_details: dbData.race_details,
+        city: dbData.city,
+        startTime: dbData.start_time,
+        timezone: dbData.timezone
+      }
+
+      try {
+        client.query("SELECT race_id, bib_number, runner_name, runner_details from public.runners WHERE race_id=$1", [raceId], (err, res2) => {
+          if (err) {
+            console.log(err)
+            returnError(res, 2)
+            return;
+          }
+          res2.rows.forEach((row) => {
+            runners[row.bib_number] = {
+              bibNumber: row.bib_number,
+              runnerName: row.runner_name,
+              runnerDetails: row.runner_details
+            }
+          })
+
+          res.json({
+            responseMessage: "GOOD",
+            returnCode: 0,
+            race: {
+              ...raceData,
+              runners,
+              checkpoints
+            },
+          });
+        });
+      } catch (err) {
+        console.log(err);
+        returnError(res, 1);
+      }
     });
   } catch (err) {
     console.log(err);
