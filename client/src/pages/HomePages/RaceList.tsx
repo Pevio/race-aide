@@ -23,9 +23,9 @@ export function RaceList() {
     <HomePageWrapper>
       <>
         <h1>Upcoming Races</h1>
-        <input type="radio" name="timezone" id="radio-timezone-local" checked={localTimeZone} onChange={() => setLocalTimeZone(true)}/>
+        <input type="radio" id="radio-timezone-local" checked={localTimeZone} onChange={() => setLocalTimeZone(true)}/>
         <label htmlFor="radio-timezone-local">Display times in the race's local timezone</label>
-        <input style={{marginLeft: 32}} type="radio" name="timezone" id="radio-timezone-my" checked={!localTimeZone} onChange={() => setLocalTimeZone(false)} value="Display times in my timezone"/>
+        <input style={{marginLeft: 32}} type="radio" id="radio-timezone-my" checked={!localTimeZone} onChange={() => setLocalTimeZone(false)} value="Display times in my timezone"/>
         <label htmlFor="radio-timezone-my">Display times in my timezone</label>
         <DataTable
           columns={[

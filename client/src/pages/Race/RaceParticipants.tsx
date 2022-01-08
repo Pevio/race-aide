@@ -36,7 +36,7 @@ export function RaceParticipants() {
             [
             {name: "Runner Name", selector: runner => runner.runnerName},
             {name: "Bib Number", selector: runner => runner.bibNumber},
-            {name: "Distance", selector: runner => runner.runnerDetails.distance},
+            {name: "Distance", selector: runner => runner.runnerDetails?.distance || "Unknown"},
           ]}
           data={runnerArray}
           highlightOnHover

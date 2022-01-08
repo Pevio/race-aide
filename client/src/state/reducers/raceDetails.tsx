@@ -1,11 +1,14 @@
-import { FullRace } from "../../types/generalTypes";
+import { FullRace, RaceAuthorization } from "../../types/generalTypes";
 export const SET_SELECTED_RACE = "SET_SELECTED_RACE";
 export const SET_RACE_LOADING = "SET_RACE_LOADING";
+export const SET_RACE_PASSWORD = "SET_RACE_PASSWORD";
 
 interface RaceListState {
   race?: FullRace
   success: boolean
   loading: boolean
+  password?: string;
+  authorization?: RaceAuthorization
 }
 const initialState: RaceListState = {
   success: true,
@@ -25,7 +28,15 @@ export interface SetRaceLoading {
     isLoading: boolean
   };
 }
-export type RaceListActions = SetSelectedRace | SetRaceLoading;
+export interface SetRacePassword {
+  type: "SET_RACE_PASSWORD";
+  payload: {
+    password: string;
+    authorization: RaceAuthorization
+  };
+}
+
+export type RaceListActions = SetSelectedRace | SetRaceLoading | SetRacePassword;
 export default function raceDetails(
   state = initialState,
   action: RaceListActions
@@ -43,6 +54,13 @@ export default function raceDetails(
         ...state,
         loading: action.payload.isLoading
       }
+    case SET_RACE_PASSWORD: {
+      return {
+        ...state,
+        password: action.payload.password,
+        authorization: action.payload.authorization
+      }
+    }
     default:
       return state;
   }
