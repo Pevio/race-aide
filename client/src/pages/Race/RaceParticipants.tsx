@@ -1,17 +1,23 @@
-import { useState } from "react"
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RacePageWrapper } from "../RacePageWrapper";
-import DataTable from 'react-data-table-component';
+import DataTable from "react-data-table-component";
 import { Runner } from "../../types/generalTypes";
 
 export function RaceParticipants() {
-  const { race } = useSelector((state: RootStore) => state.raceDetails)
+  const { race } = useSelector((state: RootStore) => state.raceDetails);
   const hasStarted = race && race.startTime < Date.now();
 
-  const [selectedDistance, setSelectedDistance] = useState<string | undefined>(undefined)
-  const allRunners: Runner[] = Object.values(race?.runners || [])
-  const runnerArray: Runner[] = selectedDistance ? allRunners.filter((runner: Runner) => runner.runnerDetails.distance === selectedDistance) : allRunners
+  const [selectedDistance, setSelectedDistance] = useState<string | undefined>(
+    undefined
+  );
+  const allRunners: Runner[] = Object.values(race?.runners || []);
+  const runnerArray: Runner[] = selectedDistance
+    ? allRunners.filter(
+        (runner: Runner) => runner.runnerDetails.distance === selectedDistance
+      )
+    : allRunners;
 
   return (
     <RacePageWrapper>
@@ -19,9 +25,11 @@ export function RaceParticipants() {
         <h1>{`Race ${hasStarted ? "Results" : "Participants"}`}</h1>
         <div>
           <span>Distance:</span>
-          <select onChange={(e) => {
-            setSelectedDistance(e.target.value)
-          }}>
+          <select
+            onChange={(e) => {
+              setSelectedDistance(e.target.value);
+            }}
+          >
             {race?.raceDetails?.distances?.map((distance) => (
               <option key={distance} value={distance}>
                 {distance}
@@ -31,13 +39,24 @@ export function RaceParticipants() {
         </div>
         <DataTable
           columns={
-            hasStarted && selectedDistance ?
-            [] :
-            [
-            {name: "Runner Name", selector: runner => runner.runnerName},
-            {name: "Bib Number", selector: runner => runner.bibNumber},
-            {name: "Distance", selector: runner => runner.runnerDetails?.distance || "Unknown"},
-          ]}
+            hasStarted && selectedDistance
+              ? []
+              : [
+                  {
+                    name: "Runner Name",
+                    selector: (runner) => runner.runnerName,
+                  },
+                  {
+                    name: "Bib Number",
+                    selector: (runner) => runner.bibNumber,
+                  },
+                  {
+                    name: "Distance",
+                    selector: (runner) =>
+                      runner.runnerDetails?.distance || "Unknown",
+                  },
+                ]
+          }
           data={runnerArray}
           highlightOnHover
           responsive
@@ -47,5 +66,5 @@ export function RaceParticipants() {
         />
       </>
     </RacePageWrapper>
-  )
+  );
 }

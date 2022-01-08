@@ -1,45 +1,71 @@
-import React, { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
-import { useDispatch } from "react-redux"
-import { getRaceList } from "../../state/actions/RaceList"
-import { RootStore } from "../../state/store"
-import { HomePageWrapper } from "../HomePageWrapper"
-import DataTable from 'react-data-table-component';
-import {DateTime} from "luxon"
-import { useHistory } from "react-router"
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getRaceList } from "../../state/actions/RaceList";
+import { RootStore } from "../../state/store";
+import { HomePageWrapper } from "../HomePageWrapper";
+import DataTable from "react-data-table-component";
+import { DateTime } from "luxon";
+import { useHistory } from "react-router";
 
 export function RaceList() {
-  const dispatch = useDispatch()
-  const history = useHistory()
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-  const [localTimeZone, setLocalTimeZone] = useState<boolean>(true)
+  const [localTimeZone, setLocalTimeZone] = useState<boolean>(true);
 
-  const {races} = useSelector((state: RootStore) => state.raceList)
+  const { races } = useSelector((state: RootStore) => state.raceList);
   useEffect(() => {
-    dispatch(getRaceList())
-  }, []) 
+    dispatch(getRaceList());
+  }, []);
 
   return (
     <HomePageWrapper>
       <>
         <h1>Upcoming Races</h1>
-        <input type="radio" id="radio-timezone-local" checked={localTimeZone} onChange={() => setLocalTimeZone(true)}/>
-        <label htmlFor="radio-timezone-local">Display times in the race's local timezone</label>
-        <input style={{marginLeft: 32}} type="radio" id="radio-timezone-my" checked={!localTimeZone} onChange={() => setLocalTimeZone(false)} value="Display times in my timezone"/>
+        <input
+          type="radio"
+          id="radio-timezone-local"
+          checked={localTimeZone}
+          onChange={() => setLocalTimeZone(true)}
+        />
+        <label htmlFor="radio-timezone-local">
+          Display times in the race's local timezone
+        </label>
+        <input
+          style={{ marginLeft: 32 }}
+          type="radio"
+          id="radio-timezone-my"
+          checked={!localTimeZone}
+          onChange={() => setLocalTimeZone(false)}
+          value="Display times in my timezone"
+        />
         <label htmlFor="radio-timezone-my">Display times in my timezone</label>
         <DataTable
           columns={[
-            {name: "Race Name", selector: race => race.raceName, sortable: true},
-            {name: "City", selector: race => race.city, sortable: true},
-            {name: "Start Time", sortable: true, selector: (race) => {
-              const start = DateTime.fromMillis(race.startTime);
+            {
+              name: "Race Name",
+              selector: (race) => race.raceName,
+              sortable: true,
+            },
+            { name: "City", selector: (race) => race.city, sortable: true },
+            {
+              name: "Start Time",
+              sortable: true,
+              selector: (race) => {
+                const start = DateTime.fromMillis(race.startTime);
 
-              // My local time zone
-              if (!localTimeZone) return start.toFormat("DD, HH:MM")
+                // My local time zone
+                if (!localTimeZone) return start.toFormat("DD, HH:MM");
 
-              // The Race's local time zone
-              return start.setZone(race.timezone).toFormat("DD, HH:MM") + " " + race.timezone
-            }}
+                // The Race's local time zone
+                return (
+                  start.setZone(race.timezone).toFormat("DD, HH:MM") +
+                  " " +
+                  race.timezone
+                );
+              },
+            },
           ]}
           data={races}
           keyField="raceId"
@@ -52,5 +78,5 @@ export function RaceList() {
         />
       </>
     </HomePageWrapper>
-  )
+  );
 }

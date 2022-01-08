@@ -4,15 +4,15 @@ export const SET_RACE_LOADING = "SET_RACE_LOADING";
 export const SET_RACE_PASSWORD = "SET_RACE_PASSWORD";
 
 interface RaceListState {
-  race?: FullRace
-  success: boolean
-  loading: boolean
+  race?: FullRace;
+  success: boolean;
+  loading: boolean;
   password?: string;
-  authorization?: RaceAuthorization
+  authorization?: RaceAuthorization;
 }
 const initialState: RaceListState = {
   success: true,
-  loading: false
+  loading: false,
 };
 
 export interface SetSelectedRace {
@@ -25,18 +25,21 @@ export interface SetSelectedRace {
 export interface SetRaceLoading {
   type: "SET_RACE_LOADING";
   payload: {
-    isLoading: boolean
+    isLoading: boolean;
   };
 }
 export interface SetRacePassword {
   type: "SET_RACE_PASSWORD";
   payload: {
     password: string;
-    authorization: RaceAuthorization
+    authorization: RaceAuthorization;
   };
 }
 
-export type RaceListActions = SetSelectedRace | SetRaceLoading | SetRacePassword;
+export type RaceListActions =
+  | SetSelectedRace
+  | SetRaceLoading
+  | SetRacePassword;
 export default function raceDetails(
   state = initialState,
   action: RaceListActions
@@ -52,14 +55,14 @@ export default function raceDetails(
     case SET_RACE_LOADING:
       return {
         ...state,
-        loading: action.payload.isLoading
-      }
+        loading: action.payload.isLoading,
+      };
     case SET_RACE_PASSWORD: {
       return {
         ...state,
         password: action.payload.password,
-        authorization: action.payload.authorization
-      }
+        authorization: action.payload.authorization,
+      };
     }
     default:
       return state;

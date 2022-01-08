@@ -17,5 +17,5 @@ export type ThunkDispatchType = ThunkDispatch<RootStore, null, AnyAction>;
 
 export default createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(...middlewares)),
+  composeWithDevTools(applyMiddleware(...middlewares))
 );

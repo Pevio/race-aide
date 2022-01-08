@@ -59,65 +59,74 @@ const responseMessages = {
   // Create Race
   101: "Missing fields for create race",
   102: "raceId already exists",
-  
-}
+};
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
-  res.status(status)
+  res.status(status);
   res.json({
     ...data,
     returnCode,
-    responseMessage: responseMessages[returnCode]
-  })
-}
+    responseMessage: responseMessages[returnCode],
+  });
+};
 
 // Cached Data
-let raceListCache = []
-let raceListUpdated = 0
+let raceListCache = [];
+let raceListUpdated = 0;
 
-let raceResultsCache = {}
-let raceResultsUpdated = 0
+let raceResultsCache = {};
+let raceResultsUpdated = 0;
 
-
-let raceUpdateBuffer = []
+let raceUpdateBuffer = [];
 
 // API
 app.post("/api/createrace", (req, res) => {
   try {
     const body = req.body;
-    const race = body?.race
-    console.log(race)
+    const race = body?.race;
+    console.log(race);
     if (!body || !race) {
-      returnError(res, 4)
-      return
+      returnError(res, 4);
+      return;
     }
-    if (!(race.raceId?.length > 0) || !(race.raceName?.length > 0) || !(race.city?.length > 0) || !(race.timezone?.length > 0) || !(race.adminPassword?.length > 0) || !(race.checkpointPassword?.length > 0) || !(race.startTime > 0) || !race.raceDetails) {
-      returnError(res, 101)
-      return
+    if (
+      !(race.raceId?.length > 0) ||
+      !(race.raceName?.length > 0) ||
+      !(race.city?.length > 0) ||
+      !(race.timezone?.length > 0) ||
+      !(race.adminPassword?.length > 0) ||
+      !(race.checkpointPassword?.length > 0) ||
+      !(race.startTime > 0) ||
+      !race.raceDetails
+    ) {
+      returnError(res, 101);
+      return;
     }
-  
-    const adminPassword = encrypt(genericKey, race.adminPassword)
-    const checkpointPassword = encrypt(genericKey, race.checkpointPassword)
+
+    const adminPassword = encrypt(genericKey, race.adminPassword);
+    const checkpointPassword = encrypt(genericKey, race.checkpointPassword);
     client.query("SELECT race_id from public.races WHERE race_id = $1", [req.raceId], (err, res3) => {
       if (res3.rows.length > 0) {
-        returnError(res, 102)
-        return
+        returnError(res, 102);
+        return;
       }
-      client.query("INSERT INTO public.races"
-      + "(race_id, race_name, city, start_time, timezone, race_details, admin_password, checkpoint_password)"
-      + "values ($1, $2, $3, $4, $5, $6, $7, $8)", [race.raceId, race.raceName, race.city, race.startTime, race.timezone, race.raceDetails, adminPassword, checkpointPassword], (err, res2) => {
-        if (err) {
-          console.log(err)
-          returnError(res, 2)
-          return;
+      client.query(
+        "INSERT INTO public.races" + "(race_id, race_name, city, start_time, timezone, race_details, admin_password, checkpoint_password)" + "values ($1, $2, $3, $4, $5, $6, $7, $8)",
+        [race.raceId, race.raceName, race.city, race.startTime, race.timezone, race.raceDetails, adminPassword, checkpointPassword],
+        (err, res2) => {
+          if (err) {
+            console.log(err);
+            returnError(res, 2);
+            return;
+          }
+
+          res.json({
+            responseMessage: "GOOD",
+            returnCode: 0,
+            race: race,
+          });
         }
-        
-        res.json({
-          responseMessage: "GOOD",
-          returnCode: 0,
-          race: race,
-        });
-      });
-    })
+      );
+    });
   } catch (err) {
     console.log(err);
     returnError(res, 1);
@@ -125,33 +134,33 @@ app.post("/api/createrace", (req, res) => {
 });
 
 app.get("/api/getracelist", (req, res) => {
-  const now = Date.now()
+  const now = Date.now();
   if (raceListUpdated + 1000 > Date.now()) {
     res.json({
       races: raceListCache,
       returnCode: 0,
     });
-    return
+    return;
   }
 
   try {
     client.query("SELECT race_id, race_name, city, start_time, timezone from public.races", (err, res2) => {
       if (err) {
-        returnError(res, 2)
+        returnError(res, 2);
         return;
       }
-      const newRaces = []
+      const newRaces = [];
       res2.rows.forEach((row) => {
         newRaces.push({
           raceId: row.race_id,
           raceName: row.race_name,
           city: row.city,
           startTime: Number.parseInt(row.start_time),
-          timezone: row.timezone
-        })
-      })
-      raceListCache = newRaces
-      raceListUpdated = now
+          timezone: row.timezone,
+        });
+      });
+      raceListCache = newRaces;
+      raceListUpdated = now;
       res.json({
         responseMessage: "GOOD",
         returnCode: 0,
@@ -165,47 +174,47 @@ app.get("/api/getracelist", (req, res) => {
 });
 
 app.get("/api/getracedetails/:raceId", (req, res) => {
-  const raceId = req.params.raceId
+  const raceId = req.params.raceId;
 
-  let raceData = {}
-  let runners = {}
-  let checkpoints = []
+  let raceData = {};
+  let runners = {};
+  let checkpoints = [];
 
   // Pull race data
   try {
     client.query("SELECT race_id, race_name, race_details, city, start_time, timezone from public.races WHERE race_id=$1", [raceId], (err, res2) => {
       if (err) {
-        returnError(res, 2)
+        returnError(res, 2);
         return;
       }
       if (res2.rows.length === 0) {
         returnError(res, 3);
         return;
       }
-      const dbData = res2.rows[0]
+      const dbData = res2.rows[0];
       raceData = {
         raceId: dbData.race_id,
         raceName: dbData.race_name,
         race_details: dbData.race_details,
         city: dbData.city,
         startTime: dbData.start_time,
-        timezone: dbData.timezone
-      }
+        timezone: dbData.timezone,
+      };
 
       try {
         client.query("SELECT race_id, bib_number, runner_name, runner_details from public.runners WHERE race_id=$1", [raceId], (err, res2) => {
           if (err) {
-            console.log(err)
-            returnError(res, 2)
+            console.log(err);
+            returnError(res, 2);
             return;
           }
           res2.rows.forEach((row) => {
             runners[row.bib_number] = {
               bibNumber: row.bib_number,
               runnerName: row.runner_name,
-              runnerDetails: row.runner_details
-            }
-          })
+              runnerDetails: row.runner_details,
+            };
+          });
 
           res.json({
             responseMessage: "GOOD",
@@ -213,7 +222,7 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
             race: {
               ...raceData,
               runners,
-              checkpoints
+              checkpoints,
             },
           });
         });

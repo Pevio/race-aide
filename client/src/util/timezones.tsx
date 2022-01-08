@@ -1,4 +1,3 @@
-
 export const timezoneDescriptions: Record<string, string> = {
   GMT: "Greenwich Mean Time",
   UTC: "Universal Coordinated Time",
@@ -32,4 +31,4 @@ export const timezoneDescriptions: Record<string, string> = {
   AGT: "Argentina Standard Time",
   BET: "Brazil Eastern Time",
   CAT: "Central African Time",
-}
+};

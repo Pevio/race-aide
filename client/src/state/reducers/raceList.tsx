@@ -2,8 +2,8 @@ import { Race } from "../../types/generalTypes";
 export const SET_RACE_LIST = "SET_RACE_LIST";
 
 interface RaceListState {
-  races: Race[]
-  success: boolean
+  races: Race[];
+  success: boolean;
 }
 const initialState: RaceListState = {
   races: [],
@@ -27,7 +27,7 @@ export default function raceList(
       return {
         ...state,
         races: action.payload.races,
-        success: action.payload.success
+        success: action.payload.success,
       };
     default:
       return state;
