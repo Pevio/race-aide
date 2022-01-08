@@ -19,6 +19,26 @@ export const getRaceDetails = (raceId: string): ThunkActionType => async (
   }
 };
 
+export const createRace = (race: Partial<FullRace>): ThunkActionType => async (
+  dispatch: Dispatch
+) => {
+  try {
+    dispatch(setRaceLoading(true))
+    const res = await fetch("/api/createrace", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        race
+      })
+    });
+    const data = await res.json()
+
+    dispatch(setSelectedRace(data.race, data.returnCode === 0))
+  } catch (error) {
+    dispatch(setSelectedRace(undefined, false));
+  }
+};
+
 const setSelectedRace = (race: FullRace | undefined, success: boolean): SetSelectedRace => ({
   type: SET_SELECTED_RACE,
   payload: { 

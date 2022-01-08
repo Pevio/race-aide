@@ -53,10 +53,15 @@ const responseMessages = {
   0: "GOOD",
   1: "Unknown Error",
   2: "Database Error",
-  3: "Unable to find information in database"
+  3: "Unable to find information in database",
+  4: "Invalid JSON in body",
+
+  // Create Race
+  101: "Missing fields for create race",
+  102: "raceId already exists",
+  
 }
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
-  console.log(returnCode);
   res.status(status)
   res.json({
     ...data,
@@ -76,6 +81,49 @@ let raceResultsUpdated = 0
 let raceUpdateBuffer = []
 
 // API
+app.post("/api/createrace", (req, res) => {
+  try {
+    const body = req.body;
+    const race = body?.race
+    console.log(race)
+    if (!body || !race) {
+      returnError(res, 4)
+      return
+    }
+    if (!(race.raceId?.length > 0) || !(race.raceName?.length > 0) || !(race.city?.length > 0) || !(race.timezone?.length > 0) || !(race.adminPassword?.length > 0) || !(race.checkpointPassword?.length > 0) || !(race.startTime > 0) || !race.raceDetails) {
+      returnError(res, 101)
+      return
+    }
+  
+    const adminPassword = encrypt(genericKey, race.adminPassword)
+    const checkpointPassword = encrypt(genericKey, race.checkpointPassword)
+    client.query("SELECT race_id from public.races WHERE race_id = $1", [req.raceId], (err, res3) => {
+      if (res3.rows.length > 0) {
+        returnError(res, 102)
+        return
+      }
+      client.query("INSERT INTO public.races"
+      + "(race_id, race_name, city, start_time, timezone, race_details, admin_password, checkpoint_password)"
+      + "values ($1, $2, $3, $4, $5, $6, $7, $8)", [race.raceId, race.raceName, race.city, race.startTime, race.timezone, race.raceDetails, adminPassword, checkpointPassword], (err, res2) => {
+        if (err) {
+          console.log(err)
+          returnError(res, 2)
+          return;
+        }
+        
+        res.json({
+          responseMessage: "GOOD",
+          returnCode: 0,
+          race: race,
+        });
+      });
+    })
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
+  }
+});
+
 app.get("/api/getracelist", (req, res) => {
   const now = Date.now()
   if (raceListUpdated + 1000 > Date.now()) {
