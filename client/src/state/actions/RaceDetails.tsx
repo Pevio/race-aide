@@ -69,8 +69,8 @@ export const updateRaceDetails =
 
 export const updateRaceParticipants =
   (
-    raceId: string,
-    runners: Runner[],
+    originalRace: FullRace,
+    runners: Record<string, Runner>,
     adminPassword?: string
   ): ThunkActionType =>
   async (dispatch: Dispatch) => {
@@ -80,16 +80,18 @@ export const updateRaceParticipants =
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          raceId,
+          raceId: originalRace.raceId,
           runners,
           password: adminPassword,
         }),
       });
       const data = await res.json();
 
-      dispatch(setSelectedRace(data.race, data.returnCode === 0));
+      dispatch(
+        setSelectedRace({ ...originalRace, runners }, data.returnCode === 0)
+      );
     } catch (error) {
-      dispatch(setSelectedRace(undefined, false));
+      dispatch(setSelectedRace(originalRace, false));
     }
   };
 

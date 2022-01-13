@@ -46,10 +46,17 @@ export default function raceDetails(
 ): RaceListState {
   switch (action.type) {
     case SET_SELECTED_RACE:
-      let storage = {}
-      if (action.payload.race && state.race?.raceId !== action.payload.race.raceId) {
-        storage = JSON.parse(localStorage.getItem(`race-password-${action.payload.race.raceId}`) as string)
-
+      let storage = {};
+      if (
+        action.payload.race &&
+        state.race?.raceId !== action.payload.race.raceId
+      ) {
+        storage = JSON.parse(
+          localStorage.getItem(
+            `race-password-${action.payload.race.raceId}`
+          ) as string
+        );
+        // TODO: possible validate the password right now.
       }
       return {
         ...state,

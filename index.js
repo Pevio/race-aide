@@ -98,6 +98,7 @@ app.post("/api/createrace", (req, res) => {
       !(race.adminPassword?.length > 0) ||
       !(race.checkpointPassword?.length > 0) ||
       !(race.startTime > 0) ||
+      !(race.raceDetails.distances.length > 0) ||
       !race.raceDetails
     ) {
       returnError(res, 101);
@@ -184,54 +185,40 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
 
   // Pull race data
   try {
-    client.query("SELECT race_id, race_name, race_details, city, start_time, timezone from public.races WHERE race_id=$1", [raceId], (err, res2) => {
-      if (err) {
-        returnError(res, 2);
-        return;
-      }
-      if (res2.rows.length === 0) {
-        returnError(res, 3);
-        return;
-      }
-      const dbData = res2.rows[0];
-      raceData = {
-        raceId: dbData.race_id,
-        raceName: dbData.race_name,
-        race_details: dbData.race_details,
-        city: dbData.city,
-        startTime: dbData.start_time,
-        timezone: dbData.timezone,
-      };
-
-      try {
-        client.query("SELECT race_id, bib_number, runner_name, distance from public.runners WHERE race_id=$1", [raceId], (err, res2) => {
-          if (err) {
-            returnError(res, 2);
-            return;
-          }
-          res2.rows.forEach((row) => {
-            runners[row.bib_number] = {
-              bibNumber: row.bib_number,
-              runnerName: row.runner_name,
-              runnerDetails: row.distance,
-            };
-          });
-
-          res.json({
-            responseMessage: "GOOD",
-            returnCode: 0,
-            race: {
-              ...raceData,
-              runners,
-              checkpoints,
-            },
-          });
+    client.query(
+      "SELECT races.race_id, race_name, race_details, city, start_time, timezone from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id WHERE public.races.race_id=$1",
+      [raceId],
+      (err, res2) => {
+        if (err) {
+          console.log(err);
+          returnError(res, 2);
+          return;
+        }
+        if (res2.rows.length === 0) {
+          returnError(res, 3);
+          return;
+        }
+        const dbData = res2.rows[0];
+        raceData = {
+          raceId: dbData.race_id,
+          raceName: dbData.race_name,
+          race_details: dbData.race_details,
+          city: dbData.city,
+          startTime: dbData.start_time,
+          timezone: dbData.timezone,
+          runners: dbData.runners || {},
+        };
+        res.json({
+          responseMessage: "GOOD",
+          returnCode: 0,
+          race: {
+            ...raceData,
+            runners,
+            checkpoints,
+          },
         });
-      } catch (err) {
-        console.log(err);
-        returnError(res, 1);
       }
-    });
+    );
   } catch (err) {
     console.log(err);
     returnError(res, 1);
@@ -280,9 +267,25 @@ app.post("/api/validatepassword/:raceId", (req, res) => {
 });
 
 app.post("/api/updateracedetails", (req, res) => {
-  // Pull race data
+  const race = req.body?.race || {};
+
+  if (
+    !(race.raceId?.length > 0) ||
+    !(race.raceName?.length > 0) ||
+    !(race.city?.length > 0) ||
+    !(race.timezone?.length > 0) ||
+    !(race.adminPassword?.length > 0) ||
+    !(race.checkpointPassword?.length > 0) ||
+    !(race.startTime > 0) ||
+    !(race.raceDetails.distances.length > 0) ||
+    !race.raceDetails
+  ) {
+    returnError(res, 101);
+    return;
+  }
+
   try {
-    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+    client.query("SELECT race_id, admin_password, checkpoint_password from public.races WHERE race_id=$1", [race.raceId], (err, res2) => {
       if (err) {
         returnError(res, 2);
         return;
@@ -291,25 +294,37 @@ app.post("/api/updateracedetails", (req, res) => {
         returnError(res, 3);
         return;
       }
-      const race = res2.rows[0];
+      const originalRace = res2.rows[0];
+      if (decrypt(originalRace.admin_password, req.password) !== genericKey) {
+        returnError(res, 201);
+        return;
+      }
+      client.query(
+        "UPDATE public.races SET race_name = $1, city = $1, start_time = $3, timezone = $4, race_details = $5, admin_password = $6, checkpoint_password = $7 WHERE race_id=$1",
+        [race.raceName, race.city, race.startTime, race.timezone, race.raceDetails, race.adminPassword, race.checkpointPassword],
+        (err, res2) => {
+          if (err) {
+            returnError(res, 2);
+            return;
+          }
+          res.json({
+            responseMessage: "GOOD",
+            returnCode: 0,
+          });
+        }
+      );
     });
   } catch (err) {
     console.log(err);
     returnError(res, 1);
   }
-  if (result === noAccess) {
-    returnError(res, 201, { access: result });
-  }
-  res.json({
-    responseMessage: "GOOD",
-    returnCode: 0,
-  });
 });
 
 app.post("/api/updateraceparticipants", (req, res) => {
-  // Pull race data
+  const body = req?.body || {};
+  const raceId = body.raceId;
   try {
-    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+    client.query("SELECT race_id, admin_password, runners from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id WHERE races.race_id=$1", [raceId], (err, res2) => {
       if (err) {
         returnError(res, 2);
         return;
@@ -318,25 +333,39 @@ app.post("/api/updateraceparticipants", (req, res) => {
         returnError(res, 3);
         return;
       }
-      const race = res2.rows[0];
+      if (decrypt(res2.rows[0].admin_password, req.password) !== genericKey) {
+        returnError(res, 201);
+        return;
+      }
+      let statement = "";
+      if (res2.rows[0].runners) {
+        // UPDATE
+        statement = "UPDATE public.runners SET runners = $2 WHERE race_id = $1";
+      } else {
+        // CREATE
+        statement = "INSERT INTO public.runners (race_id, runners) VALUES ($1, $2)";
+      }
+      client.query(statement, [raceId, runners], (err2, res3) => {
+        if (err2) {
+          returnError(res, 2);
+          return;
+        }
+      });
+      res.json({
+        responseMessage: "GOOD",
+        returnCode: 0,
+      });
     });
   } catch (err) {
     console.log(err);
     returnError(res, 1);
   }
-  if (result === noAccess) {
-    returnError(res, 201, { access: result });
-  }
-  res.json({
-    responseMessage: "GOOD",
-    returnCode: 0,
-  });
 });
 
 app.post("/api/addcheckpointentry", (req, res) => {
   // Pull race data
   try {
-    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+    client.query("SELECT race_id, admin_password, checkpoint_password from public.races WHERE race_id=$1", [raceId], (err, res2) => {
       if (err) {
         returnError(res, 2);
         return;

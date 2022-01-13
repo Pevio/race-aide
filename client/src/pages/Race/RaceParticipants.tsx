@@ -33,7 +33,7 @@ export function RaceParticipants({
       )
     : allRunners;
 
-  const [makingNewRunner, setMakingNewRunner] = useState<boolean>(false);
+  const [makingNewRunner, setMakingNewRunner] = useState<boolean>(true);
   const [runnerEditing, setRunnerEditing] = useState<Partial<Runner>>({});
 
   return (
@@ -73,7 +73,7 @@ export function RaceParticipants({
                 },
                 {
                   name: "Distance",
-                  selector: (runner) => runner.distance || "Unknown",
+                  selector: (runner) => `${runner.distance} Miles`,
                 },
               ]
         }
@@ -99,10 +99,11 @@ export function RaceParticipants({
               Add Runner
             </button>
           </div>
-          <div>
+          <div style={{ marginTop: 10 }}>
             <span>Runner Name:</span>
             <input
               type="text"
+              style={{ marginLeft: 10 }}
               value={runnerEditing.runnerName}
               onChange={(e) =>
                 setRunnerEditing({
@@ -112,11 +113,12 @@ export function RaceParticipants({
               }
             />
           </div>
-          <div>
+          <div style={{ marginTop: 10 }}>
             <span>Bib Number:</span>
             {makingNewRunner ? (
               <input
                 type="text"
+                style={{ marginLeft: 10 }}
                 value={runnerEditing.bibNumber}
                 onChange={(e) =>
                   setRunnerEditing({
@@ -129,9 +131,10 @@ export function RaceParticipants({
               <span>{runnerEditing.bibNumber}</span>
             )}
           </div>
-          <div>
+          <div style={{ marginTop: 10 }}>
             <span>Distance:</span>
             <select
+              style={{ marginLeft: 10 }}
               value={runnerEditing.distance}
               onChange={(e) =>
                 setRunnerEditing({
@@ -140,17 +143,18 @@ export function RaceParticipants({
                 })
               }
             >
-              {race?.raceDetails.distances?.map((distance) => (
+              {race?.raceDetails?.distances?.map((distance) => (
                 <option key={distance} value={String(distance)}>
                   {`${distance} Miles`}
                 </option>
               ))}
             </select>
           </div>
-          <div>
+          <div style={{ marginTop: 10 }}>
             <span>Start Offset (Seconds):</span>
             <input
               type="number"
+              style={{ marginLeft: 10 }}
               value={runnerEditing.offset}
               onChange={(e) =>
                 setRunnerEditing({
@@ -160,13 +164,14 @@ export function RaceParticipants({
               }
             />
           </div>
-          <div>
+          <div style={{ marginTop: 10 }}>
             <button
               onClick={() => {
                 if (
                   !runnerEditing.bibNumber ||
                   !runnerEditing.runnerName ||
-                  !runnerEditing.distance
+                  !runnerEditing.distance ||
+                  !race
                 ) {
                   return;
                 }
@@ -177,13 +182,7 @@ export function RaceParticipants({
                 } as Runner;
                 newRunners[enteredRunner.bibNumber] = enteredRunner;
 
-                dispatch(
-                  updateRaceParticipants(
-                    raceId,
-                    Object.values(newRunners),
-                    password
-                  )
-                );
+                dispatch(updateRaceParticipants(race, newRunners, password));
               }}
             >
               Save Runner
