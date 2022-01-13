@@ -1,6 +1,5 @@
 import React, { CSSProperties, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router";
 import { Link, Redirect } from "react-router-dom";
 import { getRaceDetails } from "../state/actions/RaceDetails";
@@ -60,7 +59,11 @@ export function RacePageWrapper(props: Props) {
             paddingTop: 20,
           }}
         >
-          <Link to="/" className="sider-link" style={{ fontSize: 36, marginTop: -4 }}>
+          <Link
+            to="/"
+            className="sider-link"
+            style={{ fontSize: 36, marginTop: -4 }}
+          >
             {"<"}
           </Link>
           <span style={{ marginLeft: 10 }}>

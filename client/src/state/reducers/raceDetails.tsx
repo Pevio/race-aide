@@ -31,8 +31,8 @@ export interface SetRaceLoading {
 export interface SetRacePassword {
   type: "SET_RACE_PASSWORD";
   payload: {
-    password: string;
-    authorization: RaceAuthorization;
+    password?: string;
+    authorization?: RaceAuthorization;
   };
 }
 
@@ -58,7 +58,14 @@ export default function raceDetails(
         loading: action.payload.isLoading,
       };
     case SET_RACE_PASSWORD: {
-      if (state.race) localStorage.setItem(`race-password-${state.race.raceId}`, JSON.stringify({password: action.payload.password, authorization: action.payload.authorization}))
+      if (state.race)
+        localStorage.setItem(
+          `race-password-${state.race.raceId}`,
+          JSON.stringify({
+            password: action.payload.password,
+            authorization: action.payload.authorization,
+          })
+        );
       return {
         ...state,
         password: action.payload.password,

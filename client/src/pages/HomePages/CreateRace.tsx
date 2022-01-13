@@ -9,17 +9,13 @@ export function CreateRace() {
   const dispatch = useDispatch();
 
   const onSubmit = (details: Partial<FullRace>) => {
-    dispatch(
-      createRace(details)
-    );
+    dispatch(createRace(details));
   };
 
   return (
     <HomePageWrapper>
-      <RaceDetailsForm
-        isUpdate={false}
-        onClickSubmit={onSubmit}
-      />
+      <h1>Create a New Race</h1>
+      <RaceDetailsForm isUpdate={false} onClickSubmit={onSubmit} />
     </HomePageWrapper>
   );
 }

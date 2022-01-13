@@ -56,7 +56,7 @@ export const updateRaceDetails =
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           race,
-          password: adminPassword
+          password: adminPassword,
         }),
       });
       const data = await res.json();
@@ -68,7 +68,11 @@ export const updateRaceDetails =
   };
 
 export const updateRaceParticipants =
-  (raceId: string, runners: Runner[], adminPassword?: string): ThunkActionType =>
+  (
+    raceId: string,
+    runners: Runner[],
+    adminPassword?: string
+  ): ThunkActionType =>
   async (dispatch: Dispatch) => {
     try {
       dispatch(setRaceLoading(true));
@@ -78,7 +82,7 @@ export const updateRaceParticipants =
         body: JSON.stringify({
           raceId,
           runners,
-          password: adminPassword
+          password: adminPassword,
         }),
       });
       const data = await res.json();
@@ -99,13 +103,16 @@ export const setSelectedRace = (
     success,
   },
 });
-export const setRacePassword = (password: string, authorization: RaceAuthorization): SetRacePassword => ({
+export const setRacePassword = (
+  password?: string,
+  authorization?: RaceAuthorization
+): SetRacePassword => ({
   type: SET_RACE_PASSWORD,
   payload: {
     password,
-    authorization
-  }
-})
+    authorization,
+  },
+});
 const setRaceLoading = (isLoading: boolean): SetRaceLoading => ({
   type: SET_RACE_LOADING,
   payload: {

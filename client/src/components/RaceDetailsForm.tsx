@@ -11,13 +11,13 @@ import { timezoneDescriptions } from "../util/timezones";
 interface Props {
   isUpdate: boolean;
   onClickSubmit: (data: Partial<FullRace>) => void;
-  defaultData?: Partial<FullRace>
+  defaultData?: Partial<FullRace>;
 }
 
 export function RaceDetailsForm(props: Props) {
   const [raceDetails, setRaceDetails] = useState<Partial<FullRace>>({
     raceDetails: {},
-    ...props.defaultData
+    ...props.defaultData,
   });
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
@@ -76,23 +76,24 @@ export function RaceDetailsForm(props: Props) {
     const time = timeObj.toMillis();
     props.onClickSubmit({
       ...raceDetails,
-      startTime: time
-    })
+      startTime: time,
+    });
   };
 
   return (
     <>
-      <h1>{props.isUpdate ? "Update Race Details" : "Create a New Race"}</h1>
+      {props.isUpdate && <h2>Edit Race Details</h2>}
       <p>
-        Enter all of your race details below. Everything except Race ID will
-        be editable later.
+        Enter all of your race details below. Everything except Race ID will be
+        editable later.
       </p>
       {getFormInputField("raceName", "Race Name")}
-      {!props.isUpdate && getFormInputField(
-        "raceId",
-        "Race ID",
-        "This may only contain letters, numbers, and some special characters, like MyRace or awesome-marathon. One the race is created, the ID cannot be edited!"
-      )}
+      {!props.isUpdate &&
+        getFormInputField(
+          "raceId",
+          "Race ID",
+          "This may only contain letters, numbers, and some special characters, like MyRace or awesome-marathon. One the race is created, the ID cannot be edited!"
+        )}
       {getFormInputField(
         "city",
         "City",
@@ -164,9 +165,7 @@ export function RaceDetailsForm(props: Props) {
       </div>
       <div>
         <p style={{ marginTop: 32, fontSize: 16 }}>Extra Information</p>
-        <p style={{ margin: 0 }}>
-          The following information is all optional:
-        </p>
+        <p style={{ margin: 0 }}>The following information is all optional:</p>
         {getFormInputField("website", "Website", undefined, true)}
         {getFormInputField(
           "registration",
@@ -182,12 +181,15 @@ export function RaceDetailsForm(props: Props) {
         )}
 
         <h3>Checkpoints</h3>
-        <p style={{fontSize: 12}}>
-          Add all checkpoints here. Once the race begins, you will not be able to add or change any checkpoints.
+        <p style={{ fontSize: 12 }}>
+          Add all checkpoints here. Once the race begins, you will not be able
+          to add or change any checkpoints.
         </p>
       </div>
       <div style={{ marginTop: 32 }}>
-        <button onClick={onSubmit}>{props.isUpdate ? "Save Race Details" : "Create Race!"}</button>
+        <button onClick={onSubmit}>
+          {props.isUpdate ? "Save Race Details" : "Create Race!"}
+        </button>
       </div>
     </>
   );

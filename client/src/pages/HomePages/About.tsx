@@ -14,10 +14,9 @@ export function About() {
         distances broken down{" "}
       </p>
       <p>
-        <b>Metrics:</b> Wondering which leg of the race was the most
-        difficult? Race Aide will give you all the statistics you need for
-        your race. If you want more, you can copy the raw data to do what you
-        like with it.
+        <b>Metrics:</b> Wondering which leg of the race was the most difficult?
+        Race Aide will give you all the statistics you need for your race. If
+        you want more, you can copy the raw data to do what you like with it.
       </p>
       <p>
         <b>Safety:</b> If a runner gets lost, Race Aide will tell you the last

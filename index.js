@@ -61,7 +61,7 @@ const responseMessages = {
   102: "raceId already exists",
 
   // Race Details
-  201: "Invalid Password"
+  201: "Invalid Password",
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -239,15 +239,16 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
   }
 });
 
-app.get("/api/validatepassword/:raceId/:password", (req, res) => {
+app.post("/api/validatepassword/:raceId", (req, res) => {
   const raceId = req.params.raceId;
-  const password = req.params.password;
-  const noAccess = "NO_ACCESS"
+  const password = req.body?.password;
+  console.log(raceId, password);
+  const noAccess = "NO_ACCESS";
   let result = noAccess;
 
   // Pull race data
   try {
-    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+    client.query("SELECT race_id, admin_password, checkpoint_password FROM public.races WHERE race_id=$1", [raceId], (err, res2) => {
       if (err) {
         returnError(res, 2);
         return;
@@ -257,24 +258,27 @@ app.get("/api/validatepassword/:raceId/:password", (req, res) => {
         return;
       }
       const race = res2.rows[0];
-      if (decrypt(race.admin_password) === genericKey) {
-        result = "RACE_ADMIN"
-      } else if (decrypt(race.checkpoint_password) === genericKey) {
-        result = "RACE_ASSISTANT"
+      if (decrypt(race.admin_password, password) === genericKey) {
+        result = "RACE_ADMIN";
+      } else if (decrypt(race.checkpoint_password, password) === genericKey) {
+        result = "RACE_ASSISTANT";
       }
+
+      if (result === noAccess) {
+        returnError(res, 201, { access: result });
+        return;
+      }
+      res.json({
+        responseMessage: "GOOD",
+        returnCode: 0,
+        access: result,
+      });
     });
   } catch (err) {
     console.log(err);
     returnError(res, 1);
+    return;
   }
-  if (result === noAccess) {
-    returnError(res, 201, {access: result})
-  }
-  res.json({
-    responseMessage: "GOOD",
-    returnCode: 0,
-    access: result
-  });
 });
 
 app.post("/api/updateracedetails", (req, res) => {
@@ -290,42 +294,13 @@ app.post("/api/updateracedetails", (req, res) => {
         return;
       }
       const race = res2.rows[0];
-      
     });
   } catch (err) {
     console.log(err);
     returnError(res, 1);
   }
   if (result === noAccess) {
-    returnError(res, 201, {access: result})
-  }
-  res.json({
-    responseMessage: "GOOD",
-    returnCode: 0,
-  });
-});
-
-app.post("/api/updateraceparticipants", (req, res) => {
-   // Pull race data
-   try {
-    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
-      if (err) {
-        returnError(res, 2);
-        return;
-      }
-      if (res2.rows.length === 0) {
-        returnError(res, 3);
-        return;
-      }
-      const race = res2.rows[0];
-      
-    });
-  } catch (err) {
-    console.log(err);
-    returnError(res, 1);
-  }
-  if (result === noAccess) {
-    returnError(res, 201, {access: result})
+    returnError(res, 201, { access: result });
   }
   res.json({
     responseMessage: "GOOD",
@@ -336,28 +311,55 @@ app.post("/api/updateraceparticipants", (req, res) => {
 app.post("/api/updateraceparticipants", (req, res) => {
   // Pull race data
   try {
-   client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
-     if (err) {
-       returnError(res, 2);
-       return;
-     }
-     if (res2.rows.length === 0) {
-       returnError(res, 3);
-       return;
-     }
-     const race = res2.rows[0];
-   });
- } catch (err) {
-   console.log(err);
-   returnError(res, 1);
- }
- if (result === noAccess) {
-   returnError(res, 201, {access: result})
- }
- res.json({
-   responseMessage: "GOOD",
-   returnCode: 0,
- });
+    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+      if (err) {
+        returnError(res, 2);
+        return;
+      }
+      if (res2.rows.length === 0) {
+        returnError(res, 3);
+        return;
+      }
+      const race = res2.rows[0];
+    });
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
+  }
+  if (result === noAccess) {
+    returnError(res, 201, { access: result });
+  }
+  res.json({
+    responseMessage: "GOOD",
+    returnCode: 0,
+  });
+});
+
+app.post("/api/addcheckpointentry", (req, res) => {
+  // Pull race data
+  try {
+    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+      if (err) {
+        returnError(res, 2);
+        return;
+      }
+      if (res2.rows.length === 0) {
+        returnError(res, 3);
+        return;
+      }
+      const race = res2.rows[0];
+    });
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
+  }
+  if (result === noAccess) {
+    returnError(res, 201, { access: result });
+  }
+  res.json({
+    responseMessage: "GOOD",
+    returnCode: 0,
+  });
 });
 
 // CORS

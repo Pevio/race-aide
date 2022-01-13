@@ -2,7 +2,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import { About } from "./HomePages/About";
 import { CreateRace } from "./HomePages/CreateRace";
 import { RaceList } from "./HomePages/RaceList";
-import { Checkpoint } from "./Race/Checkpoint";
+import { CheckpointInfo } from "./Race/CheckpointInfo";
 import { RaceAdmin } from "./Race/RaceAdmin";
 import { RaceHome } from "./Race/RaceHome";
 import { RaceParticipants } from "./Race/RaceParticipants";
@@ -17,8 +17,8 @@ const MainRouter = () => {
       <Route exact path="/:raceId" component={RaceHome} />
       <Route exact path="/:raceId/participants" component={RaceParticipants} />
       <Route exact path="/:raceId/results" component={RaceParticipants} />
-      <Route exact path="/:raceId/:checkpointId" component={Checkpoint} />
       <Route exact path="/:raceId/admin" component={RaceAdmin} />
+      <Route exact path="/:raceId/:checkpointId" component={CheckpointInfo} />
 
       <Route>
         <Redirect to="/" />

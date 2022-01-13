@@ -9,7 +9,7 @@ export interface Race {
 export interface FullRace extends Race {
   raceDetails: Partial<RaceDetails>;
   runners: Record<string, Runner>; // Key is the bibNumber
-  checkpoints: {};
+  checkpoints: Checkpoint[];
   adminPassword?: string;
   checkpointPassword?: string;
 }
@@ -30,11 +30,11 @@ export interface Runner {
 }
 
 export interface Checkpoint {
-  distances: CheckpointDetails[]
+  distances: CheckpointDetails[];
   checkpointNumber: string; // Key
 }
 export interface CheckpointDetails {
-  // This object does not have a key; 
+  // This object does not have a key;
   raceDistance: number; // 5K, 10K, etc
   distance: number; // The distance that the runners will have gone
 }
@@ -47,7 +47,7 @@ export interface CheckpointDistance {
 
 export interface RunnerAtCheckpoint {
   bibNumber?: string; // If not provided
-  distance: number; 
+  distance: number;
 }
 export type RaceAuthorization = "RACE_ADMIN" | "RACE_ASSISTANT";
 export const RaceAuthorizationDescription: Record<RaceAuthorization, string> = {
