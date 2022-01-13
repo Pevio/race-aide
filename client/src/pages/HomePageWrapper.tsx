@@ -1,8 +1,9 @@
+import React from "react";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 
 interface Props {
-  children: React.ReactElement;
+  children: React.ReactElement | React.ReactElement[];
 }
 
 export function HomePageWrapper(props: Props) {

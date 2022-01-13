@@ -21,62 +21,60 @@ export function RaceList() {
 
   return (
     <HomePageWrapper>
-      <>
-        <h1>Upcoming Races</h1>
-        <input
-          type="radio"
-          id="radio-timezone-local"
-          checked={localTimeZone}
-          onChange={() => setLocalTimeZone(true)}
-        />
-        <label htmlFor="radio-timezone-local">
-          Display times in the race's local timezone
-        </label>
-        <input
-          style={{ marginLeft: 32 }}
-          type="radio"
-          id="radio-timezone-my"
-          checked={!localTimeZone}
-          onChange={() => setLocalTimeZone(false)}
-          value="Display times in my timezone"
-        />
-        <label htmlFor="radio-timezone-my">Display times in my timezone</label>
-        <DataTable
-          columns={[
-            {
-              name: "Race Name",
-              selector: (race) => race.raceName,
-              sortable: true,
-            },
-            { name: "City", selector: (race) => race.city, sortable: true },
-            {
-              name: "Start Time",
-              sortable: true,
-              selector: (race) => {
-                const start = DateTime.fromMillis(race.startTime);
+      <h1>Upcoming Races</h1>
+      <input
+        type="radio"
+        id="radio-timezone-local"
+        checked={localTimeZone}
+        onChange={() => setLocalTimeZone(true)}
+      />
+      <label htmlFor="radio-timezone-local">
+        Display times in the race's local timezone
+      </label>
+      <input
+        style={{ marginLeft: 32 }}
+        type="radio"
+        id="radio-timezone-my"
+        checked={!localTimeZone}
+        onChange={() => setLocalTimeZone(false)}
+        value="Display times in my timezone"
+      />
+      <label htmlFor="radio-timezone-my">Display times in my timezone</label>
+      <DataTable
+        columns={[
+          {
+            name: "Race Name",
+            selector: (race) => race.raceName,
+            sortable: true,
+          },
+          { name: "City", selector: (race) => race.city, sortable: true },
+          {
+            name: "Start Time",
+            sortable: true,
+            selector: (race) => {
+              const start = DateTime.fromMillis(race.startTime);
 
-                // My local time zone
-                if (!localTimeZone) return start.toFormat("DD, HH:MM");
+              // My local time zone
+              if (!localTimeZone) return start.toFormat("DD, HH:MM");
 
-                // The Race's local time zone
-                return (
-                  start.setZone(race.timezone).toFormat("DD, HH:MM") +
-                  " " +
-                  race.timezone
-                );
-              },
+              // The Race's local time zone
+              return (
+                start.setZone(race.timezone).toFormat("DD, HH:MM") +
+                " " +
+                race.timezone
+              );
             },
-          ]}
-          data={races}
-          keyField="raceId"
-          responsive
-          striped
-          highlightOnHover
-          pointerOnHover
-          noDataComponent={<p>There are no races available.</p>}
-          onRowClicked={(race) => history.push(`/${race.raceId}`)}
-        />
-      </>
+          },
+        ]}
+        data={races}
+        keyField="raceId"
+        responsive
+        striped
+        highlightOnHover
+        pointerOnHover
+        noDataComponent={<p>There are no races available.</p>}
+        onRowClicked={(race) => history.push(`/${race.raceId}`)}
+      />
     </HomePageWrapper>
   );
 }

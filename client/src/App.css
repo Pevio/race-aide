@@ -4,7 +4,8 @@
 }
 
 .page {
-  margin: 32px 64px 32px calc(var(--sider-width) + 64px);
+  margin: 32px 0px 32px calc(var(--sider-width) + 64px);
+  padding-bottom: 64px;
   max-width: 1440px;
   font-size: 14px;
 }

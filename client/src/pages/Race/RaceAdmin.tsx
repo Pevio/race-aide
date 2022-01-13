@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { RaceDetailsForm } from "../../components/RaceDetailsForm";
 import { RootStore } from "../../state/store";
-import { RaceAuthorizationDescription } from "../../types/generalTypes";
+import { FullRace, RaceAuthorizationDescription } from "../../types/generalTypes";
 import { RacePageWrapper } from "../RacePageWrapper";
 
 export function RaceAdmin() {
@@ -38,6 +39,11 @@ export function RaceAdmin() {
         {raceData.authorization === "RACE_ADMIN" && (
           <>
             <h3>Edit Race Details</h3>
+            <RaceDetailsForm
+              isUpdate
+              onClickSubmit={(race: Partial<FullRace>) => {}}
+              defaultData={raceData.race}
+            />
           </>
         )}
         <h3>Checkpoints</h3>
@@ -49,10 +55,8 @@ export function RaceAdmin() {
 
   return (
     <RacePageWrapper>
-      <>
-        <h1>Admin Tools</h1>
-        {getMainContent()}
-      </>
+      <h1>Admin Tools</h1>
+      {getMainContent()}
     </RacePageWrapper>
   );
 }

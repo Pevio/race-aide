@@ -1,6 +1,6 @@
 export interface Race {
   raceName: string;
-  raceId: string;
+  raceId: string; // Key
   startTime: number;
   city: string;
   timezone: string;
@@ -8,7 +8,7 @@ export interface Race {
 
 export interface FullRace extends Race {
   raceDetails: Partial<RaceDetails>;
-  runners: Record<string, Runner>;
+  runners: Record<string, Runner>; // Key is the bibNumber
   checkpoints: {};
   adminPassword?: string;
   checkpointPassword?: string;
@@ -18,21 +18,39 @@ export interface RaceDetails {
   website: string;
   registration: string;
   picture: string;
-  distances: string[];
+  distances: number[];
   logoUrl: string;
 }
 
 export interface Runner {
-  bibNumber: string;
+  bibNumber: string; // Key
   runnerName: string;
-  runnerDetails: Partial<{
-    email: string;
-    distance: string;
-  }>;
+  distance: number;
+  offset: number; // If this runner is starting in a different wave
 }
 
-export type RaceAuthorization = "RACE_ADMIN" | "RACE_OFFICER";
+export interface Checkpoint {
+  distances: CheckpointDetails[]
+  checkpointNumber: string; // Key
+}
+export interface CheckpointDetails {
+  // This object does not have a key; 
+  raceDistance: number; // 5K, 10K, etc
+  distance: number; // The distance that the runners will have gone
+}
+
+// Ambiguous of the race or if this checkpoint appears multiple times
+export interface CheckpointDistance {
+  checkpointNumber: string;
+  distance: number;
+}
+
+export interface RunnerAtCheckpoint {
+  bibNumber?: string; // If not provided
+  distance: number; 
+}
+export type RaceAuthorization = "RACE_ADMIN" | "RACE_ASSISTANT";
 export const RaceAuthorizationDescription: Record<RaceAuthorization, string> = {
   RACE_ADMIN: "Race Admin",
-  RACE_OFFICER: "Race Officer",
+  RACE_ASSISTANT: "Race Assistant",
 };

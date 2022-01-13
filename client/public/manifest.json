@@ -3,7 +3,7 @@
   "name": "Race Aide",
   "icons": [
     {
-      "src": "icon.ico",
+      "src": "icon.png",
       "sizes": "64x64 32x32",
       "type": "image/x-icon"
     }

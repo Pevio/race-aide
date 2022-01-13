@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect } from "react";
+import React, { CSSProperties, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router";
@@ -7,7 +7,7 @@ import { getRaceDetails } from "../state/actions/RaceDetails";
 import { RootStore } from "../state/store";
 
 interface Props {
-  children: React.ReactElement;
+  children: React.ReactElement | React.ReactElement[];
 }
 
 export function RacePageWrapper(props: Props) {
@@ -60,7 +60,7 @@ export function RacePageWrapper(props: Props) {
             paddingTop: 20,
           }}
         >
-          <Link to="/" className="sider-link" style={{ fontSize: 28 }}>
+          <Link to="/" className="sider-link" style={{ fontSize: 32 }}>
             {"<"}
           </Link>
           <span style={{ marginLeft: 10 }}>
