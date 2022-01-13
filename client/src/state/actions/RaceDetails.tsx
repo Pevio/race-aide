@@ -57,13 +57,15 @@ export const updateRaceDetails =
         body: JSON.stringify({
           race,
           password: adminPassword,
+          runners: undefined,
+          checkpoints: undefined,
         }),
       });
       const data = await res.json();
-
-      dispatch(setSelectedRace(data.race, data.returnCode === 0));
+      dispatch(setRaceLoading(false));
+      if (data.returnCode === 0) dispatch(setSelectedRace(data.race, data.returnCode === 0));
     } catch (error) {
-      dispatch(setSelectedRace(undefined, false));
+      dispatch(setRaceLoading(false));
     }
   };
 

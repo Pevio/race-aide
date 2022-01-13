@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
@@ -22,6 +22,32 @@ export function RaceDetailsForm(props: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [newDistanceValue, setNewDistanceValue] = useState<number>(0);
+
+  useEffect(() => {
+    setRaceDetails({
+      raceDetails: {},
+      ...props.defaultData
+    })
+    if (props.defaultData?.startTime && props.defaultData.timezone) {
+      const date = DateTime.fromMillis(props.defaultData.startTime)
+      date.setZone(props.defaultData.timezone)
+      const jsDate = new Date()
+      jsDate.setUTCFullYear(date.get("year"))
+      jsDate.setUTCMonth(date.get("month") - 1)
+      jsDate.setUTCDate(date.get("day"))
+      setStartDate(jsDate)
+
+      const time = new Date()
+      time.setHours(date.get("hour"))
+      time.setMinutes(date.get("minute"))
+      time.setSeconds(date.get("second"))
+      setStartTime(time);
+    } else {
+      setStartDate(null)
+      setStartTime(null)
+    }
+    setNewDistanceValue(0);
+  }, [props.defaultData])
 
   const getFormInputField = (
     key: keyof FullRace | keyof RaceDetails,
@@ -144,26 +170,32 @@ export function RaceDetailsForm(props: Props) {
           ))}
         </select>
       </div>
-      <div>
-        <p style={{ marginTop: 32, fontSize: 16 }}>Security</p>
-        <p style={{ margin: 0 }}>
-          Don't lose these passwords! You may not be able to get them back.
-        </p>
-        {getFormInputField(
-          "adminPassword",
-          "Admin Password",
-          "This is the password you will use to edit this race",
-          false,
-          "password"
-        )}
-        {getFormInputField(
-          "checkpointPassword",
-          "Checkpoint Password",
-          "This is the password your assistants will use to enter checkpoint information",
-          false,
-          "password"
-        )}
-      </div>
+      {props.isUpdate ?
+        <p>Remember your password</p>    
+      :
+        <>
+          <div>
+            <p style={{ marginTop: 32, fontSize: 16 }}>Security</p>
+            <p style={{ margin: 0 }}>
+              Don't lose these passwords! You may not be able to get them back.
+            </p>
+            {getFormInputField(
+              "adminPassword",
+              "Admin Password",
+              "This is the password you will use to edit this race",
+              false,
+              "password"
+            )}
+            {getFormInputField(
+              "checkpointPassword",
+              "Checkpoint Password",
+              "This is the password your assistants will use to enter checkpoint information",
+              false,
+              "password"
+            )}
+          </div>
+        </>
+      }
       <div>
         <p style={{ marginTop: 32, fontSize: 16 }}>Extra Information</p>
         <p style={{ margin: 0 }}>The following information is all optional:</p>
@@ -216,9 +248,11 @@ export function RaceDetailsForm(props: Props) {
             step="any"
             min={0}
             value={newDistanceValue}
-            onChange={(e) =>
-              setNewDistanceValue(Number.parseFloat(e.target.value))
-            }
+            onChange={(e) => {
+              const newDistance = Number.parseFloat(e.target.value)
+              if (!newDistance) return;
+              setNewDistanceValue(newDistance)
+            }}
           />
           <button
             style={{ marginLeft: 10 }}

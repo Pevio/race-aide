@@ -62,6 +62,7 @@ const responseMessages = {
 
   // Race Details
   201: "Invalid Password",
+  202: "Missing fields for update race"
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -202,9 +203,9 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
         raceData = {
           raceId: dbData.race_id,
           raceName: dbData.race_name,
-          race_details: dbData.race_details,
+          raceDetails: dbData.race_details,
           city: dbData.city,
-          startTime: dbData.start_time,
+          startTime: Number.parseInt(dbData.start_time),
           timezone: dbData.timezone,
           runners: dbData.runners || {},
         };
@@ -274,19 +275,18 @@ app.post("/api/updateracedetails", (req, res) => {
     !(race.raceName?.length > 0) ||
     !(race.city?.length > 0) ||
     !(race.timezone?.length > 0) ||
-    !(race.adminPassword?.length > 0) ||
-    !(race.checkpointPassword?.length > 0) ||
     !(race.startTime > 0) ||
-    !(race.raceDetails.distances.length > 0) ||
+    !(race.raceDetails?.distances?.length > 0) ||
     !race.raceDetails
   ) {
-    returnError(res, 101);
+    returnError(res, 202);
     return;
   }
 
   try {
-    client.query("SELECT race_id, admin_password, checkpoint_password from public.races WHERE race_id=$1", [race.raceId], (err, res2) => {
+    client.query("SELECT race_id, admin_password from public.races WHERE race_id=$1", [race.raceId], (err, res2) => {
       if (err) {
+        console.log(err, 1);
         returnError(res, 2);
         return;
       }
@@ -295,21 +295,23 @@ app.post("/api/updateracedetails", (req, res) => {
         return;
       }
       const originalRace = res2.rows[0];
-      if (decrypt(originalRace.admin_password, req.password) !== genericKey) {
+      if (decrypt(originalRace.admin_password, req.body.password) !== genericKey) {
         returnError(res, 201);
         return;
       }
       client.query(
-        "UPDATE public.races SET race_name = $1, city = $1, start_time = $3, timezone = $4, race_details = $5, admin_password = $6, checkpoint_password = $7 WHERE race_id=$1",
-        [race.raceName, race.city, race.startTime, race.timezone, race.raceDetails, race.adminPassword, race.checkpointPassword],
+        "UPDATE public.races SET race_name = $2, city = $3, start_time = $4, timezone = $5, race_details = $6 WHERE race_id=$1",
+        [race.raceId, race.raceName, race.city, race.startTime, race.timezone, race.raceDetails],
         (err, res2) => {
           if (err) {
+            console.log(err);
             returnError(res, 2);
             return;
           }
           res.json({
             responseMessage: "GOOD",
             returnCode: 0,
+            race
           });
         }
       );

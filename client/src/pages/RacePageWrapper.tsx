@@ -14,6 +14,7 @@ export function RacePageWrapper(props: Props) {
   const location = useLocation();
   const raceId = location.pathname.split("/")[1];
   const { race } = useSelector((state: RootStore) => state.raceDetails);
+  const stuff = useSelector((state: RootStore) => state.raceDetails);
   const raceIsLoaded = race && race.raceId === raceId;
   const hasStarted = race && race.startTime < Date.now();
   useEffect(() => {
