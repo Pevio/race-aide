@@ -86,7 +86,6 @@ app.post("/api/createrace", (req, res) => {
   try {
     const body = req.body;
     const race = body?.race;
-    console.log(race);
     if (!body || !race) {
       returnError(res, 4);
       return;
@@ -242,7 +241,6 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
 app.post("/api/validatepassword/:raceId", (req, res) => {
   const raceId = req.params.raceId;
   const password = req.body?.password;
-  console.log(raceId, password);
   const noAccess = "NO_ACCESS";
   let result = noAccess;
 
