@@ -7,7 +7,7 @@ import { getRaceDetails } from "../state/actions/RaceDetails";
 import { RootStore } from "../state/store";
 
 interface Props {
-  children: React.ReactElement | React.ReactElement[];
+  children: React.ReactNode;
 }
 
 export function RacePageWrapper(props: Props) {
@@ -60,7 +60,7 @@ export function RacePageWrapper(props: Props) {
             paddingTop: 20,
           }}
         >
-          <Link to="/" className="sider-link" style={{ fontSize: 32 }}>
+          <Link to="/" className="sider-link" style={{ fontSize: 36, marginTop: -4 }}>
             {"<"}
           </Link>
           <span style={{ marginLeft: 10 }}>

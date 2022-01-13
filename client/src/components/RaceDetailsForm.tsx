@@ -88,7 +88,7 @@ export function RaceDetailsForm(props: Props) {
         be editable later.
       </p>
       {getFormInputField("raceName", "Race Name")}
-      {getFormInputField(
+      {!props.isUpdate && getFormInputField(
         "raceId",
         "Race ID",
         "This may only contain letters, numbers, and some special characters, like MyRace or awesome-marathon. One the race is created, the ID cannot be edited!"
@@ -180,12 +180,11 @@ export function RaceDetailsForm(props: Props) {
           "If you have a link to a logo for your race, include that here.",
           true
         )}
-        {getFormInputField(
-          "logoUrl",
-          "Race Logo URL",
-          "If you have a link to a logo for your race, include that here.",
-          true
-        )}
+
+        <h3>Checkpoints</h3>
+        <p style={{fontSize: 12}}>
+          Add all checkpoints here. Once the race begins, you will not be able to add or change any checkpoints.
+        </p>
       </div>
       <div style={{ marginTop: 32 }}>
         <button onClick={onSubmit}>{props.isUpdate ? "Save Race Details" : "Create Race!"}</button>

@@ -59,6 +59,9 @@ const responseMessages = {
   // Create Race
   101: "Missing fields for create race",
   102: "raceId already exists",
+
+  // Race Details
+  201: "Invalid Password"
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -202,9 +205,8 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
       };
 
       try {
-        client.query("SELECT race_id, bib_number, runner_name, runner_details from public.runners WHERE race_id=$1", [raceId], (err, res2) => {
+        client.query("SELECT race_id, bib_number, runner_name, distance from public.runners WHERE race_id=$1", [raceId], (err, res2) => {
           if (err) {
-            console.log(err);
             returnError(res, 2);
             return;
           }
@@ -212,7 +214,7 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
             runners[row.bib_number] = {
               bibNumber: row.bib_number,
               runnerName: row.runner_name,
-              runnerDetails: row.runner_details,
+              runnerDetails: row.distance,
             };
           });
 
@@ -235,6 +237,127 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
     console.log(err);
     returnError(res, 1);
   }
+});
+
+app.get("/api/validatepassword/:raceId/:password", (req, res) => {
+  const raceId = req.params.raceId;
+  const password = req.params.password;
+  const noAccess = "NO_ACCESS"
+  let result = noAccess;
+
+  // Pull race data
+  try {
+    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+      if (err) {
+        returnError(res, 2);
+        return;
+      }
+      if (res2.rows.length === 0) {
+        returnError(res, 3);
+        return;
+      }
+      const race = res2.rows[0];
+      if (decrypt(race.admin_password) === genericKey) {
+        result = "RACE_ADMIN"
+      } else if (decrypt(race.checkpoint_password) === genericKey) {
+        result = "RACE_ASSISTANT"
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
+  }
+  if (result === noAccess) {
+    returnError(res, 201, {access: result})
+  }
+  res.json({
+    responseMessage: "GOOD",
+    returnCode: 0,
+    access: result
+  });
+});
+
+app.post("/api/updateracedetails", (req, res) => {
+  // Pull race data
+  try {
+    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+      if (err) {
+        returnError(res, 2);
+        return;
+      }
+      if (res2.rows.length === 0) {
+        returnError(res, 3);
+        return;
+      }
+      const race = res2.rows[0];
+      
+    });
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
+  }
+  if (result === noAccess) {
+    returnError(res, 201, {access: result})
+  }
+  res.json({
+    responseMessage: "GOOD",
+    returnCode: 0,
+  });
+});
+
+app.post("/api/updateraceparticipants", (req, res) => {
+   // Pull race data
+   try {
+    client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+      if (err) {
+        returnError(res, 2);
+        return;
+      }
+      if (res2.rows.length === 0) {
+        returnError(res, 3);
+        return;
+      }
+      const race = res2.rows[0];
+      
+    });
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
+  }
+  if (result === noAccess) {
+    returnError(res, 201, {access: result})
+  }
+  res.json({
+    responseMessage: "GOOD",
+    returnCode: 0,
+  });
+});
+
+app.post("/api/updateraceparticipants", (req, res) => {
+  // Pull race data
+  try {
+   client.query("SELECT race_id, admin_password, checkpoint_password WHERE race_id=$1", [raceId], (err, res2) => {
+     if (err) {
+       returnError(res, 2);
+       return;
+     }
+     if (res2.rows.length === 0) {
+       returnError(res, 3);
+       return;
+     }
+     const race = res2.rows[0];
+   });
+ } catch (err) {
+   console.log(err);
+   returnError(res, 1);
+ }
+ if (result === noAccess) {
+   returnError(res, 201, {access: result})
+ }
+ res.json({
+   responseMessage: "GOOD",
+   returnCode: 0,
+ });
 });
 
 // CORS

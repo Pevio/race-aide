@@ -3,7 +3,7 @@ import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 
 interface Props {
-  children: React.ReactElement | React.ReactElement[];
+  children: React.ReactNode;
 }
 
 export function HomePageWrapper(props: Props) {

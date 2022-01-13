@@ -1,8 +1,20 @@
 import { useState } from "react";
+import { RouteComponentProps } from "react-router";
 import { RacePageWrapper } from "../RacePageWrapper";
 
-export function Checkpoint() {
+interface CheckpointProps {
+  raceId: string;
+  checkpointId: string;
+}
+
+export function Checkpoint({
+  match,
+  history,
+}: RouteComponentProps<CheckpointProps>) {
+  const { raceId, checkpointId } = match.params;
   const [selectedBib, setSelectedBib] = useState<string>("")
+  const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
+  
   return (
     <RacePageWrapper>
       <h1>Enter Checkpoint Information</h1>
@@ -16,6 +28,7 @@ export function Checkpoint() {
       <button
         type="submit"
         onClick={() => {
+          if (saveInProgress) return;
           // Send runner to back end
         }}
       >

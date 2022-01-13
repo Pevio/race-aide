@@ -14,11 +14,11 @@ const MainRouter = () => {
       <Route exact path="/about" component={About} />
       <Route exact path="/createrace" component={CreateRace} />
 
-      <Route exact path="/:raceid" component={RaceHome} />
-      <Route exact path="/:raceid/participants" component={RaceParticipants} />
-      <Route exact path="/:raceid/results" component={RaceParticipants} />
-      <Route exact path="/:raceid/checkpoint" component={Checkpoint} />
-      <Route exact path="/:raceid/admin" component={RaceAdmin} />
+      <Route exact path="/:raceId" component={RaceHome} />
+      <Route exact path="/:raceId/participants" component={RaceParticipants} />
+      <Route exact path="/:raceId/results" component={RaceParticipants} />
+      <Route exact path="/:raceId/:checkpointId" component={Checkpoint} />
+      <Route exact path="/:raceId/admin" component={RaceAdmin} />
 
       <Route>
         <Redirect to="/" />

@@ -58,6 +58,7 @@ export default function raceDetails(
         loading: action.payload.isLoading,
       };
     case SET_RACE_PASSWORD: {
+      if (state.race) localStorage.setItem(`race-password-${state.race.raceId}`, JSON.stringify({password: action.payload.password, authorization: action.payload.authorization}))
       return {
         ...state,
         password: action.payload.password,
