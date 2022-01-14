@@ -1,5 +1,10 @@
 import { Dispatch } from "redux";
-import { Checkpoint, FullRace, RaceAuthorization, Runner } from "../../types/generalTypes";
+import {
+  Checkpoint,
+  FullRace,
+  RaceAuthorization,
+  Runner,
+} from "../../types/generalTypes";
 import {
   RaceError,
   SetRaceLoading,
@@ -64,7 +69,8 @@ export const updateRaceDetails =
       });
       const data = await res.json();
       dispatch(setRaceLoading(false));
-      if (data.returnCode === 0) dispatch(setSelectedRace(data.race, data.returnCode === 0));
+      if (data.returnCode === 0)
+        dispatch(setSelectedRace(data.race, data.returnCode === 0));
     } catch (error) {
       dispatch(setRaceLoading(false));
     }
@@ -92,14 +98,16 @@ export const updateRaceParticipants =
 
       if (data.returnCode === 0) {
         dispatch(
-          setSelectedRace({ ...originalRace, runners: data.runners || runners }, true)
+          setSelectedRace(
+            { ...originalRace, runners: data.runners || runners },
+            true
+          )
         );
       } else {
-        dispatch(raceError())
+        dispatch(raceError());
       }
-
     } catch (error) {
-      dispatch(raceError())
+      dispatch(raceError());
     }
   };
 
@@ -127,14 +135,16 @@ export const updateRaceCheckpoints =
 
       if (data.returnCode === 0) {
         dispatch(
-          setSelectedRace({ ...originalRace, checkpoints: data.checkpoints }, true)
+          setSelectedRace(
+            { ...originalRace, checkpoints: data.checkpoints },
+            true
+          )
         );
       } else {
-        dispatch(raceError())
+        dispatch(raceError());
       }
-
     } catch (error) {
-      dispatch(raceError())
+      dispatch(raceError());
     }
   };
 
@@ -165,5 +175,5 @@ const setRaceLoading = (isLoading: boolean): SetRaceLoading => ({
   },
 });
 export const raceError = (): RaceError => ({
-  type: "RACE_ERROR"
-})
+  type: "RACE_ERROR",
+});

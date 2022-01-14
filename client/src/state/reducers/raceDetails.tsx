@@ -2,7 +2,7 @@ import { FullRace, RaceAuthorization } from "../../types/generalTypes";
 export const SET_SELECTED_RACE = "SET_SELECTED_RACE";
 export const SET_RACE_LOADING = "SET_RACE_LOADING";
 export const SET_RACE_PASSWORD = "SET_RACE_PASSWORD";
-export const RACE_ERROR = "RACE_ERROR"
+export const RACE_ERROR = "RACE_ERROR";
 
 interface RaceListState {
   race?: FullRace;
@@ -17,7 +17,7 @@ const initialState: RaceListState = {
 };
 
 export interface RaceError {
-  type: "RACE_ERROR"
+  type: "RACE_ERROR";
 }
 export interface SetSelectedRace {
   type: "SET_SELECTED_RACE";
@@ -75,7 +75,7 @@ export default function raceDetails(
         ...state,
         loading: action.payload.isLoading,
       };
-    case SET_RACE_PASSWORD: 
+    case SET_RACE_PASSWORD:
       if (state.race)
         localStorage.setItem(
           `race-password-${state.race.raceId}`,
@@ -94,7 +94,7 @@ export default function raceDetails(
         ...state,
         success: false,
         loading: false,
-      }
+      };
     default:
       return state;
   }

@@ -23,30 +23,33 @@ export function RaceDetailsForm(props: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [newDistanceValue, setNewDistanceValue] = useState<number>(0);
-  const hasStarted = props.defaultData?.startTime && props.defaultData.startTime < Date.now();
+  const hasStarted =
+    props.defaultData?.startTime && props.defaultData.startTime < Date.now();
 
   useEffect(() => {
     setRaceDetails({
       raceDetails: {},
-      ...props.defaultData
-    })
+      ...props.defaultData,
+    });
     if (props.defaultData?.startTime && props.defaultData.timezone) {
-      const date = DateTime.fromMillis(props.defaultData.startTime).setZone(props.defaultData.timezone)
-      const jsDate = new Date()
-      jsDate.setFullYear(date.get("year"))
-      jsDate.setMonth(date.get("month") - 1)
-      jsDate.setDate(date.get("day"))
-      setStartDate(jsDate)
+      const date = DateTime.fromMillis(props.defaultData.startTime).setZone(
+        props.defaultData.timezone
+      );
+      const jsDate = new Date();
+      jsDate.setFullYear(date.get("year"));
+      jsDate.setMonth(date.get("month") - 1);
+      jsDate.setDate(date.get("day"));
+      setStartDate(jsDate);
 
-      const time = new Date()
-      time.setHours(date.get("hour"), date.get("minute"), date.get("second"))
+      const time = new Date();
+      time.setHours(date.get("hour"), date.get("minute"), date.get("second"));
       setStartTime(time);
     } else {
-      setStartDate(null)
-      setStartTime(null)
+      setStartDate(null);
+      setStartTime(null);
     }
     setNewDistanceValue(0);
-  }, [props.defaultData])
+  }, [props.defaultData]);
 
   const getFormInputField = (
     key: keyof FullRace | keyof RaceDetails,
@@ -169,9 +172,15 @@ export function RaceDetailsForm(props: Props) {
           ))}
         </select>
       </div>
-      {props.isUpdate ?
-        <p style={{marginTop: 10}}>If you forgot your passwords, you can <Link to={`/${raceDetails.raceId}/changepassword`}>Change them now</Link>.</p>    
-      :
+      {props.isUpdate ? (
+        <p style={{ marginTop: 10 }}>
+          If you forgot your passwords, you can{" "}
+          <Link to={`/${raceDetails.raceId}/changepassword`}>
+            Change them now
+          </Link>
+          .
+        </p>
+      ) : (
         <>
           <div>
             <p style={{ marginTop: 32, fontSize: 16 }}>Security</p>
@@ -194,7 +203,7 @@ export function RaceDetailsForm(props: Props) {
             )}
           </div>
         </>
-      }
+      )}
       <div>
         <p style={{ marginTop: 32, fontSize: 16 }}>Extra Information</p>
         <p style={{ margin: 0 }}>The following information is all optional:</p>
@@ -212,35 +221,45 @@ export function RaceDetailsForm(props: Props) {
           true
         )}
 
-        {!hasStarted &&
+        {!hasStarted && (
           <>
             <h3>Distances</h3>
             <p style={{ fontSize: 12 }}>
               For each race distance, add it here. Distances will always be in
               miles.
             </p>
-            <div style={{marginTop: 5, marginBottom: 5}}>
-              {raceDetails.raceDetails?.distances?.map((distance: number, index: number) => (
-                <React.Fragment key={distance}>
-                  {`${distance} Miles`}
-                  <button
-                    style={{marginLeft: 2, marginRight: raceDetails.raceDetails?.distances && index !== raceDetails.raceDetails.distances.length - 1 ? 10 : 0}}
-                    onClick={() => {
-                      setRaceDetails({
-                        ...raceDetails,
-                        raceDetails: {
-                          ...raceDetails.raceDetails,
-                          distances: raceDetails.raceDetails?.distances?.filter(
-                            (oldDistance) => oldDistance !== distance
-                          ),
-                        },
-                      });
-                    }}
-                  >
-                    x
-                  </button>
-                </React.Fragment>
-              ))}
+            <div style={{ marginTop: 5, marginBottom: 5 }}>
+              {raceDetails.raceDetails?.distances?.map(
+                (distance: number, index: number) => (
+                  <React.Fragment key={distance}>
+                    {`${distance} Miles`}
+                    <button
+                      style={{
+                        marginLeft: 2,
+                        marginRight:
+                          raceDetails.raceDetails?.distances &&
+                          index !== raceDetails.raceDetails.distances.length - 1
+                            ? 10
+                            : 0,
+                      }}
+                      onClick={() => {
+                        setRaceDetails({
+                          ...raceDetails,
+                          raceDetails: {
+                            ...raceDetails.raceDetails,
+                            distances:
+                              raceDetails.raceDetails?.distances?.filter(
+                                (oldDistance) => oldDistance !== distance
+                              ),
+                          },
+                        });
+                      }}
+                    >
+                      x
+                    </button>
+                  </React.Fragment>
+                )
+              )}
             </div>
             <div>
               <span>Add New Distance:</span>
@@ -251,9 +270,9 @@ export function RaceDetailsForm(props: Props) {
                 min={0}
                 value={newDistanceValue}
                 onChange={(e) => {
-                  const newDistance = Number.parseFloat(e.target.value)
+                  const newDistance = Number.parseFloat(e.target.value);
                   if (!newDistance) return;
-                  setNewDistanceValue(newDistance)
+                  setNewDistanceValue(newDistance);
                 }}
               />
               <button
@@ -270,7 +289,7 @@ export function RaceDetailsForm(props: Props) {
                       distances: newDistances,
                     },
                   });
-                  setNewDistanceValue(0)
+                  setNewDistanceValue(0);
                 }}
               >
                 Add
@@ -278,11 +297,13 @@ export function RaceDetailsForm(props: Props) {
             </div>
             <h3>Checkpoints</h3>
             <p style={{ fontSize: 12 }}>
-              Add all checkpoints here. Once the race begins, you will not be able
-              to add or change any checkpoints. Each checkpoint must have a unique checkpoint number, and can be used any number of times for any distance race.
+              Add all checkpoints here. Once the race begins, you will not be
+              able to add or change any checkpoints. Each checkpoint must have a
+              unique checkpoint number, and can be used any number of times for
+              any distance race.
             </p>
           </>
-        }
+        )}
       </div>
       <div style={{ marginTop: 32 }}>
         <button onClick={onSubmit}>

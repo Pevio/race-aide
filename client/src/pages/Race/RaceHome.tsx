@@ -9,25 +9,34 @@ interface RaceHomeProps {
   raceId: string;
 }
 
-export function RaceHome({ match, history }: RouteComponentProps<RaceHomeProps>) {
-  const { race, loading } = useSelector((state: RootStore) => state.raceDetails);
+export function RaceHome({
+  match,
+  history,
+}: RouteComponentProps<RaceHomeProps>) {
+  const { race, loading } = useSelector(
+    (state: RootStore) => state.raceDetails
+  );
   const hasStarted = race && race.startTime < Date.now();
 
   if (loading) {
-    return <RacePageWrapper>
-      <p>Race Loading...</p>
-    </RacePageWrapper>
+    return (
+      <RacePageWrapper>
+        <p>Race Loading...</p>
+      </RacePageWrapper>
+    );
   }
   if (!race) {
-    return <RacePageWrapper>
-      <p>The race could not be loaded</p>
-    </RacePageWrapper>
+    return (
+      <RacePageWrapper>
+        <p>The race could not be loaded</p>
+      </RacePageWrapper>
+    );
   }
   const runnerArray: Runner[] = Object.values(race?.runners || []);
   return (
     <RacePageWrapper>
       <h1>{`${race.raceName} Race Home`}</h1>
-      {race.raceDetails.website &&
+      {race.raceDetails.website && (
         <>
           <a
             href={race?.raceDetails.website}
@@ -36,10 +45,10 @@ export function RaceHome({ match, history }: RouteComponentProps<RaceHomeProps>)
           >
             Race Website
           </a>
-          <br/>
+          <br />
         </>
-      }
-      {race.raceDetails.registration &&
+      )}
+      {race.raceDetails.registration && (
         <>
           <a
             href={race?.raceDetails.registration}
@@ -48,10 +57,10 @@ export function RaceHome({ match, history }: RouteComponentProps<RaceHomeProps>)
           >
             Registration
           </a>
-          <br/>
+          <br />
         </>
-      }
-      
+      )}
+
       <DataTable
         columns={[
           { name: "Runner Name", selector: (runner) => runner.runnerName },

@@ -13,7 +13,9 @@ export function RacePageWrapper(props: Props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const raceId = location.pathname.split("/")[1];
-  const { race, loading } = useSelector((state: RootStore) => state.raceDetails);
+  const { race, loading } = useSelector(
+    (state: RootStore) => state.raceDetails
+  );
   const raceIsLoaded = race && race.raceId === raceId;
   const hasStarted = race && race.startTime < Date.now();
   useEffect(() => {
@@ -40,7 +42,10 @@ export function RacePageWrapper(props: Props) {
               backgroundColor: location.pathname === to ? "red" : "transparent",
             }}
           />
-          <Link to={{pathname: to, state: location.state}} className="sider-link">
+          <Link
+            to={{ pathname: to, state: location.state }}
+            className="sider-link"
+          >
             {text}
           </Link>
         </div>
@@ -75,7 +80,7 @@ export function RacePageWrapper(props: Props) {
       </div>
       <div className="sider">
         {getSideMenuItem("Race Home", `/${raceId}`)}
-        {!loading &&
+        {!loading && (
           <>
             {getSideMenuItem(
               hasStarted ? "Results" : "Participants",
@@ -84,8 +89,7 @@ export function RacePageWrapper(props: Props) {
             {getSideMenuItem("Checkpoints", `/${raceId}/checkpoints`)}
             {getSideMenuItem("Race Admin", `/${raceId}/admin`, false)}
           </>
-        }
-
+        )}
       </div>
       {raceIsLoaded && <div className="page">{props.children}</div>}
     </>

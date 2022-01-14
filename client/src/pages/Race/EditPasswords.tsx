@@ -8,20 +8,27 @@ interface EditPasswordProps {
   raceId: string;
 }
 
-export function EditRacePasswords({ match, history }: RouteComponentProps<EditPasswordProps>) {
-  const { race, password } = useSelector((state: RootStore) => state.raceDetails);
+export function EditRacePasswords({
+  match,
+  history,
+}: RouteComponentProps<EditPasswordProps>) {
+  const { race, password } = useSelector(
+    (state: RootStore) => state.raceDetails
+  );
 
-  const [adminPassword, setAdminPassword] = useState<string>(password || "")
-  const [assistantPassword, setAssistantPassword] = useState<string>("")
+  const [adminPassword, setAdminPassword] = useState<string>(password || "");
+  const [assistantPassword, setAssistantPassword] = useState<string>("");
   const [showPasswords, setShowPasswords] = useState<boolean>(false);
-  const inputType = showPasswords ? "text" : "password"
+  const inputType = showPasswords ? "text" : "password";
 
   if (!race) {
-    return <RacePageWrapper>
-      <p>The race could not be loaded</p>
-    </RacePageWrapper>
+    return (
+      <RacePageWrapper>
+        <p>The race could not be loaded</p>
+      </RacePageWrapper>
+    );
   }
-  
+
   return (
     <RacePageWrapper>
       <h1>Edit Race Passwords</h1>
@@ -38,7 +45,7 @@ export function EditRacePasswords({ match, history }: RouteComponentProps<EditPa
             id="admin-password"
             value={adminPassword}
             onChange={(e) => {
-              setAdminPassword(e.target.value)
+              setAdminPassword(e.target.value);
             }}
           />
         </div>
@@ -50,20 +57,19 @@ export function EditRacePasswords({ match, history }: RouteComponentProps<EditPa
             id="assistant-password"
             value={assistantPassword}
             onChange={(e) => {
-              setAssistantPassword(e.target.value)
+              setAssistantPassword(e.target.value);
             }}
           />
         </div>
-        <input type="checkbox" onChange={(e) => setShowPasswords(e.target.checked)}>Show Passwords</input>
+        <input
+          type="checkbox"
+          onChange={(e) => setShowPasswords(e.target.checked)}
+        >
+          Show Passwords
+        </input>
       </div>
       <div>
-        <button
-          onClick={() => {
-
-          }}
-        >
-          Save Passwords
-        </button>
+        <button onClick={() => {}}>Save Passwords</button>
       </div>
     </RacePageWrapper>
   );

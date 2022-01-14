@@ -29,6 +29,14 @@ export const compileCheckpoints = (
 
   return result;
 };
-export const getDistanceCheckpoints = (race: FullRace | undefined, selectedDistance: number | undefined): CheckpointDistance[] => {
-  return (race?.checkpoints && selectedDistance && compileCheckpoints(race.checkpoints)[selectedDistance]) || []
-}
+export const getDistanceCheckpoints = (
+  race: FullRace | undefined,
+  selectedDistance: number | undefined
+): CheckpointDistance[] => {
+  return (
+    (race?.checkpoints &&
+      selectedDistance &&
+      compileCheckpoints(race.checkpoints)[selectedDistance]) ||
+    []
+  );
+};

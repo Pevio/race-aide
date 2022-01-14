@@ -61,7 +61,6 @@
 
 .container {
   padding: 20px;
-
 }
 
 /* Overriding HTML Elements */
@@ -114,4 +113,3 @@ select:hover {
 select:focus {
   border-color: pink;
 }
-

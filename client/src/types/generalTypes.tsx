@@ -32,7 +32,7 @@ export interface Runner {
 export interface Checkpoint {
   distances: CheckpointDetails[];
   checkpointNumber: string; // Key
-  runnersPassed: Record<string, number[]> // key: bibNumber, array: the times that runner passed the checkpoint
+  runnersPassed: Record<string, number[]>; // key: bibNumber, array: the times that runner passed the checkpoint
 }
 export interface CheckpointDetails {
   // This object does not have a key;

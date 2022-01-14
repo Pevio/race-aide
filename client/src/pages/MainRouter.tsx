@@ -21,8 +21,16 @@ const MainRouter = () => {
       <Route exact path="/:raceId/results" component={RaceParticipants} />
       <Route exact path="/:raceId/admin" component={RaceAdmin} />
       <Route exact path="/:raceId/checkpoints" component={CheckpointPage} />
-      <Route exact path="/:raceId/editpasswords" component={EditRacePasswords} />
-      <Route exact path="/:raceId/addresults/:checkpointId" component={CheckpointInfo} />
+      <Route
+        exact
+        path="/:raceId/editpasswords"
+        component={EditRacePasswords}
+      />
+      <Route
+        exact
+        path="/:raceId/addresults/:checkpointId"
+        component={CheckpointInfo}
+      />
 
       <Route>
         <Redirect to="/" />
