@@ -5,13 +5,42 @@ import DataTable from "react-data-table-component";
 import { Runner } from "../../types/generalTypes";
 
 export function RaceHome() {
-  const { race } = useSelector((state: RootStore) => state.raceDetails);
+  const { race, loading } = useSelector((state: RootStore) => state.raceDetails);
   const hasStarted = race && race.startTime < Date.now();
 
+  if (loading) {
+    return <RacePageWrapper>
+      <p>Race Loading...</p>
+    </RacePageWrapper>
+  }
+  if (!race) {
+    return <RacePageWrapper>
+      <p>The race could not be loaded</p>
+    </RacePageWrapper>
+  }
   const runnerArray: Runner[] = Object.values(race?.runners || []);
   return (
     <RacePageWrapper>
-      <h1>{`${race?.raceName} Race Home`}</h1>
+      <h1>{`${race.raceName} Race Home`}</h1>
+      {race.raceDetails.website &&
+        <a
+          href={race?.raceDetails.website}
+          target="_blank" // Open in new tab
+          rel="noopener noreferrer" // For security
+        >
+          Race Website
+        </a>
+      }
+      {race.raceDetails.registration &&
+        <a
+          href={race?.raceDetails.registration}
+          target="_blank" // Open in new tab
+          rel="noopener noreferrer" // For security
+        >
+          Registration
+        </a>
+      }
+      
       <DataTable
         columns={[
           { name: "Runner Name", selector: (runner) => runner.runnerName },

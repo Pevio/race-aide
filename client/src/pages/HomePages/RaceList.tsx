@@ -53,13 +53,12 @@ export function RaceList() {
             sortable: true,
             selector: (race) => {
               const start = DateTime.fromMillis(race.startTime);
-
               // My local time zone
-              if (!localTimeZone) return start.toFormat("DD, HH:MM");
+              if (!localTimeZone) return start.toFormat("DD, hh:mm a");
 
               // The Race's local time zone
               return (
-                start.setZone(race.timezone).toFormat("DD, HH:MM") +
+                start.setZone(race.timezone).toFormat("DD, hh:mm a") +
                 " " +
                 race.timezone
               );

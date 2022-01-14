@@ -32,3 +32,9 @@ export const timezoneDescriptions: Record<string, string> = {
   BET: "Brazil Eastern Time",
   CAT: "Central African Time",
 };
+
+export const displayTime = (seconds: number): string => {
+  const minutePart = Math.floor(seconds / 60)
+  const secondPart = seconds & 60
+  return `${minutePart}:${secondPart >= 10 ? secondPart : "0" + secondPart}`
+}

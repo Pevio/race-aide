@@ -1,6 +1,7 @@
 import { Dispatch } from "redux";
-import { FullRace, RaceAuthorization, Runner } from "../../types/generalTypes";
+import { Checkpoint, FullRace, RaceAuthorization, Runner } from "../../types/generalTypes";
 import {
+  RaceError,
   SetRaceLoading,
   SetRacePassword,
   SetSelectedRace,
@@ -89,9 +90,49 @@ export const updateRaceParticipants =
       });
       const data = await res.json();
 
-      dispatch(
-        setSelectedRace({ ...originalRace, runners }, data.returnCode === 0)
-      );
+      if (data.returnCode === 0) {
+        dispatch(
+          setSelectedRace({ ...originalRace, runners: data.runners || runners }, true)
+        );
+      } else {
+        dispatch(raceError())
+      }
+
+    } catch (error) {
+      dispatch(setSelectedRace(originalRace, false));
+    }
+  };
+
+export const updateRaceCheckpoints =
+  (
+    originalRace: FullRace,
+    checkpoint: Checkpoint,
+    action: "CREATE" | "UPDATE" | "DELETE",
+    adminPassword?: string
+  ): ThunkActionType =>
+  async (dispatch: Dispatch) => {
+    try {
+      dispatch(setRaceLoading(true));
+      const res = await fetch("/api/updateraceparticipants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          raceId: originalRace.raceId,
+          checkpoint,
+          password: adminPassword,
+          action,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.returnCode === 0) {
+        dispatch(
+          setSelectedRace({ ...originalRace, checkpoints: data.checkpoints }, true)
+        );
+      } else {
+        dispatch(raceError())
+      }
+
     } catch (error) {
       dispatch(setSelectedRace(originalRace, false));
     }
@@ -123,3 +164,6 @@ const setRaceLoading = (isLoading: boolean): SetRaceLoading => ({
     isLoading,
   },
 });
+export const raceError = (): RaceError => ({
+  type: "RACE_ERROR"
+})

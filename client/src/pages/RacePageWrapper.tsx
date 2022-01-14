@@ -13,8 +13,7 @@ export function RacePageWrapper(props: Props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const raceId = location.pathname.split("/")[1];
-  const { race } = useSelector((state: RootStore) => state.raceDetails);
-  const stuff = useSelector((state: RootStore) => state.raceDetails);
+  const { race, loading } = useSelector((state: RootStore) => state.raceDetails);
   const raceIsLoaded = race && race.raceId === raceId;
   const hasStarted = race && race.startTime < Date.now();
   useEffect(() => {
@@ -76,11 +75,17 @@ export function RacePageWrapper(props: Props) {
       </div>
       <div className="sider">
         {getSideMenuItem("Race Home", `/${raceId}`)}
-        {getSideMenuItem(
-          hasStarted ? "Results" : "Participants",
-          `/${raceId}/${hasStarted ? "results" : "participants"}`
-        )}
-        {getSideMenuItem("Race Admin", `/${raceId}/admin`, false)}
+        {!loading &&
+          <>
+            {getSideMenuItem(
+              hasStarted ? "Results" : "Participants",
+              `/${raceId}/${hasStarted ? "results" : "participants"}`
+            )}
+            {getSideMenuItem("Checkpoints", `/${raceId}/checkpoints`)}
+            {getSideMenuItem("Race Admin", `/${raceId}/admin`, false)}
+          </>
+        }
+
       </div>
       {raceIsLoaded && <div className="page">{props.children}</div>}
     </>

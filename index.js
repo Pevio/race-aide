@@ -62,7 +62,14 @@ const responseMessages = {
 
   // Race Details
   201: "Invalid Password",
-  202: "Missing fields for update race"
+  202: "Missing fields for update race",
+
+  // Race Participants
+  301: "Missing fields for race participants",
+
+  // Race Checkpoints
+  401: "Missing fields for race checkpoints",
+  402: "Invalid action for race checkpoint CRUD"
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -180,14 +187,14 @@ app.get("/api/getracelist", (req, res) => {
 app.get("/api/getracedetails/:raceId", (req, res) => {
   const raceId = req.params.raceId;
 
-  let raceData = {};
-  let runners = {};
-  let checkpoints = [];
+  // let raceData = {};
+  // let runners = {};
+  // let checkpoints = [];
 
   // Pull race data
   try {
     client.query(
-      "SELECT races.race_id, race_name, race_details, city, start_time, timezone from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id WHERE public.races.race_id=$1",
+      "SELECT races.race_id, race_name, race_details, city, start_time, timezone, runners from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id LEFT JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE public.races.race_id=$1",
       [raceId],
       (err, res2) => {
         if (err) {
@@ -199,24 +206,25 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
           returnError(res, 3);
           return;
         }
-        const dbData = res2.rows[0];
+        const firstRow = res2.rows[0];
         raceData = {
-          raceId: dbData.race_id,
-          raceName: dbData.race_name,
-          raceDetails: dbData.race_details,
-          city: dbData.city,
-          startTime: Number.parseInt(dbData.start_time),
-          timezone: dbData.timezone,
-          runners: dbData.runners || {},
+          raceId: firstRow.race_id,
+          raceName: firstRow.race_name,
+          raceDetails: firstRow.race_details,
+          city: firstRow.city,
+          startTime: Number.parseInt(firstRow.start_time),
+          timezone: firstRow.timezone,
+          runners: firstRow.runners || {},
+          checkpoints: res.rows.map((row) => ({
+            checkpointNumber: row.checkpoint_number,
+            distances: row.distances,
+            runnersPassed: row.runners_passed
+          }))
         };
         res.json({
           responseMessage: "GOOD",
           returnCode: 0,
-          race: {
-            ...raceData,
-            runners,
-            checkpoints,
-          },
+          race: raceData
         });
       }
     );
@@ -325,8 +333,12 @@ app.post("/api/updateracedetails", (req, res) => {
 app.post("/api/updateraceparticipants", (req, res) => {
   const body = req?.body || {};
   const raceId = body.raceId;
+  if (!body.password || !body.raceId || !(typeof body.runners === "object")) {
+    returnError(res, 301);
+    return;
+  }
   try {
-    client.query("SELECT race_id, admin_password, runners from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id WHERE races.race_id=$1", [raceId], (err, res2) => {
+    client.query("SELECT races.race_id, admin_password, runners from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id WHERE races.race_id=$1", [raceId], (err, res2) => {
       if (err) {
         returnError(res, 2);
         return;
@@ -335,7 +347,7 @@ app.post("/api/updateraceparticipants", (req, res) => {
         returnError(res, 3);
         return;
       }
-      if (decrypt(res2.rows[0].admin_password, req.password) !== genericKey) {
+      if (decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
         returnError(res, 201);
         return;
       }
@@ -347,7 +359,7 @@ app.post("/api/updateraceparticipants", (req, res) => {
         // CREATE
         statement = "INSERT INTO public.runners (race_id, runners) VALUES ($1, $2)";
       }
-      client.query(statement, [raceId, runners], (err2, res3) => {
+      client.query(statement, [raceId, body.runners], (err2, res3) => {
         if (err2) {
           returnError(res, 2);
           return;
@@ -356,6 +368,75 @@ app.post("/api/updateraceparticipants", (req, res) => {
       res.json({
         responseMessage: "GOOD",
         returnCode: 0,
+        runners: body.runners
+      });
+    });
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
+  }
+});
+
+app.post("/api/updateracecheckpoints", (req, res) => {
+  let isError = false;
+  const body = req?.body || {};
+  const raceId = body.raceId;
+  if (!["CREATE", "UPDATE", "DELETE"].includes(body.action)) {
+    returnError(res, 402)
+    return
+  }
+  if (!body.password || !body.raceId || !body.checkpoint || !body.action) {
+    returnError(res, 401);
+    return;
+  }
+  try {
+    client.query("SELECT races.race_id, admin_password races.race_id=$1", [raceId], (err, res2) => {
+      if (decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
+        returnError(res, 201);
+        isError = true;
+        return;
+      }
+    });
+    if (isError) return;
+
+    let statement = "";
+    let params = []
+    switch (body.action) {
+      case "CREATE":
+        statement = "INSERT INTO public.checkpoints (race_id, checkpoint_number, distances, runners_passed) VALUES ($1, $2, $3, $4)"
+        params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, {}]
+        break;
+      case "UPDATE":
+        statement = "UPDATE public.checkpoints SET distances = $3 WHERE race_id = $1 AND checkpoint_number = $2"
+        params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances]
+        break;
+      case "DELETE":
+        statement = "DELETE FROM public.checkpoints WHERE race_id = $1 AND checkpoint_number = $2"
+        params = [body.raceId, body.checkpoint.checkpointNumber]
+        break;
+    }
+    client.query(statement, params, (err, res2) => {
+      if (err) {
+        returnError(res, 2)
+        isError = true;
+        return
+      }
+    })
+    if (isError) return;
+    client.query("SELECT checkpoint_number, distances, runners_passed from public.checkpoints WHERE race_id=$1", [raceId, body.checkpoint.checkpointNumber], (err, res2) => {
+      if (err || res2.rows?.length === 0) {
+        returnError(res, 2);
+        return;
+      }
+      const checkpoints = rew2.rows.map((row) => ({
+        checkpointNumber: row.checkpoint_number,
+        distances: row.distances,
+        runnersPassed: row.runners_passed
+      }))
+      res.json({
+        responseMessage: "GOOD",
+        returnCode: 0,
+        checkpoints
       });
     });
   } catch (err) {

@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
+import siteIcon from "../res/icon.png"
 
 interface Props {
   children: React.ReactNode;
@@ -30,12 +31,13 @@ export function HomePageWrapper(props: Props) {
   };
   return (
     <>
-      <div className="header">
+      <div className="header" style={{display: "flex"}}>
+        <img src={siteIcon} style={{height: 100, width: 100, marginLeft: 50}} alt=""/>
         <p
           style={{
             fontSize: 36,
-            marginLeft: 50,
-            paddingTop: 20,
+            marginLeft: 32,
+            marginTop: 10
           }}
         >
           Race Aide

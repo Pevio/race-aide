@@ -6,7 +6,7 @@ import TimePicker from "@mui/lab/TimePicker";
 import DatePicker from "@mui/lab/DatePicker";
 import { DateTime } from "luxon";
 import { FullRace, RaceDetails } from "../types/generalTypes";
-import { timezoneDescriptions } from "../util/timezones";
+import { timezoneDescriptions } from "../util/timeUtils";
 
 interface Props {
   isUpdate: boolean;
@@ -22,6 +22,7 @@ export function RaceDetailsForm(props: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [newDistanceValue, setNewDistanceValue] = useState<number>(0);
+  const hasStarted = props.defaultData?.startTime && props.defaultData.startTime < Date.now();
 
   useEffect(() => {
     setRaceDetails({
@@ -29,18 +30,15 @@ export function RaceDetailsForm(props: Props) {
       ...props.defaultData
     })
     if (props.defaultData?.startTime && props.defaultData.timezone) {
-      const date = DateTime.fromMillis(props.defaultData.startTime)
-      date.setZone(props.defaultData.timezone)
+      const date = DateTime.fromMillis(props.defaultData.startTime).setZone(props.defaultData.timezone)
       const jsDate = new Date()
-      jsDate.setUTCFullYear(date.get("year"))
-      jsDate.setUTCMonth(date.get("month") - 1)
-      jsDate.setUTCDate(date.get("day"))
+      jsDate.setFullYear(date.get("year"))
+      jsDate.setMonth(date.get("month") - 1)
+      jsDate.setDate(date.get("day"))
       setStartDate(jsDate)
 
       const time = new Date()
-      time.setHours(date.get("hour"))
-      time.setMinutes(date.get("minute"))
-      time.setSeconds(date.get("second"))
+      time.setHours(date.get("hour"), date.get("minute"), date.get("second"))
       setStartTime(time);
     } else {
       setStartDate(null)
@@ -213,71 +211,77 @@ export function RaceDetailsForm(props: Props) {
           true
         )}
 
-        <h3>Distances</h3>
-        <p style={{ fontSize: 12 }}>
-          For each race distance, add it here. Distances will always be in
-          miles.
-        </p>
-        <div>
-          {raceDetails.raceDetails?.distances?.map((distance: number) => (
-            <React.Fragment key={distance}>
-              {`${distance} Miles`}
+        {!hasStarted &&
+          <>
+            <h3>Distances</h3>
+            <p style={{ fontSize: 12 }}>
+              For each race distance, add it here. Distances will always be in
+              miles.
+            </p>
+            <div style={{marginTop: 5, marginBottom: 5}}>
+              {raceDetails.raceDetails?.distances?.map((distance: number, index: number) => (
+                <React.Fragment key={distance}>
+                  {`${distance} Miles`}
+                  <button
+                  style={{marginLeft: 2, marginRight: raceDetails.raceDetails?.distances && index !== raceDetails.raceDetails.distances.length - 1 ? 10 : 0}}
+                    onClick={() => {
+                      setRaceDetails({
+                        ...raceDetails,
+                        raceDetails: {
+                          ...raceDetails.raceDetails,
+                          distances: raceDetails.raceDetails?.distances?.filter(
+                            (oldDistance) => oldDistance !== distance
+                          ),
+                        },
+                      });
+                    }}
+                  >
+                    x
+                  </button>
+                </React.Fragment>
+              ))}
+            </div>
+            <div>
+              <span>Add New Distance:</span>
+              <input
+                style={{ marginLeft: 10 }}
+                type="number"
+                step="any"
+                min={0}
+                value={newDistanceValue}
+                onChange={(e) => {
+                  const newDistance = Number.parseFloat(e.target.value)
+                  if (!newDistance) return;
+                  setNewDistanceValue(newDistance)
+                }}
+              />
               <button
+                style={{ marginLeft: 10 }}
                 onClick={() => {
+                  const newDistances = [
+                    ...(raceDetails.raceDetails?.distances || []),
+                    newDistanceValue,
+                  ].sort((num1, num2) => num1 - num2);
                   setRaceDetails({
                     ...raceDetails,
                     raceDetails: {
                       ...raceDetails.raceDetails,
-                      distances: raceDetails.raceDetails?.distances?.filter(
-                        (oldDistance) => oldDistance !== distance
-                      ),
+                      distances: newDistances,
                     },
                   });
+                  setNewDistanceValue(0)
                 }}
               >
-                x
+                Add
               </button>
-            </React.Fragment>
-          ))}
-        </div>
-        <div>
-          <span>Add New Distance:</span>
-          <input
-            style={{ marginLeft: 10 }}
-            type="number"
-            step="any"
-            min={0}
-            value={newDistanceValue}
-            onChange={(e) => {
-              const newDistance = Number.parseFloat(e.target.value)
-              if (!newDistance) return;
-              setNewDistanceValue(newDistance)
-            }}
-          />
-          <button
-            style={{ marginLeft: 10 }}
-            onClick={() => {
-              const newDistances = [
-                ...(raceDetails.raceDetails?.distances || []),
-                newDistanceValue,
-              ].sort((num1, num2) => num1 - num2);
-              setRaceDetails({
-                ...raceDetails,
-                raceDetails: {
-                  ...raceDetails.raceDetails,
-                  distances: newDistances,
-                },
-              });
-            }}
-          >
-            Add
-          </button>
-        </div>
-        <h3>Checkpoints</h3>
-        <p style={{ fontSize: 12 }}>
-          Add all checkpoints here. Once the race begins, you will not be able
-          to add or change any checkpoints.
-        </p>
+            </div>
+            <h3>Checkpoints</h3>
+            <p style={{ fontSize: 12 }}>
+              Add all checkpoints here. Once the race begins, you will not be able
+              to add or change any checkpoints. Each checkpoint must have a unique checkpoint number, and can be used any number of times for any distance race.
+            </p>
+          </>
+        }
       </div>
       <div style={{ marginTop: 32 }}>
         <button onClick={onSubmit}>

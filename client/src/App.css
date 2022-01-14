@@ -4,7 +4,7 @@
 }
 
 .page {
-  margin: 32px 0px 32px calc(var(--sider-width) + 64px);
+  margin: 32px 32px 32px calc(var(--sider-width) + 64px);
   padding-bottom: 64px;
   max-width: 1440px;
   font-size: 14px;
@@ -16,6 +16,7 @@
   z-index: 4;
   position: sticky;
   top: 0px;
+  padding-top: 10px;
 }
 
 .sider {
@@ -81,8 +82,20 @@ input[type="number"] {
   height: 22px;
   font-size: 14px;
 }
+input {
+  border: 1px solid #cccccc;
+  transition: 0.3s;
+  transition-property: border-color;
+}
+input:hover {
+  border-color: green;
+}
+input:focus {
+  border-color: green;
+}
 
 select {
   height: 25px;
   font-size: 14px;
+  min-width: 180px;
 }
