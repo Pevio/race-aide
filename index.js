@@ -190,7 +190,7 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
   // Pull race data
   try {
     client.query(
-      "SELECT races.race_id, race_name, race_details, city, start_time, timezone, runners, checkpoint_number, checkpoints.distances as checkpoint_distances, runners_passed from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id LEFT JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE public.races.race_id=$1",
+      "SELECT races.race_id, race_name, race_details, city, start_time, timezone, runners, checkpoint_number, checkpoint_distances, runners_passed from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id LEFT JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE public.races.race_id=$1",
       [raceId],
       (err, res2) => {
         if (err) {
@@ -407,11 +407,11 @@ app.post("/api/updateracecheckpoints", (req, res) => {
       let params = []
       switch (body.action) {
         case "CREATE":
-          statement = "INSERT INTO public.checkpoints (race_id, checkpoint_number, distances, runners_passed) VALUES ($1, $2, $3, $4)"
-          params = [body.raceId, body.checkpoint.checkpointNumber, JSON.stringify(body.checkpoint.distances), JSON.stringify({})]
+          statement = "INSERT INTO public.checkpoints (race_id, checkpoint_number, checkpoint_distances, runners_passed) VALUES ($1, $2, $3, $4)"
+          params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, JSON.stringify({})]
           break;
         case "UPDATE":
-          statement = "UPDATE public.checkpoints SET distances = $3 WHERE race_id = $1 AND checkpoint_number = $2"
+          statement = "UPDATE public.checkpoints SET checkpoint_distances = $3 WHERE race_id = $1 AND checkpoint_number = $2"
           params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances]
           break;
         case "DELETE":
@@ -429,7 +429,7 @@ app.post("/api/updateracecheckpoints", (req, res) => {
           return
         }
 
-        client.query("SELECT checkpoint_number, distances, runners_passed from public.checkpoints WHERE race_id=$1", [raceId, body.checkpoint.checkpointNumber], (err, res2) => {
+        client.query("SELECT checkpoint_number, checkpoint_distances, runners_passed from public.checkpoints WHERE race_id=$1", [raceId, body.checkpoint.checkpointNumber], (err, res2) => {
           if (err || res2.rows?.length === 0) {
             console.log(2)
             console.log(err);

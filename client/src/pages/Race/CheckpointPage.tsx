@@ -142,7 +142,7 @@ export function CheckpointPage({
               <input
                 type="text"
                 style={{ marginLeft: 10 }}
-                value={checkpointEditing.checkpointNumber}
+                value={checkpointEditing.checkpointNumber || ""}
                 onChange={(e) =>
                   setCheckpointEditing({
                     ...checkpointEditing,
