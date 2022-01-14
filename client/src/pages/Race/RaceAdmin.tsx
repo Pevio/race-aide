@@ -92,15 +92,6 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
             />
           </>
         )}
-        <h3>Checkpoints</h3>
-        <p>To enter results at the checkpoint, choose your checkpoint below.</p>
-        <select>
-          {raceData.race?.checkpoints.map((check) => (
-            <option key={check.checkpointNumber} value={check.checkpointNumber}>
-              {check.checkpointNumber}
-            </option>
-          ))}
-        </select>
       </>
     );
   };
