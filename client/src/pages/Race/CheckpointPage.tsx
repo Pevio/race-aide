@@ -40,7 +40,6 @@ export function CheckpointPage({
     }
   }
   const [checkpointEditing, setCheckpointEditing] = useState<Partial<Checkpoint>>(getDefaultCheckpointData());
-  console.log(checkpointEditing)
   const [errorMessage, setErrorMessage] = useState<string>("")
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
   const [newDistance, setNewDistance] = useState<Partial<CheckpointDetails>>({})
@@ -113,7 +112,9 @@ export function CheckpointPage({
               history.push(`/${raceId}/addresults/${check.checkpointNumber}`)
             }
             if (isAdmin) {
-              setCheckpointEditing(check)
+              const editing = race?.checkpoints.find((checkpoint) => checkpoint.checkpointNumber === check.checkpointNumber)
+              if (!editing) return
+              setCheckpointEditing(editing)
               setMakingNewCheckpoint(false);
             }
           } : undefined}
