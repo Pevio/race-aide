@@ -1,32 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { Redirect, RouteComponentProps } from "react-router";
 import { RacePageWrapper } from "../RacePageWrapper";
 import { Checkpoint } from "../../types/generalTypes";
+import { addCheckpointEntry } from "../../state/actions/RaceDetails";
 
 interface CheckpointProps {
   raceId: string;
   checkpointId: string;
 }
 
-export function CheckpointInfo({
+export function AddCheckpointEntry({
   match,
   history,
 }: RouteComponentProps<CheckpointProps>) {
   const { raceId, checkpointId } = match.params;
   const dispatch = useDispatch();
 
-  const raceData = useSelector((state: RootStore) => state.raceDetails);
-  const checkpointDetails = raceData.race?.checkpoints?.find(
+  const {race, loading, success, password} = useSelector((state: RootStore) => state.raceDetails);
+  const checkpointDetails = race?.checkpoints?.find(
     (checkpoint: Checkpoint) => checkpoint.checkpointNumber === checkpointId
   );
 
   const [selectedBib, setSelectedBib] = useState<string>("");
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  useEffect(() => {
+    if (!loading && saveInProgress) {
+      if (success) {
+        setErrorMessage(`Bib Number ${selectedBib} saved successfully!`);
+        setSelectedBib("")
+      } else {
+        setErrorMessage("The runner entry could not be added.");
+      }
+      setSaveInProgress(false);
+    }
+  }, [loading]);
 
   if (!checkpointDetails) {
-    if (raceData.loading) {
+    if (loading) {
       return (
         <RacePageWrapper>
           <h1>Enter Checkpoint Information</h1>
@@ -46,21 +60,26 @@ export function CheckpointInfo({
       <div style={{ marginTop: 20 }}>
         <span>Runner's Bib Number:</span>
         <input
+          style={{marginLeft: 10}}
           type="text"
-          value={selectedBib}
+          value={selectedBib || ""}
           onChange={(e) => setSelectedBib(e.target.value)}
         />
       </div>
-      <button
-        type="submit"
-        onClick={() => {
-          if (saveInProgress) return;
-          // Send runner to back end
-        }}
-      >
-        Submit
-      </button>
-      <div></div>
+      <div style={{marginTop: 10}}>
+        <button
+          type="submit"
+          onClick={() => {
+            if (saveInProgress) return;
+            setSaveInProgress(true)
+            setErrorMessage("")
+            dispatch(addCheckpointEntry(raceId, checkpointId, selectedBib, "CREATE", password))
+          }}
+        >
+          Submit
+        </button>
+        <p>{errorMessage}</p>
+      </div>
     </RacePageWrapper>
   );
 }

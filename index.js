@@ -70,7 +70,8 @@ const responseMessages = {
   // Race Checkpoints
   401: "Missing fields for race checkpoints",
   402: "Invalid action for race checkpoint CRUD",
-  405: "Invalid fields for checkpoint entry"
+  405: "Invalid fields for checkpoint entry",
+  406: "Invalid action for checkpoint entry"
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -459,6 +460,11 @@ app.post("/api/addcheckpointentry", (req, res) => {
     returnError(res, 405)
     return
   }
+  if (!["CREATE", "DELETE"].includes(body.action)) {
+    returnError(res, 406)
+    return
+  }
+
   try {
     client.query("SELECT races.race_id, admin_password, checkpoint_password checkpoint_number, runners_passed from public.races JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE race_id=$1 AND checkpoint_number = $2", [body.raceId, body.checkpointNumber], (err, res2) => {
       if (err) {
@@ -469,19 +475,31 @@ app.post("/api/addcheckpointentry", (req, res) => {
         returnError(res, 3);
         return;
       }
+      // Authenticate and allow either password to work
       if (decrypt(res2.rows[0].checkpoint_password, body.password) !== genericKey || decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
         returnError(res, 201);
         return;
       }
+
       const dbInfo = res2.rows[0];
-      const existingCheckpointTimes = dbInfo.runners_passed[body.bibNumber][body.checkpointNumber] || []
       const resultRunnersPassed = {
         ...dbInfo.runners_passed,
         [body.bibNumber]: {
-          ...dbInfo.runners_passed[body.bibNumber],
-          [body.checkpointNumber]: [...existingCheckpointTimes, Date.now()]
+          ...dbInfo.runners_passed?.[[body.bibNumber]],
+          [body.checkpointNumber]: [...(resultRunnersPassed?.[body.bibNumber]?.[body.checkpointNumber] || [])]
         }
       }
+      switch (body.action) {
+        case "CREATE":
+          resultRunnersPassed[body.bibNumber][body.checkpointNumber] = [...existingCheckpointTimes, Date.now()]
+          break;
+        case "DELETE":
+          if (resultRunnersPassed[body.bibNumber][body.checkpointNumber]?.length > 0) {
+            resultRunnersPassed[body.bibNumber][body.checkpointNumber].slice(resultRunnersPassed[body.bibNumber][body.checkpointNumber].length - 1, 1)
+          }
+          break;
+        }
+
       client.query("UPDATE public.checkpoints SET runners_passed=$3 WHERE race_id=$1 AND checkpoint_number=$2", [raceId, body.checkpoint.checkpointNumber, resultRunnersPassed], (err2, res3) => {
         if (err2) {
           returnError(res, 2);
@@ -503,6 +521,44 @@ app.post("/api/addcheckpointentry", (req, res) => {
   }
   if (result === noAccess) {
     returnError(res, 201, { access: result });
+  }
+});
+
+app.post("/api/updateracepasswords", (req, res) => {
+  const body = req?.body || {};
+  const raceId = body.raceId;
+  if (!body.password || !body.raceId || !body.newAdminPassword || !body.newCheckpointPassword) {
+    returnError(res, 301);
+    return;
+  }
+  try {
+    client.query("SELECT races.race_id, admin_password FROM public.races WHERE races.race_id=$1", [raceId], (err, res2) => {
+      if (err) {
+        returnError(res, 2);
+        return;
+      }
+      if (res2.rows.length === 0) {
+        returnError(res, 3);
+        return;
+      }
+      if (decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
+        returnError(res, 201);
+        return;
+      }
+      client.query("UPDATE public.races SET admin_password=$2, checkpoint_password=$3 WHERE races.race_id=$1", [raceId, encrypt(genericKey, body.newAdminPassword), encrypt(genericKey, body.newCheckpointPassword)], (err2, res3) => {
+        if (err2) {
+          returnError(res, 2);
+          return;
+        }
+        res.json({
+          responseMessage: "GOOD",
+          returnCode: 0,
+        });
+      });
+    });
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
   }
 });
 

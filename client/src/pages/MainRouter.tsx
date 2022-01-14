@@ -2,7 +2,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import { About } from "./HomePages/About";
 import { CreateRace } from "./HomePages/CreateRace";
 import { RaceList } from "./HomePages/RaceList";
-import { CheckpointInfo } from "./Race/CheckpointInfo";
+import { AddCheckpointEntry } from "./Race/AddCheckpointEntry";
 import { CheckpointPage } from "./Race/CheckpointPage";
 import { EditRacePasswords } from "./Race/EditPasswords";
 import { RaceAdmin } from "./Race/RaceAdmin";
@@ -29,7 +29,7 @@ const MainRouter = () => {
       <Route
         exact
         path="/:raceId/addresults/:checkpointId"
-        component={CheckpointInfo}
+        component={AddCheckpointEntry}
       />
 
       <Route>

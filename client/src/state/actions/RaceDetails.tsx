@@ -6,7 +6,6 @@ import {
   Runner,
 } from "../../types/generalTypes";
 import {
-  RaceError,
   SetRaceLoading,
   SetRacePassword,
   SetSelectedRace,
@@ -68,11 +67,10 @@ export const updateRaceDetails =
         }),
       });
       const data = await res.json();
-      dispatch(setRaceLoading(false));
       if (data.returnCode === 0)
         dispatch(setSelectedRace(data.race, data.returnCode === 0));
     } catch (error) {
-      dispatch(setRaceLoading(false));
+      dispatch(setRaceLoading(false, false));
     }
   };
 
@@ -104,10 +102,10 @@ export const updateRaceParticipants =
           )
         );
       } else {
-        dispatch(raceError());
+        dispatch(setRaceLoading(false, false));
       }
     } catch (error) {
-      dispatch(raceError());
+      dispatch(setRaceLoading(false, false));
     }
   };
 
@@ -141,10 +139,72 @@ export const updateRaceCheckpoints =
           )
         );
       } else {
-        dispatch(raceError());
+        dispatch(setRaceLoading(false, false));
       }
     } catch (error) {
-      dispatch(raceError());
+      dispatch(setRaceLoading(false, false));
+    }
+  };
+
+export const updateRacePasswords =
+  (
+    raceId: string,
+    password: string,
+    newAdminPassword: string,
+    newCheckpointPassword: string,
+  ): ThunkActionType =>
+  async (dispatch: Dispatch) => {
+    try {
+      dispatch(setRaceLoading(true));
+      const res = await fetch("/api/updateracepasswords", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          raceId,
+          password,
+          newAdminPassword,
+          newCheckpointPassword
+        }),
+      });
+      const data = await res.json();
+      const success = data.returnCode === 0
+      dispatch(setRaceLoading(false, success));
+
+      if (success) {
+        setRacePassword(newAdminPassword, "RACE_ADMIN")
+      }
+    } catch (error) {
+      dispatch(setRaceLoading(false, false));
+    }
+  };
+
+export const addCheckpointEntry =
+  (
+    raceId: string,
+    checkpointNumber: string,
+    bibNumber: string,
+    action: "CREATE" | "DELETE",
+    password?: string
+  ): ThunkActionType =>
+  async (dispatch: Dispatch) => {
+    try {
+      dispatch(setRaceLoading(true));
+      const res = await fetch("/api/addcheckpointentry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          raceId,
+          checkpointNumber,
+          bibNumber,
+          password,
+          action,
+        }),
+      });
+      const data = await res.json();
+
+      dispatch(setRaceLoading(false, data.returnCode === 0));
+    } catch (error) {
+      dispatch(setRaceLoading(false, false));
     }
   };
 
@@ -168,12 +228,10 @@ export const setRacePassword = (
     authorization,
   },
 });
-const setRaceLoading = (isLoading: boolean): SetRaceLoading => ({
+const setRaceLoading = (isLoading: boolean, success: boolean = false): SetRaceLoading => ({
   type: SET_RACE_LOADING,
   payload: {
     isLoading,
+    success,
   },
-});
-export const raceError = (): RaceError => ({
-  type: "RACE_ERROR",
 });
