@@ -40,7 +40,7 @@ export function RacePageWrapper(props: Props) {
               backgroundColor: location.pathname === to ? "red" : "transparent",
             }}
           />
-          <Link to={to} className="sider-link">
+          <Link to={{pathname: to, state: location.state}} className="sider-link">
             {text}
           </Link>
         </div>

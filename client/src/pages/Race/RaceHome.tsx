@@ -3,8 +3,13 @@ import { RootStore } from "../../state/store";
 import { RacePageWrapper } from "../RacePageWrapper";
 import DataTable from "react-data-table-component";
 import { Runner } from "../../types/generalTypes";
+import { RouteComponentProps } from "react-router";
 
-export function RaceHome() {
+interface RaceHomeProps {
+  raceId: string;
+}
+
+export function RaceHome({ match, history }: RouteComponentProps<RaceHomeProps>) {
   const { race, loading } = useSelector((state: RootStore) => state.raceDetails);
   const hasStarted = race && race.startTime < Date.now();
 
@@ -23,22 +28,28 @@ export function RaceHome() {
     <RacePageWrapper>
       <h1>{`${race.raceName} Race Home`}</h1>
       {race.raceDetails.website &&
-        <a
-          href={race?.raceDetails.website}
-          target="_blank" // Open in new tab
-          rel="noopener noreferrer" // For security
-        >
-          Race Website
-        </a>
+        <>
+          <a
+            href={race?.raceDetails.website}
+            target="_blank" // Open in new tab
+            rel="noopener noreferrer" // For security
+          >
+            Race Website
+          </a>
+          <br/>
+        </>
       }
       {race.raceDetails.registration &&
-        <a
-          href={race?.raceDetails.registration}
-          target="_blank" // Open in new tab
-          rel="noopener noreferrer" // For security
-        >
-          Registration
-        </a>
+        <>
+          <a
+            href={race?.raceDetails.registration}
+            target="_blank" // Open in new tab
+            rel="noopener noreferrer" // For security
+          >
+            Registration
+          </a>
+          <br/>
+        </>
       }
       
       <DataTable

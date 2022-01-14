@@ -59,6 +59,11 @@
   height: 20px;
 }
 
+.container {
+  padding: 20px;
+
+}
+
 /* Overriding HTML Elements */
 
 h1 {
@@ -86,16 +91,27 @@ input {
   border: 1px solid #cccccc;
   transition: 0.3s;
   transition-property: border-color;
+  outline: none;
 }
 input:hover {
-  border-color: green;
+  border-color: pink;
 }
 input:focus {
-  border-color: green;
+  border-color: pink;
 }
-
 select {
+  border: 1px solid #cccccc;
+  transition: 0.3s;
+  transition-property: border-color;
+  outline: none;
   height: 25px;
   font-size: 14px;
   min-width: 180px;
 }
+select:hover {
+  border-color: pink;
+}
+select:focus {
+  border-color: pink;
+}
+

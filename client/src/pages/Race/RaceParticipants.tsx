@@ -58,6 +58,7 @@ export function RaceParticipants({
       } else {
         setErrorMessage("The runner could not be saved.")
       }
+      setSaveInProgress(false);
     }
   }, [loading])
 

@@ -4,6 +4,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import TimePicker from "@mui/lab/TimePicker";
 import DatePicker from "@mui/lab/DatePicker";
+import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
 import { FullRace, RaceDetails } from "../types/generalTypes";
 import { timezoneDescriptions } from "../util/timeUtils";
@@ -169,7 +170,7 @@ export function RaceDetailsForm(props: Props) {
         </select>
       </div>
       {props.isUpdate ?
-        <p>Remember your password</p>    
+        <p style={{marginTop: 10}}>If you forgot your passwords, you can <Link to={`/${raceDetails.raceId}/changepassword`}>Change them now</Link>.</p>    
       :
         <>
           <div>
@@ -223,7 +224,7 @@ export function RaceDetailsForm(props: Props) {
                 <React.Fragment key={distance}>
                   {`${distance} Miles`}
                   <button
-                  style={{marginLeft: 2, marginRight: raceDetails.raceDetails?.distances && index !== raceDetails.raceDetails.distances.length - 1 ? 10 : 0}}
+                    style={{marginLeft: 2, marginRight: raceDetails.raceDetails?.distances && index !== raceDetails.raceDetails.distances.length - 1 ? 10 : 0}}
                     onClick={() => {
                       setRaceDetails({
                         ...raceDetails,

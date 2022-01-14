@@ -99,7 +99,7 @@ export const updateRaceParticipants =
       }
 
     } catch (error) {
-      dispatch(setSelectedRace(originalRace, false));
+      dispatch(raceError())
     }
   };
 
@@ -113,7 +113,7 @@ export const updateRaceCheckpoints =
   async (dispatch: Dispatch) => {
     try {
       dispatch(setRaceLoading(true));
-      const res = await fetch("/api/updateraceparticipants", {
+      const res = await fetch("/api/updateracecheckpoints", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -134,7 +134,7 @@ export const updateRaceCheckpoints =
       }
 
     } catch (error) {
-      dispatch(setSelectedRace(originalRace, false));
+      dispatch(raceError())
     }
   };
 
