@@ -33,8 +33,15 @@ export const timezoneDescriptions: Record<string, string> = {
   CAT: "Central African Time",
 };
 
-export const displayTime = (seconds: number): string => {
-  const minutePart = Math.floor(seconds / 60);
-  const secondPart = seconds & 60;
-  return `${minutePart}:${secondPart >= 10 ? secondPart : "0" + secondPart}`;
+export const displayTime = (seconds: number, showHours: boolean = false): string => {
+  const twoDigitNumber = (num: number): string => {
+    const displayNum = Math.floor(num);
+    return displayNum >= 10 ? String(displayNum) : `0${displayNum}`;
+  }
+  let minutePart = seconds / 60;
+  let secondPart = seconds & 60;
+  if (!showHours) return `${Math.floor(minutePart)}:${twoDigitNumber(secondPart)}`;
+  const hourPart = Math.floor(minutePart / 60);
+  minutePart = Math.floor(minutePart) & 60;
+  return `${hourPart}:${twoDigitNumber(minutePart)}:${twoDigitNumber(secondPart)}`;
 };

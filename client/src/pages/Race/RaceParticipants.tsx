@@ -6,7 +6,7 @@ import DataTable from "react-data-table-component";
 import { CheckpointDistance, Runner } from "../../types/generalTypes";
 import { updateRaceParticipants } from "../../state/actions/RaceDetails";
 import { displayTime } from "../../util/timeUtils";
-import { getDistanceCheckpoints } from "../../util/resultsUtils";
+import { compileResults, getDistanceCheckpoints } from "../../util/resultsUtils";
 import { tableProps } from "../../util/table";
 
 interface ParticipantsProps {
@@ -69,6 +69,7 @@ export function RaceParticipants({
     }
   }, [loading]);
 
+  const allResults = hasStarted ? compileResults(race) : undefined;
   return (
     <>
       <h1>{`Race ${hasStarted ? "Results" : "Participants"}`}</h1>
@@ -109,9 +110,14 @@ export function RaceParticipants({
                     name: "Bib Number",
                     selector: (runner) => runner.bibNumber,
                   },
-                  ...checkpointInfo.map((info: CheckpointDistance) => ({
+                  ...checkpointInfo.map((info: CheckpointDistance, checkpointIndex: number) => ({
                     name: `${info.distance} Miles`,
-                    selector: (runner: Runner) => "",
+                    selector: (runner: Runner) => {
+                      if (!allResults) return "";
+                      const timestamp = allResults[String(selectedDistance)].runners[runner.bibNumber].checkpointInfo[checkpointIndex].timestamp
+                      if (!timestamp) return "";
+                      return displayTime((timestamp - race.startTime) / 1000, true)
+                    },
                   })),
                 ]
               : [

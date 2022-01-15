@@ -47,7 +47,7 @@ export interface CheckpointDistance {
 // Results for a single runner
 export type RaceResultsFull = Record<string, RaceDistanceResults>
 export interface RaceDistanceResults {
-  runners: RaceResult[]
+  runners: Record<string, RaceResult>
   checkpoints: CheckpointDistance[]
 }
 export interface RaceResult extends Runner {

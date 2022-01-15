@@ -54,7 +54,7 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
   race.raceDetails.distances.forEach((distance: number) => {
     //
     result[String(distance)] = {
-      runners: [],
+      runners: {},
       checkpoints: getDistanceCheckpoints(race, distance)
     };
   })
@@ -82,7 +82,7 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
       iterationIndecies[checkpoint.checkpointNumber] = index + 1;
     })
 
-    result[String(runner.distance)].runners.push(runnerResult)
+    result[String(runner.distance)].runners[runnerResult.bibNumber] = runnerResult
   })
   return result;
 }
