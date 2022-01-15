@@ -211,18 +211,7 @@ export function RaceDetailsForm(props: Props) {
           </div>
         </>
       )}
-      <div>
-        <p style={{ marginTop: 32, fontSize: 16 }}>Extra Information</p>
-        <p style={{ margin: 0 }}>The following information is all optional:</p>
-        {getFormInputField("website", "Website", undefined, true)}
-        {getFormInputField(
-          "registration",
-          "Registration Link",
-          undefined,
-          true
-        )}
-        {getFormInputField("raceEmail", "Race Email Address", "", true)}
-
+      <div className="container">
         {!hasStarted && (
           <>
             <h3>Distances</h3>
@@ -308,6 +297,18 @@ export function RaceDetailsForm(props: Props) {
             </div>
           </>
         )}
+      </div>
+      <div className="container">
+        <p style={{ marginTop: 32, fontSize: 16 }}>Extra Information</p>
+        <p style={{ margin: 0 }}>The following information is all optional:</p>
+        {getFormInputField("website", "Website", undefined, true)}
+        {getFormInputField(
+          "registration",
+          "Registration Link",
+          undefined,
+          true
+        )}
+        {getFormInputField("raceEmail", "Race Email Address", "", true)}
       </div>
       <div style={{ marginTop: 32 }}>
         <button onClick={onSubmit} className="clickable-button">

@@ -156,7 +156,7 @@ export function RaceParticipants({
                           ].checkpointInfo[checkpointIndex]?.timestamp;
                         if (!timestamp) return "";
                         return displayTime(
-                          (timestamp - runner.offset * 1000 - race.startTime) /
+                          (timestamp - (runner.offset * 1000) - race.startTime) /
                             1000,
                           true
                         );
@@ -265,7 +265,7 @@ export function RaceParticipants({
           <h3>Runner Check-In</h3>
           <div style={{ marginTop: 10 }}>
             <div style={{ display: "flex", position: "relative" }}>
-              <h2>{makingNewRunner ? "Edit Runner" : "Add Runner"}</h2>
+              <h2>{makingNewRunner ? "Add Runner" : "Edit Runner"}</h2>
               <button
                 style={{ position: "absolute", right: 0 }}
                 className="highlight-button"

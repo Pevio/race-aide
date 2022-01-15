@@ -83,15 +83,13 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
           </button>
         </p>
         {raceData.authorization === "RACE_ADMIN" && (
-          <>
-            <RaceDetailsForm
-              isUpdate
-              onClickSubmit={(race: Partial<FullRace>) => {
-                dispatch(updateRaceDetails(race, raceData.password));
-              }}
-              defaultData={raceData.race}
-            />
-          </>
+          <RaceDetailsForm
+            isUpdate
+            onClickSubmit={(race: Partial<FullRace>) => {
+              dispatch(updateRaceDetails(race, raceData.password));
+            }}
+            defaultData={raceData.race}
+          />
         )}
       </>
     );

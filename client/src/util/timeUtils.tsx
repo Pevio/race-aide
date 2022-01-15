@@ -41,7 +41,7 @@ export const displayTime = (
     const displayNum = Math.floor(num);
     return displayNum >= 10 ? String(displayNum) : `0${displayNum}`;
   };
-  let minutePart = seconds / 60;
+  let minutePart = seconds / 60.0;
   let secondPart = seconds & 60;
   if (!showHours)
     return `${Math.floor(minutePart)}:${twoDigitNumber(secondPart)}`;

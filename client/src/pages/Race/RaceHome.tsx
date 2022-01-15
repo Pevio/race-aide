@@ -106,7 +106,7 @@ export function RaceHome({
               );
               if (!distance) return "";
               const timeString = displayTime(
-                (distance.lastTime - race.startTime) / 1000,
+                (distance.lastTime - race.startTime - (runner.offset * 1000)) / 1000,
                 true
               );
               return `${
