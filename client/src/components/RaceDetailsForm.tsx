@@ -117,8 +117,7 @@ export function RaceDetailsForm(props: Props) {
     <>
       {props.isUpdate && <h2>Edit Race Details</h2>}
       <p>
-        Enter all of your race details below. Everything except Race ID will be
-        editable later.
+        {`${props.isUpdate ? "Update" : "Enter"} all of your race details below.${!props.isUpdate && " Everything except Race ID will be editable later."}`}
       </p>
       {getFormInputField("raceName", "Race Name")}
       {!props.isUpdate &&

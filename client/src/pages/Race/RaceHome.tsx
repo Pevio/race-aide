@@ -6,6 +6,7 @@ import { RouteComponentProps } from "react-router";
 import { tableProps } from "../../util/table";
 import { raceHasStarted, runnerDistance } from "../../util/resultsUtils";
 import { displayTime } from "../../util/timeUtils";
+import { formatURL } from "../../util/generalUtils";
 
 interface RaceHomeProps {
   raceId: string;
@@ -42,7 +43,7 @@ export function RaceHome({
       {race.raceDetails.website && (
         <>
           <a
-            href={"//" + race?.raceDetails.website}
+            href={formatURL(race.raceDetails.website)}
             target="_blank" // Open in new tab
             rel="noopener noreferrer" // For security
             className="highlight-button"
@@ -56,7 +57,7 @@ export function RaceHome({
       {race.raceDetails.registration && (
         <>
           <a
-            href={"//" + race?.raceDetails.registration}
+            href={formatURL(race.raceDetails.registration)}
             target="_blank" // Open in new tab
             rel="noopener noreferrer" // For security
             className="highlight-button"
