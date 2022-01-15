@@ -60,10 +60,12 @@ export const updateRaceDetails =
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          race,
+          race: {
+            ...race,
+            runners: undefined,
+            checkpoints: undefined,
+          },
           password: adminPassword,
-          runners: undefined,
-          checkpoints: undefined,
         }),
       });
       const data = await res.json();

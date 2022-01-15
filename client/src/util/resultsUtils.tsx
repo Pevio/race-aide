@@ -5,6 +5,7 @@ import {
   FullRace,
   RaceResult,
   RaceResultsFull,
+  ResultCheckpointInfo,
   Runner,
 } from "../types/generalTypes";
 
@@ -52,7 +53,7 @@ export const getDistanceCheckpoints = (
 export const compileResults = (race: FullRace): RaceResultsFull => {
   const result: RaceResultsFull = {};
   race.raceDetails.distances.forEach((distance: number) => {
-    //
+    // Start with an empty map of runners and the computed checkpoint list
     result[String(distance)] = {
       runners: {},
       checkpoints: getDistanceCheckpoints(race, distance)
@@ -65,14 +66,17 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
       checkpointInfo: [],
     }
     const iterationIndecies: Record<string, number> = {}
+    let lastNonUndefined = -1;
 
-    result[String(runner.distance)].checkpoints.forEach((checkpoint: CheckpointDistance) => {
+    result[String(runner.distance)].checkpoints.forEach((checkpoint: CheckpointDistance, checkpointIndex: number) => {
       const runnersPassed: number[] | undefined = race.checkpoints[checkpoint.checkpointNumber]?.runnersPassed[key];
-      const index = iterationIndecies[checkpoint.checkpointNumber]
+      const index = iterationIndecies[checkpoint.checkpointNumber] || 0
       if (runnersPassed && runnersPassed[index]) {
+        const timestamp = runnersPassed[index]
+        if (timestamp) lastNonUndefined = checkpointIndex;
         runnerResult.checkpointInfo.push({
           ...checkpoint,
-          timestamp: runnersPassed[index]
+          timestamp
         })
       } else {
         runnerResult.checkpointInfo.push({
@@ -82,7 +86,23 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
       iterationIndecies[checkpoint.checkpointNumber] = index + 1;
     })
 
+    // Chop out checkpoints the runner hasn't gotten to yet
+    runnerResult.checkpointInfo = runnerResult.checkpointInfo.slice(0, lastNonUndefined);
+
     result[String(runner.distance)].runners[runnerResult.bibNumber] = runnerResult
   })
+
+  console.log(result);
   return result;
+}
+
+export const runnerAtCheckpoint = (runner: RaceResult, checkpointIndex: number): number | undefined => {
+  const timestamp = runner.checkpointInfo[checkpointIndex].timestamp;
+  if (!timestamp) return undefined;
+  return timestamp - (runner.offset * 1000)
+}
+export const runnerDistance = (runner: RaceResult): number => {
+  const lastDistance: ResultCheckpointInfo | undefined = runner.checkpointInfo[runner.checkpointInfo.length - 1]
+  if (!lastDistance) return 0;
+  return lastDistance.distance
 }

@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { Redirect, RouteComponentProps } from "react-router";
-import { Checkpoint } from "../../types/generalTypes";
 import { addCheckpointEntry } from "../../state/actions/RaceDetails";
+import { Checkpoint } from "../../types/generalTypes";
 
 interface CheckpointProps {
   raceId: string;
@@ -18,9 +18,7 @@ export function AddCheckpointEntry({
   const dispatch = useDispatch();
 
   const {race, loading, success, password} = useSelector((state: RootStore) => state.raceDetails);
-  const checkpointDetails = race?.checkpoints?.find(
-    (checkpoint: Checkpoint) => checkpoint.checkpointNumber === checkpointId
-  );
+  const checkpointDetails: Checkpoint | undefined = race?.checkpoints[checkpointId]
 
   const [selectedBib, setSelectedBib] = useState<string>("");
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
@@ -29,7 +27,8 @@ export function AddCheckpointEntry({
   useEffect(() => {
     if (!loading && saveInProgress) {
       if (success) {
-        setErrorMessage(`Bib Number ${selectedBib} saved successfully!`);
+        const runnerName = race?.runners[selectedBib]?.runnerName
+        setErrorMessage(`Bib Number ${selectedBib}, ${runnerName} saved successfully!`);
         setSelectedBib("")
       } else {
         setErrorMessage("The runner entry could not be added.");

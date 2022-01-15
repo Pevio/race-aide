@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RouteComponentProps, useLocation } from "react-router";
 import DataTable from "react-data-table-component";
-import { CheckpointDistance, Runner } from "../../types/generalTypes";
+import { CheckpointDistance, ResultCheckpointInfo, Runner } from "../../types/generalTypes";
 import { updateRaceParticipants } from "../../state/actions/RaceDetails";
 import { displayTime } from "../../util/timeUtils";
-import { compileResults, getDistanceCheckpoints } from "../../util/resultsUtils";
+import { compileResults, getDistanceCheckpoints, runnerDistance } from "../../util/resultsUtils";
 import { tableProps } from "../../util/table";
 
 interface ParticipantsProps {
@@ -105,20 +105,43 @@ export function RaceParticipants({
                   {
                     name: "Runner Name",
                     selector: (runner) => runner.runnerName,
+                    sortField: "runnerName"
                   },
                   {
                     name: "Bib Number",
                     selector: (runner) => runner.bibNumber,
+                    sortField: "bibNumber"
                   },
                   ...checkpointInfo.map((info: CheckpointDistance, checkpointIndex: number) => ({
                     name: `${info.distance} Miles`,
                     selector: (runner: Runner) => {
                       if (!allResults) return "";
-                      const timestamp = allResults[String(selectedDistance)].runners[runner.bibNumber].checkpointInfo[checkpointIndex].timestamp
+                      const timestamp = allResults[String(selectedDistance)].runners[runner.bibNumber].checkpointInfo[checkpointIndex]?.timestamp
                       if (!timestamp) return "";
-                      return displayTime((timestamp - race.startTime) / 1000, true)
+                      return displayTime((timestamp - (runner.offset * 1000) - race.startTime) / 1000, true)
                     },
+                    sortFunction: (r1: Runner, r2: Runner) => {
+                      return 0;
+                    }
                   })),
+                  {
+                    name: "Distance",
+                    selector: (runner) => {
+                      if (!allResults) return "";
+                      const runnerResults = allResults[String(selectedDistance)].runners[runner.bibNumber]
+                      const distance = runnerDistance(runnerResults)
+                      if (!distance) return "";
+                      if (distance === runner.distance) return "Finished"
+                      return `${distance} Miles`
+                    },
+                    sortFunction: (r1, r2) => {
+                      if (!allResults) return 0;
+                      const distanceDiff = runnerDistance(allResults[String(selectedDistance)].runners[r2.bibNumber]) - runnerDistance(allResults[String(selectedDistance)].runners[r1.bibNumber])
+                      if (distanceDiff !== 0) return distanceDiff
+                      return 0;
+                      //const t1 = allResults[String(selectedDistance)].runners[r2.bibNumber].checkpointInfo
+                    }
+                  }
                 ]
               : [
                   {
@@ -157,7 +180,7 @@ export function RaceParticipants({
       {isAdmin && (
         <>
           <hr />
-          <h3>Edit Race Runners</h3>
+          <h3>Runner Check-In</h3>
           <div style={{ marginTop: 10 }}>
             <div style={{ display: "flex", position: "relative" }}>
               <h2>{makingNewRunner ? "Edit Runner" : "Add Runner"}</h2>
