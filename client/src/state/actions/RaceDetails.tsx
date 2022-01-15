@@ -27,7 +27,7 @@ export const getRaceDetails =
 
       dispatch(setSelectedRace(data.race, data.returnCode === 0));
     } catch (error) {
-      dispatch(setSelectedRace(undefined, false));
+      dispatch(setRaceLoading(false, false))
     }
   };
 
@@ -44,10 +44,15 @@ export const createRace =
         }),
       });
       const data = await res.json();
-
-      dispatch(setSelectedRace(data.race, data.returnCode === 0));
+      const success = data.returnCode === 0
+      if (success) {
+        dispatch(setSelectedRace(data.race, true));
+        dispatch(setRacePassword(race.adminPassword, "RACE_ADMIN"))
+      } else {
+        dispatch(setRaceLoading(false, false))
+      }
     } catch (error) {
-      dispatch(setSelectedRace(undefined, false));
+      dispatch(setRaceLoading(false, false))
     }
   };
 
