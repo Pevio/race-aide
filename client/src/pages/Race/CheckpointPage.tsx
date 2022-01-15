@@ -95,7 +95,7 @@ export function CheckpointPage({
           Click on a checkpoint to edit its details or enter results for it.
         </p>
       )}
-      {isAssistant && (!isAdmin || hasStarted) && (
+      {hasStarted && (isAdmin || isAssistant) && (
         <p>Click on a checkpoint to enter results for it.</p>
       )}
       {selectedDistance && (
@@ -125,10 +125,11 @@ export function CheckpointPage({
           onRowClicked={
             isAdmin || isAssistant
               ? (check) => {
-                  if (isAssistant || hasStarted) {
+                  if (hasStarted) {
                     history.push(
                       `/${raceId}/addresults/${check.checkpointNumber}`
                     );
+                    return
                   }
                   if (isAdmin) {
                     const editing = race?.checkpoints.find(
@@ -199,6 +200,7 @@ export function CheckpointPage({
                               ? 10
                               : 0,
                         }}
+                        className="highlight-button"
                         onClick={() => {
                           setCheckpointEditing({
                             ...checkpointEditing,

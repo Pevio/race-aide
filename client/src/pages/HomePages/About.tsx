@@ -10,10 +10,15 @@ export function About() {
       </p>
       <p>
         <b>Results:</b> Race Aide will show you the results of your race, with
-        distances broken down{" "}
+        distances broken down by checkpoints, with no extra work for race directors.  
+      </p>
+      <p>
+        <b>Ease of use:</b> Your assistants at checkpoints and aid stations only need to see the bib number of runners to log times.
+        Friends following along will see where favorite runners are at.
       </p>
       <p>
         <b>Metrics:</b> Wondering which leg of the race was the most difficult?
+        Want to know if the winner made a massive comback?
         Race Aide will give you all the statistics you need for your race. If
         you want more, you can copy the raw data to do what you like with it.
       </p>

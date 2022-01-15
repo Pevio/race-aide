@@ -41,18 +41,9 @@
 .sider-link {
   font-size: 16px;
   border-left: 10px solid transparent;
-  color: lightblue;
   padding-left: 10px;
   min-width: 120px;
   margin-top: 8px;
-}
-.sider-link:hover {
-  font-weight: bold;
-  cursor: pointer;
-}
-.sider-link:focus {
-  cursor: pointer;
-  font-weight: bold;
 }
 
 .datepicker {
@@ -61,6 +52,22 @@
 
 .container {
   padding: 20px;
+}
+
+/* Buttons */
+.highlight-button {
+  font-size: 14px;
+  border: none;
+  outline: none;
+  color: red;
+  transition: 0.3s;
+  transition-property: color;
+}
+.highlight-button:hover {
+  color: darkred;
+}
+.highlight-button:focus {
+  color: darkred;
 }
 
 /* Overriding HTML Elements */

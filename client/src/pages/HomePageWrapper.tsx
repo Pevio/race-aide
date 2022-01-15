@@ -17,11 +17,11 @@ export function HomePageWrapper(props: Props) {
           <div
             style={{
               width: 10,
-              height: 40,
-              backgroundColor: location.pathname === to ? "red" : "transparent",
+              height: 45,
+              backgroundColor: location.pathname === to ? "green" : "transparent",
             }}
           />
-          <Link to={to} className="sider-link">
+          <Link to={to} className="sider-link highlight-button">
             {text}
           </Link>
         </div>

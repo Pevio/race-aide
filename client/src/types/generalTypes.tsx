@@ -17,9 +17,8 @@ export interface RaceDetails {
   socialMedia: string;
   website: string;
   registration: string;
-  picture: string;
   distances: number[];
-  logoUrl: string;
+  raceEmail?: string;
 }
 
 export interface Runner {

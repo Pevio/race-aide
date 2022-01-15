@@ -175,7 +175,7 @@ export function RaceDetailsForm(props: Props) {
       {props.isUpdate ? (
         <p style={{ marginTop: 10 }}>
           If you forgot your passwords, you can{" "}
-          <Link to={`/${raceDetails.raceId}/changepassword`}>
+          <Link to={`/${raceDetails.raceId}/changepassword`} className="outline-button">
             Change them now
           </Link>
           .
@@ -215,9 +215,9 @@ export function RaceDetailsForm(props: Props) {
           true
         )}
         {getFormInputField(
-          "logoUrl",
-          "Race Logo URL",
-          "If you have a link to a logo for your race, include that here.",
+          "raceEmail",
+          "Race Email Address",
+          "",
           true
         )}
 
@@ -234,6 +234,7 @@ export function RaceDetailsForm(props: Props) {
                   <React.Fragment key={distance}>
                     {`${distance} Miles`}
                     <button
+                      className="highlight-button"
                       style={{
                         marginLeft: 2,
                         marginRight:
