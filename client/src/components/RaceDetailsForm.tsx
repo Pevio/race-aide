@@ -20,7 +20,7 @@ export function RaceDetailsForm(props: Props) {
     ...props.defaultData,
     raceDetails: {
       distances: [],
-      ...props.defaultData,
+      ...props.defaultData?.raceDetails,
     }
   })
   const [raceDetails, setRaceDetails] = useState<Partial<FullRace>>(getDefaultRaceDetails());
