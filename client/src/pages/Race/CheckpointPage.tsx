@@ -160,12 +160,11 @@ export function CheckpointPage({
                       ).forEach((runner: RaceResult) => {
                         if (
                           runner.checkpointInfo &&
-                          runner.checkpointInfo.length >= checkpointIndex + 1 &&
-                          checkpointIndex > 0
+                          runner.checkpointInfo.length >= checkpointIndex + 1
                         ) {
                           const thisTimestamp =
                             runner.checkpointInfo[checkpointIndex].timestamp;
-                          const previousTimestamp =
+                          const previousTimestamp = checkpointIndex === 0 ? (race?.startTime || 0) + runner.offset :
                             runner.checkpointInfo[checkpointIndex - 1]
                               .timestamp;
                           if (
@@ -210,12 +209,11 @@ export function CheckpointPage({
                       ).forEach((runner: RaceResult) => {
                         if (
                           runner.checkpointInfo &&
-                          runner.checkpointInfo.length >= checkpointIndex + 1 &&
-                          checkpointIndex > 0
+                          runner.checkpointInfo.length >= checkpointIndex + 1
                         ) {
                           const thisTimestamp =
                             runner.checkpointInfo[checkpointIndex].timestamp;
-                          const previousTimestamp =
+                          const previousTimestamp = checkpointIndex === 0 ? (race?.startTime || 0) + runner.offset :
                             runner.checkpointInfo[checkpointIndex - 1]
                               .timestamp;
                           if (thisTimestamp && previousTimestamp) {
