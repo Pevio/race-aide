@@ -42,11 +42,11 @@ export const displayTime = (
     return displayNum >= 10 ? String(displayNum) : `0${displayNum}`;
   };
   let minutePart = seconds / 60.0;
-  let secondPart = seconds & 60;
+  let secondPart = seconds % 60;
   if (!showHours)
     return `${Math.floor(minutePart)}:${twoDigitNumber(secondPart)}`;
   const hourPart = Math.floor(minutePart / 60);
-  minutePart = Math.floor(minutePart) & 60;
+  minutePart = Math.floor(minutePart) % 60;
   return `${hourPart}:${twoDigitNumber(minutePart)}:${twoDigitNumber(
     secondPart
   )}`;
