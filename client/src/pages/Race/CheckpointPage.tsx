@@ -131,7 +131,7 @@ export function CheckpointPage({
                     return
                   }
                   if (isAdmin) {
-                    const editing = race?.checkpoints.find(
+                    const editing = Object.values(race?.checkpoints || []).find(
                       (checkpoint) =>
                         checkpoint.checkpointNumber === check.checkpointNumber
                     );

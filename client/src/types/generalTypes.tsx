@@ -9,7 +9,7 @@ export interface Race {
 export interface FullRace extends Race {
   raceDetails: RaceDetails;
   runners: Record<string, Runner>; // Key is the bibNumber
-  checkpoints: Checkpoint[];
+  checkpoints: Record<string, Checkpoint>;
   adminPassword?: string;
   checkpointPassword?: string;
 }
@@ -45,12 +45,16 @@ export interface CheckpointDistance {
 }
 
 // Results for a single runner
-export type RaceResultsFull = Record<string, RaceResult[]>
+export type RaceResultsFull = Record<string, RaceDistanceResults>
+export interface RaceDistanceResults {
+  runners: RaceResult[]
+  checkpoints: CheckpointDistance[]
+}
 export interface RaceResult extends Runner {
   checkpointInfo: ResultCheckpointInfo[]
 }
 export interface ResultCheckpointInfo extends CheckpointDistance {
-  timestamp: number;
+  timestamp?: number;
 }
 
 export interface RunnerAtCheckpoint {

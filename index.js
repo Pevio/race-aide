@@ -206,14 +206,14 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
           return;
         }
         const firstRow = res2.rows[0];
-        const checkpoints = [];
+        const checkpoints = {};
         res2.rows.forEach((row) => {
           if (row.checkpoint_number) {
-            checkpoints.push({
+            checkpoints[row.checkpoint_number] = {
               checkpointNumber: row.checkpoint_number,
               distances: row.checkpoint_distances,
               runnersPassed: row.runners_passed,
-            });
+            };
           }
         });
         raceData = {
@@ -426,34 +426,33 @@ app.post("/api/updateracecheckpoints", (req, res) => {
           return;
         }
 
-        const checkpoints = []
+        const checkpoints = {}
 
         res2.rows.forEach((row) => {
           if (row.checkpoint_number) {
-            checkpoints.push({
+            checkpoints[row.checkpoint_number] = {
               checkpointNumber: row.checkpoint_number,
               distances: row.checkpoint_distances,
               runnersPassed: row.runners_passed,
-            })
+            }
           }
         });
         switch (body.action) {
           case "CREATE":
-            checkpoints.push({
+            checkpoints[body.checkpoint.checkpointNumber] = {
               checkpointNumber: body.checkpoint.checkpointNumber,
               distances: body.checkpoint.distances,
               runnersPassed: {}
-            })
+            }
             break;
           case "UPDATE":
-            checkpoints.forEach((check) => {
+            Object.values(checkpoints).forEach((check) => {
               if (check.checkpointNumber === body.checkpoint.checkpointNumber) {
                 check.distances = body.checkpoint.distances;
               }
             })
           case "DELETE":
-            const index = checkpoints.findIndex((check) => check.checkpointNumber === body.checkpoint.checkpointNumber)
-            if (index >= 0) checkpoints.splice(index, 1)
+            delete checkpoints[body.checkpoint.checkpointNumber]
         }
 
         res.json({
