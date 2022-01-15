@@ -158,7 +158,7 @@ export function RaceParticipants({
                       const distance = runnerDistance(runnerResults)
                       if (!distance.distance) return "";
                       if (distance.distance === runner.distance) return "Finished"
-                      return `${distance.distance} Miles`
+                      return `${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`
                     },
                     sortFunction: (r1, r2) => {
                       if (!allResults) return 0;

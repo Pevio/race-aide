@@ -81,11 +81,11 @@ export function RaceHome({
 
       <DataTable
         columns={[
-          { name: "Runner Name", selector: (runner) => runner.runnerName },
-          { name: "Bib Number", selector: (runner) => runner.bibNumber },
+          { name: "Runner Name", selector: (runner: Runner) => runner.runnerName },
+          { name: "Bib Number", selector: (runner: Runner) => runner.bibNumber },
           {
             name: "Distance Running",
-            selector: (runner) => runner.distance || "Unknown",
+            selector: (runner: Runner) => `${runner.distance} Mile(${runner.distance === 1 ? "" : "s"})`,
           },
           {
             name: "Distance Covered",
@@ -95,7 +95,7 @@ export function RaceHome({
               const distance = runnerDistance(allResults[String(runner.distance)].runners[runner.bibNumber])
               if (!distance) return "";
               const timeString = displayTime((distance.lastTime - race.startTime) / 1000, true)
-              return `${distance.distance} Miles in ${timeString}`
+              return `${distance.distance === runner.distance ? "Finished" : `${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`} in ${timeString}`
             },
           },
         ]}
