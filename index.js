@@ -480,7 +480,7 @@ app.post("/api/addcheckpointentry", (req, res) => {
   }
 
   try {
-    client.query("SELECT races.race_id, admin_password, checkpoint_password checkpoint_number, runners_passed from public.races JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1 AND checkpoint_number = $2", [body.raceId, body.checkpointNumber], (err, res2) => {
+    client.query("SELECT races.race_id, admin_password, checkpoint_password, checkpoint_number, runners_passed from public.races JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1 AND checkpoint_number = $2", [body.raceId, body.checkpointNumber], (err, res2) => {
       if (err) {
         console.log(err)
         returnError(res, 2);

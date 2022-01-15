@@ -82,7 +82,7 @@ export function AddCheckpointEntry({
         >
           Submit
         </button>
-        <p>{errorMessage}</p>
+        <p style={{marginTop: 16}}>{errorMessage}</p>
       </div>
     </>
   );
