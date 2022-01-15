@@ -80,7 +80,7 @@ export function RaceParticipants({
           onChange={(e) => {
             const value = e.target.value;
             if (value === "ALL") setSelectedDistance(undefined);
-            setSelectedDistance(Number.parseInt(e.target.value));
+            setSelectedDistance(Number.parseFloat(e.target.value));
           }}
           value={selectedDistance || "ALL"}
           style={{ marginLeft: 10 }}
@@ -273,7 +273,7 @@ export function RaceParticipants({
                 onChange={(e) =>
                   setRunnerEditing({
                     ...runnerEditing,
-                    distance: Number.parseInt(e.target.value),
+                    distance: Number.parseFloat(e.target.value),
                   })
                 }
               >

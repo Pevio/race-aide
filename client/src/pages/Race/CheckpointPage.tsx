@@ -78,7 +78,7 @@ export function CheckpointPage({
           onChange={(e) => {
             const value = e.target.value;
             if (value === "ALL") setSelectedDistance(undefined);
-            setSelectedDistance(Number.parseInt(e.target.value));
+            setSelectedDistance(Number.parseFloat(e.target.value));
           }}
           value={selectedDistance || "ALL"}
           style={{ marginLeft: 10 }}
