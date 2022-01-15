@@ -4,9 +4,10 @@ import { RootStore } from "../../state/store";
 import { RouteComponentProps, useLocation } from "react-router";
 import DataTable from "react-data-table-component";
 import { getDistanceCheckpoints } from "../../util/resultsUtils";
-import { Checkpoint, CheckpointDetails } from "../../types/generalTypes";
+import { Checkpoint, CheckpointDetails, CheckpointDistance, RaceResult } from "../../types/generalTypes";
 import { updateRaceCheckpoints } from "../../state/actions/RaceDetails";
 import { tableProps } from "../../util/table";
+import { displayTime } from "../../util/timeUtils";
 
 interface CheckpointProps {
   raceId: string;
@@ -19,7 +20,7 @@ export function CheckpointPage({
   const { raceId } = match.params;
   const location: any = useLocation();
   const dispatch = useDispatch();
-  const { race, authorization, password, loading, success } = useSelector(
+  const { race, authorization, password, loading, success, allResults } = useSelector(
     (state: RootStore) => state.raceDetails
   );
 
@@ -69,15 +70,15 @@ export function CheckpointPage({
     <>
       <h1>Race Checkpoints</h1>
       <p>
-        Race Aide uses a checkpoint system to log results. Below you will see
-        all checkpoints that correspond to each distance of the race.
+        {`Race Aide uses a checkpoint system to log results. Below you will see
+        all checkpoints that correspond to each distance of the race.${hasStarted ? "" : " Once the race has started, you will also see the fastest and average splits for each checkpoint."}`}
       </p>
       <div style={{ marginTop: 10 }}>
         <span>Select a Distance:</span>
         <select
           onChange={(e) => {
             const value = e.target.value;
-            if (value === "ALL") setSelectedDistance(undefined);
+            if (!value) setSelectedDistance(undefined);
             setSelectedDistance(Number.parseFloat(e.target.value));
           }}
           value={selectedDistance || "ALL"}
@@ -97,7 +98,7 @@ export function CheckpointPage({
         </p>
       )}
       {hasStarted && (isAdmin || isAssistant) && selectedDistance && (
-        <p>Click on a checkpoint to enter results for it.</p>
+        <p style={{marginTop: 16}}>Click on a checkpoint to enter results for it.</p>
       )}
       {selectedDistance && (
         <DataTable
@@ -118,6 +119,66 @@ export function CheckpointPage({
                 " Miles" +
                 (check.distance === selectedDistance ? " (End)" : ""),
             },
+            ...(hasStarted ? [
+              {
+                name: "Average Split",
+                selector: (check: Checkpoint) => {
+                  if (!allResults) return "";
+                  let checkpointIndex = -1;
+                  allResults[String(selectedDistance)].checkpoints.forEach((checkpointDistance: CheckpointDistance, index: number) => {
+                    if (checkpointDistance.checkpointNumber === check.checkpointNumber) checkpointIndex = index
+                  })
+
+                  let totalTime = 0; // Milliseconds
+                  let runnersSeen = 0;
+
+                  Object.values(allResults[String(selectedDistance)].runners).forEach((runner: RaceResult) => {
+                    if (runner.checkpointInfo && runner.checkpointInfo.length >= checkpointIndex + 1 && checkpointIndex > 0) {
+                      const thisTimestamp = runner.checkpointInfo[checkpointIndex].timestamp
+                      const previousTimestamp = runner.checkpointInfo[checkpointIndex - 1].timestamp;
+                      if (thisTimestamp !== undefined && previousTimestamp) {
+                        const diff = thisTimestamp - previousTimestamp;
+                        if (diff > 0) {
+                          totalTime += diff;
+                          runnersSeen += 1
+                        }
+                      }
+                    }
+                  })
+
+                  if (runnersSeen === 0) return "-"
+                  return displayTime((totalTime / 1000) / runnersSeen)
+                },
+              },
+              {
+                name: "Fastest Split",
+                selector: (check: Checkpoint) => {
+                  if (!allResults) return "";
+                  let checkpointIndex = -1;
+                  allResults[String(selectedDistance)].checkpoints.forEach((checkpointDistance: CheckpointDistance, index: number) => {
+                    if (checkpointDistance.checkpointNumber === check.checkpointNumber) checkpointIndex = index
+                  })
+
+                  let fastestTime = 0; // Milliseconds
+
+                  Object.values(allResults[String(selectedDistance)].runners).forEach((runner: RaceResult) => {
+                    if (runner.checkpointInfo && runner.checkpointInfo.length >= checkpointIndex + 1 && checkpointIndex > 0) {
+                      const thisTimestamp = runner.checkpointInfo[checkpointIndex].timestamp
+                      const previousTimestamp = runner.checkpointInfo[checkpointIndex - 1].timestamp;
+                      if (thisTimestamp && previousTimestamp) {
+                        const diff = thisTimestamp - previousTimestamp;
+                        if (diff > 0 && (diff < fastestTime || fastestTime === 0)) {
+                          fastestTime = diff;
+                        }
+                      }
+                    }
+                  })
+
+                  if (fastestTime === 0) return "-"
+                  return displayTime(fastestTime / 1000)
+                }
+              }
+            ] : [])
           ]}
           data={checkpoints}
           {...tableProps}
