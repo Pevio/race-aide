@@ -70,6 +70,7 @@ const responseMessages = {
   // Race Checkpoints
   401: "Missing fields for race checkpoints",
   402: "Invalid action for race checkpoint CRUD",
+  403: "Checkpoint already exists",
   405: "Invalid fields for checkpoint entry",
   406: "Invalid action for checkpoint entry"
 };
@@ -393,7 +394,7 @@ app.post("/api/updateracecheckpoints", (req, res) => {
     return;
   }
   try {
-    client.query("SELECT race_id, admin_password FROM public.races WHERE races.race_id=$1", [raceId], (err, res2) => {
+    client.query("SELECT races.race_id, admin_password, checkpoint_number, checkpoint_distances, runners_passed FROM public.races LEFT JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1", [raceId], (err, res2) => {
       if (err) {
         console.log(err);
         returnError(res, 2);
@@ -405,46 +406,60 @@ app.post("/api/updateracecheckpoints", (req, res) => {
       }
 
       let statement = "";
-      let params = [];
+      const emptyRunners = {}
       switch (body.action) {
         case "CREATE":
           statement = "INSERT INTO public.checkpoints (race_id, checkpoint_number, checkpoint_distances, runners_passed) VALUES ($1, $2, $3, $4)";
-          params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, JSON.stringify({})];
           break;
         case "UPDATE":
           statement = "UPDATE public.checkpoints SET checkpoint_distances = $3 WHERE race_id = $1 AND checkpoint_number = $2";
-          params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances];
           break;
         case "DELETE":
           statement = "DELETE FROM public.checkpoints WHERE race_id = $1 AND checkpoint_number = $2";
-          params = [body.raceId, body.checkpoint.checkpointNumber];
           break;
       }
 
-      console.log(statement, params);
-      client.query(statement, params, (err, res2) => {
+      client.query(statement, [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, emptyRunners], (err, res3) => {
         if (err) {
           console.log(err);
-          returnError(res, 2);
+          returnError(res, err.code === "23505" ? 403 : 2);
           return;
         }
 
-        client.query("SELECT checkpoint_number, checkpoint_distances, runners_passed from public.checkpoints WHERE race_id=$1", [raceId, body.checkpoint.checkpointNumber], (err, res2) => {
-          if (err || res2.rows?.length === 0) {
-            console.log(err);
-            returnError(res, 2);
-            return;
+        const checkpoints = []
+
+        res2.rows.forEach((row) => {
+          if (row.checkpoint_number) {
+            checkpoints.push({
+              checkpointNumber: row.checkpoint_number,
+              distances: row.checkpoint_distances,
+              runnersPassed: row.runners_passed,
+            })
           }
-          const checkpoints = rew2.rows.map((row) => ({
-            checkpointNumber: row.checkpoint_number,
-            distances: row.distances,
-            runnersPassed: row.runners_passed,
-          }));
-          res.json({
-            responseMessage: "GOOD",
-            returnCode: 0,
-            checkpoints,
-          });
+        });
+        switch (body.action) {
+          case "CREATE":
+            checkpoints.push({
+              checkpointNumber: body.checkpoint.checkpointNumber,
+              distances: body.checkpoint.distances,
+              runnersPassed: {}
+            })
+            break;
+          case "UPDATE":
+            checkpoints.forEach((check) => {
+              if (check.checkpointNumber === body.checkpoint.checkpointNumber) {
+                check.distances = body.checkpoint.distances;
+              }
+            })
+          case "DELETE":
+            const index = checkpoints.findIndex((check) => check.checkpointNumber === body.checkpoint.checkpointNumber)
+            if (index >= 0) checkpoints.splice(index, 1)
+        }
+
+        res.json({
+          responseMessage: "GOOD",
+          returnCode: 0,
+          checkpoints,
         });
       });
     });
@@ -466,8 +481,9 @@ app.post("/api/addcheckpointentry", (req, res) => {
   }
 
   try {
-    client.query("SELECT races.race_id, admin_password, checkpoint_password checkpoint_number, runners_passed from public.races JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE race_id=$1 AND checkpoint_number = $2", [body.raceId, body.checkpointNumber], (err, res2) => {
+    client.query("SELECT races.race_id, admin_password, checkpoint_password checkpoint_number, runners_passed from public.races JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1 AND checkpoint_number = $2", [body.raceId, body.checkpointNumber], (err, res2) => {
       if (err) {
+        console.log(err)
         returnError(res, 2);
         return;
       }
@@ -476,7 +492,7 @@ app.post("/api/addcheckpointentry", (req, res) => {
         return;
       }
       // Authenticate and allow either password to work
-      if (decrypt(res2.rows[0].checkpoint_password, body.password) !== genericKey || decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
+      if (decrypt(res2.rows[0].checkpoint_password, body.password) !== genericKey && decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
         returnError(res, 201);
         return;
       }
@@ -484,24 +500,22 @@ app.post("/api/addcheckpointentry", (req, res) => {
       const dbInfo = res2.rows[0];
       const resultRunnersPassed = {
         ...dbInfo.runners_passed,
-        [body.bibNumber]: {
-          ...dbInfo.runners_passed?.[[body.bibNumber]],
-          [body.checkpointNumber]: [...(resultRunnersPassed?.[body.bibNumber]?.[body.checkpointNumber] || [])]
-        }
+        [body.bibNumber]: [...(dbInfo.runners_passed?.[body.bibNumber] || [])]
       }
       switch (body.action) {
         case "CREATE":
-          resultRunnersPassed[body.bibNumber][body.checkpointNumber] = [...existingCheckpointTimes, Date.now()]
+          resultRunnersPassed[body.bibNumber].push(Date.now())
           break;
         case "DELETE":
-          if (resultRunnersPassed[body.bibNumber][body.checkpointNumber]?.length > 0) {
-            resultRunnersPassed[body.bibNumber][body.checkpointNumber].slice(resultRunnersPassed[body.bibNumber][body.checkpointNumber].length - 1, 1)
+          if (resultRunnersPassed[body.bibNumber]?.length > 0) {
+            resultRunnersPassed[body.bibNumber].slice(resultRunnersPassed[body.bibNumber].length - 1, 1)
           }
           break;
         }
 
-      client.query("UPDATE public.checkpoints SET runners_passed=$3 WHERE race_id=$1 AND checkpoint_number=$2", [raceId, body.checkpoint.checkpointNumber, resultRunnersPassed], (err2, res3) => {
+      client.query("UPDATE public.checkpoints SET runners_passed=$3 WHERE race_id=$1 AND checkpoint_number=$2", [body.raceId, body.checkpointNumber, resultRunnersPassed], (err2, res3) => {
         if (err2) {
+          console.log(err)
           returnError(res, 2);
           return;
         }
@@ -518,9 +532,6 @@ app.post("/api/addcheckpointentry", (req, res) => {
   } catch (err) {
     console.log(err);
     returnError(res, 1);
-  }
-  if (result === noAccess) {
-    returnError(res, 201, { access: result });
   }
 });
 

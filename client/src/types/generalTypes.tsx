@@ -7,16 +7,15 @@ export interface Race {
 }
 
 export interface FullRace extends Race {
-  raceDetails: Partial<RaceDetails>;
+  raceDetails: RaceDetails;
   runners: Record<string, Runner>; // Key is the bibNumber
   checkpoints: Checkpoint[];
   adminPassword?: string;
   checkpointPassword?: string;
 }
 export interface RaceDetails {
-  socialMedia: string;
-  website: string;
-  registration: string;
+  website?: string;
+  registration?: string;
   distances: number[];
   raceEmail?: string;
 }
@@ -31,7 +30,7 @@ export interface Runner {
 export interface Checkpoint {
   distances: CheckpointDetails[];
   checkpointNumber: string; // Key
-  runnersPassed: Record<string, Record<string, number[]>>; // [bibNumber][checkpointNumber][index of the time this runner passed this checkpoint]
+  runnersPassed: Record<string,  number[]>; // [bibNumber][index of the time this runner passed this checkpoint]
 }
 export interface CheckpointDetails {
   // This object does not have a key;
@@ -43,6 +42,15 @@ export interface CheckpointDetails {
 export interface CheckpointDistance {
   checkpointNumber: string;
   distance: number;
+}
+
+// Results for a single runner
+export type RaceResultsFull = Record<string, RaceResult[]>
+export interface RaceResult extends Runner {
+  checkpointInfo: ResultCheckpointInfo[]
+}
+export interface ResultCheckpointInfo extends CheckpointDistance {
+  timestamp: number;
 }
 
 export interface RunnerAtCheckpoint {

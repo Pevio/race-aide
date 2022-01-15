@@ -13,7 +13,7 @@ export function RacePageWrapper(props: Props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const raceId = location.pathname.split("/")[1];
-  const { race, loading } = useSelector(
+  const { race } = useSelector(
     (state: RootStore) => state.raceDetails
   );
   const raceIsLoaded = race && race.raceId === raceId;
@@ -80,7 +80,7 @@ export function RacePageWrapper(props: Props) {
       </div>
       <div className="sider">
         {getSideMenuItem("Race Home", `/${raceId}`)}
-        {!loading && (
+        {race && (
           <>
             {getSideMenuItem(
               hasStarted ? "Results" : "Participants",

@@ -54,12 +54,18 @@
 }
 
 .container {
-  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #eeeeee;
+  border-radius: 4px;
+  padding: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 14px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* Buttons */
 .highlight-button {
   font-size: 14px;
+  min-width: 32px;
   border: none;
   outline: none;
   color: var(--main-red);
@@ -78,6 +84,7 @@
 }
 .clickable-button {
   font-size: 14px;
+  min-width: 32px;
   border: none;
   outline: none;
   color: white;

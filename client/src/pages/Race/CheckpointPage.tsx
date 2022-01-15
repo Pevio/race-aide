@@ -104,7 +104,7 @@ export function CheckpointPage({
           columns={[
             {
               name: "#",
-              selector: (check, index) => index || "",
+              selector: (check, index) => index !== undefined ? (index + 1) : "",
             },
             {
               name: "Checkpoint Number",
@@ -155,6 +155,7 @@ export function CheckpointPage({
               </h2>
               <button
                 style={{ position: "absolute", right: 0 }}
+                className="highlight-button"
                 onClick={() => {
                   setMakingNewCheckpoint(true);
                   setCheckpointEditing(getDefaultCheckpointData());
@@ -177,7 +178,7 @@ export function CheckpointPage({
                 }
               />
             </div>
-            <div>
+            <div className="container" style={{padding: 16, marginTop: 16}}>
               <p>
                 Each checkpoint can be used for any number of races, and any
                 number of different distances within a race. Make sure to
@@ -241,8 +242,8 @@ export function CheckpointPage({
                     ))}
                   </select>
                 </div>
-                <div>
-                  <span>Distance:</span>
+                <div style={{marginTop: 10}}>
+                  <span>Distance (Miles):</span>
                   <input
                     style={{ marginLeft: 10 }}
                     type="number"
@@ -250,7 +251,7 @@ export function CheckpointPage({
                     min={0}
                     value={newDistance.distance || 0}
                     onChange={(e) => {
-                      const newValue = Number.parseFloat(e.target.value);
+                      const newValue = Number.parseFloat(e.target.value || "0");
                       if (!newValue) return;
                       setNewDistance({
                         ...newDistance,
@@ -280,7 +281,7 @@ export function CheckpointPage({
                 )}
               </div>
             </div>
-            <div style={{ marginTop: 10 }}>
+            <div style={{ marginTop: 32 }}>
               {errorMessage && <p>{errorMessage}</p>}
               <button
                 onClick={() => {

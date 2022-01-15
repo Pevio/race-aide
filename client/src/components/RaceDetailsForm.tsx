@@ -16,10 +16,14 @@ interface Props {
 }
 
 export function RaceDetailsForm(props: Props) {
-  const [raceDetails, setRaceDetails] = useState<Partial<FullRace>>({
-    raceDetails: {},
+  const getDefaultRaceDetails = (): Partial<FullRace> => ({
     ...props.defaultData,
-  });
+    raceDetails: {
+      distances: [],
+      ...props.defaultData,
+    }
+  })
+  const [raceDetails, setRaceDetails] = useState<Partial<FullRace>>(getDefaultRaceDetails());
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [newDistanceValue, setNewDistanceValue] = useState<number>(0);
@@ -27,10 +31,7 @@ export function RaceDetailsForm(props: Props) {
     props.defaultData?.startTime && props.defaultData.startTime < Date.now();
 
   useEffect(() => {
-    setRaceDetails({
-      raceDetails: {},
-      ...props.defaultData,
-    });
+    setRaceDetails(getDefaultRaceDetails());
     if (props.defaultData?.startTime && props.defaultData.timezone) {
       const date = DateTime.fromMillis(props.defaultData.startTime).setZone(
         props.defaultData.timezone
@@ -71,9 +72,10 @@ export function RaceDetailsForm(props: Props) {
             if (isSubDetail) {
               setRaceDetails({
                 ...raceDetails,
+                // @ts-ignore
                 raceDetails: {
                   ...raceDetails.raceDetails,
-                  [key]: e.target.value,
+                  [key]: e.target.value || "",
                 },
               });
             } else {
@@ -251,7 +253,7 @@ export function RaceDetailsForm(props: Props) {
                             distances:
                               raceDetails.raceDetails?.distances?.filter(
                                 (oldDistance) => oldDistance !== distance
-                              ),
+                              ) || [],
                           },
                         });
                       }}

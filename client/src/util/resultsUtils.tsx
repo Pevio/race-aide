@@ -3,6 +3,9 @@ import {
   CheckpointDetails,
   CheckpointDistance,
   FullRace,
+  RaceResult,
+  RaceResultsFull,
+  Runner,
 } from "../types/generalTypes";
 
 /**
@@ -40,3 +43,27 @@ export const getDistanceCheckpoints = (
     []
   );
 };
+
+export const compileResults = (race: FullRace): RaceResultsFull => {
+  const result: RaceResultsFull = {};
+  race.raceDetails.distances.forEach((distance: number) => {
+    result[String(distance)] = [];
+  })
+  Object.keys(race.runners).forEach((key: string) => {
+    const runner: Runner = race.runners[key]
+    const runnerResult: RaceResult = {
+      ...runner,
+      checkpointInfo: [],
+    }
+    race.checkpoints.forEach((checkpoint: Checkpoint) => {
+      if (checkpoint.runnersPassed[key]) {
+        checkpoint.runnersPassed[key].forEach((timestamp: number) => {
+          
+        })
+      }
+    })
+    runnerResult.checkpointInfo.sort((info1, info2) => info1.timestamp - info2.timestamp)
+    result[String(runner.distance)].push(runnerResult)
+  })
+  return result;
+}
