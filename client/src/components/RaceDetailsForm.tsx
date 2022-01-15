@@ -307,7 +307,7 @@ export function RaceDetailsForm(props: Props) {
         )}
       </div>
       <div style={{ marginTop: 32 }}>
-        <button onClick={onSubmit}>
+        <button onClick={onSubmit} className="clickable-button">
           {props.isUpdate ? "Save Race Details" : "Create Race!"}
         </button>
       </div>

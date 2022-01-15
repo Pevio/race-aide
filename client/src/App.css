@@ -1,6 +1,9 @@
 .App {
   color: black;
-  background-color: white;
+  background-color: #eeeeee;
+
+  --main-red: #fa103c;
+  --main-dark-red: #b10c31;
 }
 
 .page {
@@ -39,9 +42,9 @@
 }
 
 .sider-link {
-  font-size: 16px;
+  font-size: 16px !important;
   border-left: 10px solid transparent;
-  padding-left: 10px;
+  padding-left: 12px;
   min-width: 120px;
   margin-top: 10px;
 }
@@ -59,17 +62,35 @@
   font-size: 14px;
   border: none;
   outline: none;
-  color: red;
+  color: var(--main-red);
   transition: 0.3s;
   transition-property: color;
   font-weight: bold;
 }
 .highlight-button:hover {
-  color: darkred;
+  color: var(--main-dark-red);
 }
 .highlight-button:focus {
-  color: darkred;
+  color: var(--main-dark-red);
 }
+.clickable-button {
+  font-size: 14px;
+  border: none;
+  outline: none;
+  color: white;
+  transition: 0.3s;
+  transition-property: background-color;
+  font-weight: bold;
+  background-color: var(--main-red);
+  border-radius: 10px;
+}
+.highlight-button:hover {
+  background-color: var(--main-dark-red);
+}
+.highlight-button:focus {
+  background-color: var(--main-dark-red);
+}
+
 
 /* Overriding HTML Elements */
 

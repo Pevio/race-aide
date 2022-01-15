@@ -73,7 +73,7 @@ export function EditRacePasswords({
         </input>
       </div>
       <div>
-        <button onClick={() => {
+        <button  className="clickable-button" onClick={() => {
           if (submitClicked) return
           dispatch(updateRacePasswords(raceId, password || "", adminPassword, checkpointPassword))
           setSubmitClicked(true);

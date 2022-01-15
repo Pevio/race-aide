@@ -249,6 +249,7 @@ export function RaceParticipants({
                   setSaveInProgress(true);
                   dispatch(updateRaceParticipants(race, newRunners, password));
                 }}
+                className="clickable-button"
               >
                 Save Runner
               </button>

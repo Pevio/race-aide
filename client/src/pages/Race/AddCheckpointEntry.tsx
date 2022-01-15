@@ -68,6 +68,7 @@ export function AddCheckpointEntry({
       <div style={{marginTop: 10}}>
         <button
           type="submit"
+          className="clickable-button"
           onClick={() => {
             if (saveInProgress) return;
             setSaveInProgress(true)

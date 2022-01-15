@@ -38,6 +38,7 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
             />
             <button
               type="submit"
+              className="clickable-button"
               style={{ marginLeft: 10 }}
               onClick={async () => {
                 const res = await fetch(`/api/validatepassword/${raceId}`, {
@@ -72,6 +73,7 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
             RaceAuthorizationDescription[raceData.authorization]
           }.`}</span>
           <button
+             className="highlight-button"
             style={{ marginLeft: 10 }}
             onClick={() => {
               dispatch(setRacePassword());

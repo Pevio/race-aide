@@ -90,12 +90,12 @@ export function CheckpointPage({
           ))}
         </select>
       </div>
-      {isAdmin && !hasStarted && (
+      {isAdmin && !hasStarted && selectedDistance && (
         <p>
           Click on a checkpoint to edit its details or enter results for it.
         </p>
       )}
-      {hasStarted && (isAdmin || isAssistant) && (
+      {hasStarted && (isAdmin || isAssistant) && selectedDistance && (
         <p>Click on a checkpoint to enter results for it.</p>
       )}
       {selectedDistance && (
@@ -262,6 +262,7 @@ export function CheckpointPage({
                 </div>
                 {newDistance.raceDistance && newDistance.distance && (
                   <button
+                    className="highlight-button"
                     onClick={() => {
                       if (!newDistance.raceDistance || !newDistance.distance)
                         return;
@@ -306,6 +307,7 @@ export function CheckpointPage({
                     )
                   );
                 }}
+                className="clickable-button"
               >
                 Save Checkpoint
               </button>

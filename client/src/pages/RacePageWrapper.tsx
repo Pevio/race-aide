@@ -67,7 +67,7 @@ export function RacePageWrapper(props: Props) {
           <Link
             to="/"
             className="highlight-button"
-            style={{ fontSize: 36, marginTop: -4 }}
+            style={{ fontSize: 40, marginTop: -4, minWidth: 50 }}
           >
             {"<"}
           </Link>

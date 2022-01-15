@@ -45,7 +45,7 @@ export function RaceHome({
           >
             Race Website
           </a>
-          <br />
+          <br /><br />
         </>
       )}
       {race.raceDetails.registration && (
@@ -57,6 +57,19 @@ export function RaceHome({
             className="highlight-button"
           >
             Registration
+          </a>
+          <br /><br />
+        </>
+      )}
+      {race.raceDetails.raceEmail && (
+        <>
+          <a
+            href={`mailto:${race?.raceDetails.raceEmail}`}
+            target="_blank" // Open in new tab
+            rel="noopener noreferrer" // For security
+            className="highlight-button"
+          >
+            Race Email
           </a>
           <br />
         </>
