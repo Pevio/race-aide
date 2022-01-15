@@ -125,7 +125,7 @@ export function RaceDetailsForm(props: Props) {
         getFormInputField(
           "raceId",
           "Race ID",
-          "This may only contain letters, numbers, and some special characters, like MyRace or awesome-marathon. One the race is created, the ID cannot be edited!"
+          "This may only contain letters, numbers, hyphens, and underscores, like MyRace or awesome-marathon. Once the race is created, the ID cannot be edited!"
         )}
       {getFormInputField(
         "city",
@@ -177,7 +177,7 @@ export function RaceDetailsForm(props: Props) {
         </select>
       </div>
       {props.isUpdate ? (
-        <p style={{ marginTop: 10 }}>
+        <p style={{ marginTop: 16 }}>
           If you forgot your passwords, you can{" "}
           <Link
             to={`/${raceDetails.raceId}/editpasswords`}
@@ -189,9 +189,9 @@ export function RaceDetailsForm(props: Props) {
         </p>
       ) : (
         <>
-          <div>
-            <p style={{ marginTop: 32, fontSize: 16 }}>Security</p>
-            <p style={{ margin: 0 }}>
+          <div className="container" style={{marginTop: 32}}>
+            <h3>Security</h3>
+            <p style={{ marginTop: 10, fontSize: 12 }}>
               Don't lose these passwords! You may not be able to get them back.
             </p>
             {getFormInputField(

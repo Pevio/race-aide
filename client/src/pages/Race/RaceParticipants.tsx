@@ -88,13 +88,13 @@ export function RaceParticipants({
         <select
           onChange={(e) => {
             const value = e.target.value;
-            if (value === "ALL") setSelectedDistance(undefined);
+            if (!value) setSelectedDistance(undefined);
             setSelectedDistance(Number.parseFloat(e.target.value));
           }}
           value={selectedDistance || "ALL"}
           style={{ marginLeft: 10 }}
         >
-          <option value="0">Select a Distance</option>
+          <option>Select a Distance</option>
           {race?.raceDetails?.distances?.map((distance) => (
             <option key={distance} value={String(distance)}>
               {`${distance} Miles`}
@@ -109,10 +109,10 @@ export function RaceParticipants({
           {`Refresh ${hasStarted ? "Results" : "Participants"}`}
         </button>
       </div>
-      {isAdmin && (
+      {isAdmin && selectedDistance && (
         <p style={{ marginTop: 5 }}>Click a runner to edit their details.</p>
       )}
-      {(!hasStarted || selectedDistance) && (
+      {selectedDistance ? (
         <DataTable
           columns={
             hasStarted && selectedDistance
@@ -265,7 +265,7 @@ export function RaceParticipants({
           }
           defaultSortFieldId={hasStarted ? "distance" : "name"}
         />
-      )}
+      ) : <p>{`Select a distance to see ${hasStarted ? "Results" : "Participants"} for that race.`}</p>}
       {isAdmin && (
         <>
           <hr />
