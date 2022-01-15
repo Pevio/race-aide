@@ -107,8 +107,11 @@ export function RaceParticipants({
             hasStarted && selectedDistance
               ? [
                   {
-                    name: "Rank",
-                    selector: (runner) => "rank"
+                    name: "#",
+                    selector: (runner, index) => {
+                      if (index !== undefined) return String(index + 1)
+                      return "";
+                    }
                   },
                   {
                     name: "Runner Name",
