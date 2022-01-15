@@ -7,6 +7,7 @@ import { tableProps } from "../../util/table";
 import { raceHasStarted, runnerDistance } from "../../util/resultsUtils";
 import { displayTime } from "../../util/timeUtils";
 import { formatURL } from "../../util/generalUtils";
+import { DateTime } from "luxon";
 
 interface RaceHomeProps {
   raceId: string;
@@ -37,9 +38,30 @@ export function RaceHome({
   }
   const runnerArray: Runner[] = Object.values(race?.runners || []);
 
+  const getDistanceDisplay = (): string => {
+    const distances = race.raceDetails.distances
+    let result = `Distance${distances.length > 0 ? "s" : ""}: `
+    distances.forEach((distance: number, index) => {
+      result += `${distance} Mile${distance === 1 ? "" : "s"}`
+      if (index < distances.length - 1) result += ", "
+    })
+    return result;
+  }
+  const getStartTimeDisplay = (): string => {
+    const start = DateTime.fromMillis(race.startTime);
+    const raceTime = start.setZone(race.timezone).toFormat("DD, hh:mm a")
+    return `Start Time: ${raceTime} ${race.timezone}`
+  }
+
   return (
     <>
       <h1>{`${race.raceName} Race Home`}</h1>
+      <p>
+        {getDistanceDisplay()}
+      </p>
+      <p>
+        {getStartTimeDisplay()}
+      </p>
       {race.raceDetails.website && (
         <>
           <a
@@ -95,7 +117,7 @@ export function RaceHome({
           {
             name: "Distance Running",
             selector: (runner: Runner) =>
-              `${runner.distance} Mile(${runner.distance === 1 ? "" : "s"})`,
+              `${runner.distance} Mile${runner.distance === 1 ? "" : "s"}`,
           },
           {
             name: "Distance Covered",
