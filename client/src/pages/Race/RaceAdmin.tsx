@@ -68,7 +68,7 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
     }
     return (
       <>
-        <p>
+        <p style={{marginBottom: 10}}>
           <span>{`You are currently logged in as a ${
             RaceAuthorizationDescription[raceData.authorization]
           }.`}</span>

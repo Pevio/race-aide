@@ -280,7 +280,9 @@ export function RaceDetailsForm(props: Props) {
               />
               <button
                 style={{ marginLeft: 10 }}
+                className="highlight-button"
                 onClick={() => {
+                  if (!newDistanceValue || raceDetails.raceDetails?.distances.includes(newDistanceValue)) return;
                   const newDistances = [
                     ...(raceDetails.raceDetails?.distances || []),
                     newDistanceValue,

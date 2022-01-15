@@ -27,8 +27,9 @@ export function AddCheckpointEntry({
   useEffect(() => {
     if (!loading && saveInProgress) {
       if (success) {
-        const runnerName = race?.runners[selectedBib]?.runnerName
-        setErrorMessage(`Bib Number ${selectedBib}, ${runnerName} saved successfully!`);
+        const runnerInfo = race?.runners[selectedBib]
+        const runnerPart = runnerInfo ? `, ${runnerInfo.runnerName}, running ${runnerInfo.distance} mile${runnerInfo.distance === 1 ? "" : "s"},` : ""
+        setErrorMessage(`Bib Number ${selectedBib}${runnerPart} saved successfully!`);
         setSelectedBib("")
       } else {
         setErrorMessage("The runner entry could not be added.");

@@ -39,9 +39,9 @@ export function HomePageWrapper(props: Props) {
         />
         <p
           style={{
-            fontSize: 36,
+            fontSize: 48,
             marginLeft: 32,
-            marginTop: 10,
+            marginTop: 12,
           }}
         >
           Race Aide
