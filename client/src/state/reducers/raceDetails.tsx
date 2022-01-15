@@ -74,14 +74,21 @@ export default function raceDetails(
         success: action.payload.success
       };
     case SET_RACE_PASSWORD:
-      if (state.race)
-        localStorage.setItem(
-          `race-password-${state.race.raceId}`,
-          JSON.stringify({
-            password: action.payload.password,
-            authorization: action.payload.authorization,
-          })
-        );
+      if (state.race) {
+        const storageKey = `race-password-${state.race.raceId}`
+        if (action.payload.password) {
+          localStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              password: action.payload.password,
+              authorization: action.payload.authorization,
+            })
+          );
+        } else {
+          localStorage.removeItem(storageKey)
+        }
+      }
+
       return {
         ...state,
         password: action.payload.password,
