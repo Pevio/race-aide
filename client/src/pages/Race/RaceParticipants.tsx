@@ -121,7 +121,7 @@ export function RaceParticipants({
                     sortField: "bibNumber"
                   },
                   ...checkpointInfo.map((info: CheckpointDistance, checkpointIndex: number) => ({
-                    name: `${info.distance} Miles`,
+                    name: `${info.distance} Miles${checkpointIndex === checkpointInfo.length - 1 ? " (End)" : ""}`,
                     selector: (runner: Runner) => {
                       if (!allResults) return "";
                       const timestamp = allResults[String(selectedDistance)].runners[runner.bibNumber].checkpointInfo[checkpointIndex]?.timestamp
@@ -144,9 +144,9 @@ export function RaceParticipants({
                       if (!allResults) return "";
                       const runnerResults = allResults[String(selectedDistance)].runners[runner.bibNumber]
                       const distance = runnerDistance(runnerResults)
-                      if (!distance) return "";
-                      if (distance === runner.distance) return "Finished"
-                      return `${distance} Miles`
+                      if (!distance.distance) return "";
+                      if (distance.distance === runner.distance) return "Finished"
+                      return `${distance.distance} Miles`
                     },
                     sortFunction: (r1, r2) => {
                       if (!allResults) return 0;
