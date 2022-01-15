@@ -177,7 +177,7 @@ export function RaceDetailsForm(props: Props) {
       {props.isUpdate ? (
         <p style={{ marginTop: 10 }}>
           If you forgot your passwords, you can{" "}
-          <Link to={`/${raceDetails.raceId}/changepassword`} className="outline-button">
+          <Link to={`/${raceDetails.raceId}/editpasswords`} className="highlight-button">
             Change them now
           </Link>
           .

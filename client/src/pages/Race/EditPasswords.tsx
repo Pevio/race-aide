@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RouteComponentProps } from "react-router";
@@ -15,20 +15,34 @@ export function EditRacePasswords({
   const dispatch = useDispatch()
   const { raceId } = match.params;
 
-  const { race, password } = useSelector(
+  const { race, password, loading, success } = useSelector(
     (state: RootStore) => state.raceDetails
   );
 
   const [submitClicked, setSubmitClicked] = useState<boolean>(false);
-  const [adminPassword, setAdminPassword] = useState<string>(password || "");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [adminPassword, setAdminPassword] = useState<string>("");
   const [checkpointPassword, setCheckpointPassword] = useState<string>("");
   const [showPasswords, setShowPasswords] = useState<boolean>(false);
   const inputType = showPasswords ? "text" : "password";
 
+  useEffect(() => {
+    if (!loading && submitClicked) {
+      if (success) {
+        setErrorMessage("");
+        setAdminPassword("")
+        setCheckpointPassword("")
+      } else {
+        setErrorMessage("The checkpoint could not be saved.");
+      }
+      setSubmitClicked(false);
+    }
+  }, [loading]);
+
   if (!race) {
     return (
       <>
-        <p>The race could not be loaded</p>
+        <p>The race could not be loaded.</p>
       </>
     );
   }
@@ -65,20 +79,23 @@ export function EditRacePasswords({
             }}
           />
         </div>
-        <input
-          type="checkbox"
-          onChange={(e) => setShowPasswords(e.target.checked)}
-        >
-          Show Passwords
-        </input>
+        <div style={{marginTop: 10}}>
+          <input
+            type="checkbox"
+            id="show-passwords"
+            onChange={(e) => setShowPasswords(e.target.checked)}
+          />
+          <label htmlFor="show-passwords">Show Passwords</label>
+        </div>
       </div>
-      <div>
+      <div style={{marginTop: 10}}>
         <button  className="clickable-button" onClick={() => {
           if (submitClicked) return
           dispatch(updateRacePasswords(raceId, password || "", adminPassword, checkpointPassword))
           setSubmitClicked(true);
         }}>Save Passwords</button>
       </div>
+      <p>{errorMessage}</p>
     </>
   );
 }
