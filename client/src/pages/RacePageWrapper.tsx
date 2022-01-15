@@ -55,7 +55,7 @@ export function RacePageWrapper(props: Props) {
       <div className="header">
         <p
           style={{
-            fontSize: 36,
+            fontSize: 40,
             marginLeft: 32,
             paddingTop: 20,
           }}

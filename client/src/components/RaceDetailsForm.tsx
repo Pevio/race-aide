@@ -211,95 +211,94 @@ export function RaceDetailsForm(props: Props) {
           </div>
         </>
       )}
-      <div className="container">
-        {!hasStarted && (
-          <>
-            <h3>Distances</h3>
-            <p style={{ fontSize: 12 }}>
-              For each race distance, add it here. Distances will always be in
-              miles.
-            </p>
-            <div style={{ marginTop: 5, marginBottom: 5 }}>
-              {raceDetails.raceDetails?.distances?.map(
-                (distance: number, index: number) => (
-                  <React.Fragment key={distance}>
-                    {`${distance} Miles`}
-                    <button
-                      className="highlight-button"
-                      style={{
-                        marginLeft: 2,
-                        marginRight:
-                          raceDetails.raceDetails?.distances &&
-                          index !== raceDetails.raceDetails.distances.length - 1
-                            ? 10
-                            : 0,
-                      }}
-                      onClick={() => {
-                        setRaceDetails({
-                          ...raceDetails,
-                          raceDetails: {
-                            ...raceDetails.raceDetails,
-                            distances:
-                              raceDetails.raceDetails?.distances?.filter(
-                                (oldDistance) => oldDistance !== distance
-                              ) || [],
-                          },
-                        });
-                      }}
-                    >
-                      x
-                    </button>
-                  </React.Fragment>
-                )
-              )}
-            </div>
-            <div>
-              <span>Add New Distance:</span>
-              <input
-                style={{ marginLeft: 10 }}
-                type="number"
-                step="any"
-                min={0}
-                value={newDistanceValue}
-                onChange={(e) => {
-                  const newDistance = Number.parseFloat(e.target.value);
-                  if (!newDistance) return;
-                  setNewDistanceValue(newDistance);
-                }}
-              />
-              <button
-                style={{ marginLeft: 10 }}
-                className="highlight-button"
-                onClick={() => {
-                  if (
-                    !newDistanceValue ||
-                    raceDetails.raceDetails?.distances.includes(
-                      newDistanceValue
-                    )
+      {!hasStarted && (
+        <div className="container" style={{marginTop: 32}}>
+          <h3>Distances</h3>
+          <p style={{ fontSize: 12 }}>
+            For each race distance, add it here. Distances will always be in
+            miles.
+          </p>
+          <div style={{ marginTop: 5, marginBottom: 5 }}>
+            {raceDetails.raceDetails?.distances?.map(
+              (distance: number, index: number) => (
+                <React.Fragment key={distance}>
+                  {`${distance} Mile${distance === 1 ? "" : "s"}`}
+                  <button
+                    className="highlight-button"
+                    style={{
+                      marginLeft: 2,
+                      marginRight:
+                        raceDetails.raceDetails?.distances &&
+                        index !== raceDetails.raceDetails.distances.length - 1
+                          ? 10
+                          : 0,
+                    }}
+                    onClick={() => {
+                      setRaceDetails({
+                        ...raceDetails,
+                        raceDetails: {
+                          ...raceDetails.raceDetails,
+                          distances:
+                            raceDetails.raceDetails?.distances?.filter(
+                              (oldDistance) => oldDistance !== distance
+                            ) || [],
+                        },
+                      });
+                    }}
+                  >
+                    remove
+                  </button>
+                </React.Fragment>
+              )
+            )}
+          </div>
+          <div>
+            <span>Add New Distance:</span>
+            <input
+              style={{ marginLeft: 10 }}
+              type="number"
+              step="any"
+              min={0}
+              value={newDistanceValue}
+              onChange={(e) => {
+                const newDistance = Number.parseFloat(e.target.value);
+                if (!newDistance) return;
+                setNewDistanceValue(newDistance);
+              }}
+            />
+            <button
+              style={{ marginLeft: 10 }}
+              className="highlight-button"
+              onClick={() => {
+                if (
+                  !newDistanceValue ||
+                  raceDetails.raceDetails?.distances.includes(
+                    newDistanceValue
                   )
-                    return;
-                  const newDistances = [
-                    ...(raceDetails.raceDetails?.distances || []),
-                    newDistanceValue,
-                  ].sort((num1, num2) => num1 - num2);
-                  setRaceDetails({
-                    ...raceDetails,
-                    raceDetails: {
-                      ...raceDetails.raceDetails,
-                      distances: newDistances,
-                    },
-                  });
-                  setNewDistanceValue(0);
-                }}
-              >
-                Add
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-      <div className="container">
-        <p style={{ marginTop: 32, fontSize: 16 }}>Extra Information</p>
+                )
+                  return;
+                const newDistances = [
+                  ...(raceDetails.raceDetails?.distances || []),
+                  newDistanceValue,
+                ].sort((num1, num2) => num1 - num2);
+                setRaceDetails({
+                  ...raceDetails,
+                  raceDetails: {
+                    ...raceDetails.raceDetails,
+                    distances: newDistances,
+                  },
+                });
+                setNewDistanceValue(0);
+              }}
+            >
+              Add
+            </button>
+          </div>
+        
+        </div>
+      )}
+      <div className="container" style={{marginTop: 32}}>
+        <h3>Extra Information</h3>
         <p style={{ margin: 0 }}>The following information is all optional:</p>
         {getFormInputField("website", "Website", undefined, true)}
         {getFormInputField(
