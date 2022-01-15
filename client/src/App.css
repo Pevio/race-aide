@@ -39,14 +39,21 @@
   background-color: lightgray;
   height: 1px;
   border: none;
+  margin: 0px;
 }
-
+.sider-bar {
+  width: 10px;
+  height: 55px;
+}
+.sider-bar-active {
+  background-color: green !important;
+}
 .sider-link {
   font-size: 16px !important;
   border-left: 10px solid transparent;
   padding-left: 12px !important;
-  min-width: 120px;
-  margin-top: 10px;
+  padding-top: 14px !important;
+  min-width: 140px !important;
 }
 
 .datepicker {

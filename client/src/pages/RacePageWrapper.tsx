@@ -36,11 +36,7 @@ export function RacePageWrapper(props: Props) {
       <>
         <div style={{ display: "flex", ...style }}>
           <div
-            style={{
-              width: 10,
-              height: 45,
-              backgroundColor: location.pathname === to ? "green" : "transparent",
-            }}
+            className={`sider-bar ${location.pathname === to ? "sider-bar-active" : ""}`}
           />
           <Link
             to={{ pathname: to, state: location.state }}
