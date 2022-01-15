@@ -59,6 +59,7 @@ const responseMessages = {
   // Create Race
   101: "Missing fields for create race",
   102: "raceId already exists",
+  103: "Invalid race ID",
 
   // Race Details
   201: "Invalid Password",
@@ -116,6 +117,13 @@ app.post("/api/createrace", (req, res) => {
       return;
     }
 
+    // allows letters numbers, hyphens, and underscores
+    if (!/^[A-Za-z0-9-_]+$/.test(race.raceId)) {
+      returnError(res, 103)
+      return;
+    }
+
+
     const adminPassword = encrypt(genericKey, race.adminPassword);
     const checkpointPassword = encrypt(genericKey, race.checkpointPassword);
     client.query("SELECT race_id from public.races WHERE race_id = $1", [req.raceId], (err, res3) => {
@@ -136,7 +144,11 @@ app.post("/api/createrace", (req, res) => {
           res.json({
             responseMessage: "GOOD",
             returnCode: 0,
-            race: race,
+            race: {
+              ...race,
+              runners: {},
+              checkpoints: {}
+            },
           });
         }
       );
