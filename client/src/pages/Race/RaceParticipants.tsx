@@ -10,7 +10,6 @@ import {
 } from "../../state/actions/RaceDetails";
 import { displayTime } from "../../util/timeUtils";
 import {
-  compileResults,
   getDistanceCheckpoints,
   runnerAtCheckpoint,
   runnerDistance,
@@ -28,7 +27,7 @@ export function RaceParticipants({
   const { raceId } = match.params;
   const dispatch = useDispatch();
   const location: any = useLocation();
-  const { race, authorization, password, loading, success } = useSelector(
+  const { race, authorization, password, loading, success, allResults } = useSelector(
     (state: RootStore) => state.raceDetails
   );
   const hasStarted = race && race.startTime < Date.now();
@@ -77,8 +76,6 @@ export function RaceParticipants({
       setSaveInProgress(false);
     }
   }, [loading]);
-
-  const allResults = hasStarted ? compileResults(race) : undefined;
   
   return (
     <>

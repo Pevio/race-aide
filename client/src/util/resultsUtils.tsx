@@ -3,12 +3,17 @@ import {
   CheckpointDetails,
   CheckpointDistance,
   FullRace,
+  Race,
   RaceResult,
   RaceResultsFull,
   ResultCheckpointInfo,
   Runner,
   RunnerDistance,
 } from "../types/generalTypes";
+
+export const raceHasStarted = (race: FullRace | Race): boolean => {
+  return Date.now() > race.startTime
+}
 
 /**
  * gets a compiled version of the checkpoints of a race

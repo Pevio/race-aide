@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 import { Runner } from "../../types/generalTypes";
 import { RouteComponentProps } from "react-router";
 import { tableProps } from "../../util/table";
-import { compileResults, runnerDistance } from "../../util/resultsUtils";
+import { runnerDistance } from "../../util/resultsUtils";
 import { displayTime } from "../../util/timeUtils";
 
 interface RaceHomeProps {
@@ -15,7 +15,7 @@ export function RaceHome({
   match,
   history,
 }: RouteComponentProps<RaceHomeProps>) {
-  const { race, loading } = useSelector(
+  const { race, loading, allResults } = useSelector(
     (state: RootStore) => state.raceDetails
   );
   const hasStarted = race && race.startTime < Date.now();
@@ -35,7 +35,7 @@ export function RaceHome({
     );
   }
   const runnerArray: Runner[] = Object.values(race?.runners || []);
-  const allResults = hasStarted ? compileResults(race) : undefined;
+  
   return (
     <>
       <h1>{`${race.raceName} Race Home`}</h1>

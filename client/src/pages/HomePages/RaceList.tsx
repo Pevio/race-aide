@@ -7,6 +7,7 @@ import DataTable from "react-data-table-component";
 import { DateTime } from "luxon";
 import { useHistory } from "react-router";
 import { tableProps } from "../../util/table";
+import { setSelectedRace } from "../../state/actions/RaceDetails";
 
 export function RaceList() {
   const dispatch = useDispatch();
@@ -22,10 +23,10 @@ export function RaceList() {
   return (
     <>
       <h1>Upcoming Races</h1>
-      <p style={{ marginTop: 32 }}>
+      <p style={{ marginTop: 8 }}>
         Click on a race to find out more details for it.
       </p>
-      <div style={{ marginTop: 10 }}>
+      <div style={{ marginTop: 16 }}>
         <input
           type="radio"
           id="radio-timezone-local"
@@ -73,7 +74,10 @@ export function RaceList() {
         data={races}
         keyField="raceId"
         noDataComponent={<p>There are no races available.</p>}
-        onRowClicked={(race) => history.push(`/${race.raceId}`)}
+        onRowClicked={(race) => {
+          dispatch(setSelectedRace(undefined, true))
+          history.push(`/${race.raceId}`)
+        }}
         pointerOnHover
         {...tableProps}
       />

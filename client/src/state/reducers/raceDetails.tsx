@@ -1,4 +1,6 @@
-import { FullRace, RaceAuthorization } from "../../types/generalTypes";
+import { FullRace, RaceAuthorization, RaceResultsFull } from "../../types/generalTypes";
+import { compileResults, raceHasStarted } from "../../util/resultsUtils";
+
 export const SET_SELECTED_RACE = "SET_SELECTED_RACE";
 export const SET_RACE_LOADING = "SET_RACE_LOADING";
 export const SET_RACE_PASSWORD = "SET_RACE_PASSWORD";
@@ -10,6 +12,7 @@ interface RaceListState {
   loading: boolean;
   password?: string;
   authorization?: RaceAuthorization;
+  allResults?: RaceResultsFull;
 }
 const initialState: RaceListState = {
   success: true,
@@ -58,14 +61,17 @@ export default function raceDetails(
             `race-password-${action.payload.race.raceId}`
           ) as string
         );
-        // TODO: possibly validate the password right now.
       }
+
+      const results: RaceResultsFull | undefined = action.payload.race && raceHasStarted(action.payload.race) ? compileResults(action.payload.race) : undefined;
+
       return {
         ...state,
         race: action.payload.race,
         success: action.payload.success,
         loading: false,
         ...storage,
+        allResults: results
       };
     case SET_RACE_LOADING:
       return {
