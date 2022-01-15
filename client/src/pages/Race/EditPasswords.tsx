@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RouteComponentProps } from "react-router";
+import { updateRacePasswords } from "../../state/actions/RaceDetails";
 
 interface EditPasswordProps {
   raceId: string;
@@ -11,12 +12,16 @@ export function EditRacePasswords({
   match,
   history,
 }: RouteComponentProps<EditPasswordProps>) {
+  const dispatch = useDispatch()
+  const { raceId } = match.params;
+
   const { race, password } = useSelector(
     (state: RootStore) => state.raceDetails
   );
 
+  const [submitClicked, setSubmitClicked] = useState<boolean>(false);
   const [adminPassword, setAdminPassword] = useState<string>(password || "");
-  const [assistantPassword, setAssistantPassword] = useState<string>("");
+  const [checkpointPassword, setCheckpointPassword] = useState<string>("");
   const [showPasswords, setShowPasswords] = useState<boolean>(false);
   const inputType = showPasswords ? "text" : "password";
 
@@ -49,14 +54,14 @@ export function EditRacePasswords({
           />
         </div>
         <div style={{ marginTop: 10 }}>
-          <label htmlFor="assistant-password">Assistant Password</label>
+          <label htmlFor="checkpoint-password">Checkpoint Password</label>
           <input
             style={{ marginLeft: 10, width: 300 }}
             type={inputType}
-            id="assistant-password"
-            value={assistantPassword}
+            id="checkpoint-password"
+            value={checkpointPassword}
             onChange={(e) => {
-              setAssistantPassword(e.target.value);
+              setCheckpointPassword(e.target.value);
             }}
           />
         </div>
@@ -68,7 +73,11 @@ export function EditRacePasswords({
         </input>
       </div>
       <div>
-        <button onClick={() => {}}>Save Passwords</button>
+        <button onClick={() => {
+          if (submitClicked) return
+          dispatch(updateRacePasswords(raceId, password || "", adminPassword, checkpointPassword))
+          setSubmitClicked(true);
+        }}>Save Passwords</button>
       </div>
     </>
   );

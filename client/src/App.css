@@ -43,7 +43,7 @@
   border-left: 10px solid transparent;
   padding-left: 10px;
   min-width: 120px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .datepicker {
@@ -62,6 +62,7 @@
   color: red;
   transition: 0.3s;
   transition-property: color;
+  font-weight: bold;
 }
 .highlight-button:hover {
   color: darkred;

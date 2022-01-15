@@ -21,7 +21,7 @@ export function HomePageWrapper(props: Props) {
               backgroundColor: location.pathname === to ? "green" : "transparent",
             }}
           />
-          <Link to={to} className="sider-link highlight-button">
+          <Link to={to} className="highlight-button sider-link">
             {text}
           </Link>
         </div>

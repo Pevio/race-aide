@@ -41,6 +41,7 @@ export function RaceHome({
             href={race?.raceDetails.website}
             target="_blank" // Open in new tab
             rel="noopener noreferrer" // For security
+            className="highlight-button"
           >
             Race Website
           </a>
@@ -53,6 +54,7 @@ export function RaceHome({
             href={race?.raceDetails.registration}
             target="_blank" // Open in new tab
             rel="noopener noreferrer" // For security
+            className="highlight-button"
           >
             Registration
           </a>
