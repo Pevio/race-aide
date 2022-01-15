@@ -2,8 +2,8 @@ import { CSSProperties } from "react";
 
 export function About() {
   const pTagStyles: CSSProperties = {
-    marginTop: 8
-  }
+    marginTop: 8,
+  };
   return (
     <>
       <h1>About Race Aide</h1>

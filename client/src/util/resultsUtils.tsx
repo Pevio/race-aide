@@ -12,8 +12,8 @@ import {
 } from "../types/generalTypes";
 
 export const raceHasStarted = (race?: FullRace | Race): boolean => {
-  return (race !== undefined) && (Date.now() > race.startTime)
-}
+  return race !== undefined && Date.now() > race.startTime;
+};
 
 /**
  * gets a compiled version of the checkpoints of a race
@@ -114,7 +114,7 @@ export const runnerAtCheckpoint = (
 ): number | undefined => {
   const timestamp = runner.checkpointInfo[checkpointIndex]?.timestamp;
   if (!timestamp) return undefined;
-  return timestamp - (runner.offset * 1000);
+  return timestamp - runner.offset * 1000;
 };
 export const runnerDistance = (runner: RaceResult): RunnerDistance => {
   if (!runner) return { distance: 0, lastTime: 0 };
@@ -123,6 +123,6 @@ export const runnerDistance = (runner: RaceResult): RunnerDistance => {
   if (!lastDistance?.timestamp) return { distance: 0, lastTime: 0 };
   return {
     distance: lastDistance.distance,
-    lastTime: lastDistance.timestamp - (runner.offset * 1000),
+    lastTime: lastDistance.timestamp - runner.offset * 1000,
   };
 };

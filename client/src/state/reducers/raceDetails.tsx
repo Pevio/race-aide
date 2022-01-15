@@ -1,4 +1,8 @@
-import { FullRace, RaceAuthorization, RaceResultsFull } from "../../types/generalTypes";
+import {
+  FullRace,
+  RaceAuthorization,
+  RaceResultsFull,
+} from "../../types/generalTypes";
 import { compileResults, raceHasStarted } from "../../util/resultsUtils";
 
 export const SET_SELECTED_RACE = "SET_SELECTED_RACE";
@@ -63,7 +67,10 @@ export default function raceDetails(
         );
       }
 
-      const results: RaceResultsFull | undefined = action.payload.race && raceHasStarted(action.payload.race) ? compileResults(action.payload.race) : undefined;
+      const results: RaceResultsFull | undefined =
+        action.payload.race && raceHasStarted(action.payload.race)
+          ? compileResults(action.payload.race)
+          : undefined;
 
       return {
         ...state,
@@ -71,7 +78,7 @@ export default function raceDetails(
         success: action.payload.success,
         loading: false,
         ...storage,
-        allResults: results
+        allResults: results,
       };
     case SET_RACE_LOADING:
       return {

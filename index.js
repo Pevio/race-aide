@@ -73,7 +73,7 @@ const responseMessages = {
   402: "Invalid action for race checkpoint CRUD",
   403: "Checkpoint already exists",
   405: "Invalid fields for checkpoint entry",
-  406: "Invalid action for checkpoint entry"
+  406: "Invalid action for checkpoint entry",
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -110,10 +110,9 @@ app.post("/api/createrace", (req, res) => {
 
     // allows letters numbers, hyphens, and underscores
     if (!/^[A-Za-z0-9-_]+$/.test(race.raceId)) {
-      returnError(res, 103)
+      returnError(res, 103);
       return;
     }
-
 
     const adminPassword = encrypt(genericKey, race.adminPassword);
     const checkpointPassword = encrypt(genericKey, race.checkpointPassword);
@@ -138,7 +137,7 @@ app.post("/api/createrace", (req, res) => {
             race: {
               ...race,
               runners: {},
-              checkpoints: {}
+              checkpoints: {},
             },
           });
         }
@@ -386,74 +385,78 @@ app.post("/api/updateracecheckpoints", (req, res) => {
     return;
   }
   try {
-    client.query("SELECT races.race_id, admin_password, checkpoint_number, checkpoint_distances, runners_passed FROM public.races LEFT JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1", [raceId], (err, res2) => {
-      if (err) {
-        console.log(err);
-        returnError(res, 2);
-        return;
-      }
-      if (decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
-        returnError(res, 201);
-        return;
-      }
-
-      let statement = "";
-      const emptyRunners = {}
-      switch (body.action) {
-        case "CREATE":
-          statement = "INSERT INTO public.checkpoints (race_id, checkpoint_number, checkpoint_distances, runners_passed) VALUES ($1, $2, $3, $4)";
-          break;
-        case "UPDATE":
-          statement = "UPDATE public.checkpoints SET checkpoint_distances = $3 WHERE race_id = $1 AND checkpoint_number = $2";
-          break;
-        case "DELETE":
-          statement = "DELETE FROM public.checkpoints WHERE race_id = $1 AND checkpoint_number = $2";
-          break;
-      }
-
-      client.query(statement, [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, emptyRunners], (err, res3) => {
+    client.query(
+      "SELECT races.race_id, admin_password, checkpoint_number, checkpoint_distances, runners_passed FROM public.races LEFT JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1",
+      [raceId],
+      (err, res2) => {
         if (err) {
           console.log(err);
-          returnError(res, err.code === "23505" ? 403 : 2);
+          returnError(res, 2);
+          return;
+        }
+        if (decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
+          returnError(res, 201);
           return;
         }
 
-        const checkpoints = {}
-
-        res2.rows.forEach((row) => {
-          if (row.checkpoint_number) {
-            checkpoints[row.checkpoint_number] = {
-              checkpointNumber: row.checkpoint_number,
-              distances: row.checkpoint_distances,
-              runnersPassed: row.runners_passed,
-            }
-          }
-        });
+        let statement = "";
+        const emptyRunners = {};
         switch (body.action) {
           case "CREATE":
-            checkpoints[body.checkpoint.checkpointNumber] = {
-              checkpointNumber: body.checkpoint.checkpointNumber,
-              distances: body.checkpoint.distances,
-              runnersPassed: {}
-            }
+            statement = "INSERT INTO public.checkpoints (race_id, checkpoint_number, checkpoint_distances, runners_passed) VALUES ($1, $2, $3, $4)";
             break;
           case "UPDATE":
-            Object.values(checkpoints).forEach((check) => {
-              if (check.checkpointNumber === body.checkpoint.checkpointNumber) {
-                check.distances = body.checkpoint.distances;
-              }
-            })
+            statement = "UPDATE public.checkpoints SET checkpoint_distances = $3 WHERE race_id = $1 AND checkpoint_number = $2";
+            break;
           case "DELETE":
-            delete checkpoints[body.checkpoint.checkpointNumber]
+            statement = "DELETE FROM public.checkpoints WHERE race_id = $1 AND checkpoint_number = $2";
+            break;
         }
 
-        res.json({
-          responseMessage: "GOOD",
-          returnCode: 0,
-          checkpoints,
+        client.query(statement, [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, emptyRunners], (err, res3) => {
+          if (err) {
+            console.log(err);
+            returnError(res, err.code === "23505" ? 403 : 2);
+            return;
+          }
+
+          const checkpoints = {};
+
+          res2.rows.forEach((row) => {
+            if (row.checkpoint_number) {
+              checkpoints[row.checkpoint_number] = {
+                checkpointNumber: row.checkpoint_number,
+                distances: row.checkpoint_distances,
+                runnersPassed: row.runners_passed,
+              };
+            }
+          });
+          switch (body.action) {
+            case "CREATE":
+              checkpoints[body.checkpoint.checkpointNumber] = {
+                checkpointNumber: body.checkpoint.checkpointNumber,
+                distances: body.checkpoint.distances,
+                runnersPassed: {},
+              };
+              break;
+            case "UPDATE":
+              Object.values(checkpoints).forEach((check) => {
+                if (check.checkpointNumber === body.checkpoint.checkpointNumber) {
+                  check.distances = body.checkpoint.distances;
+                }
+              });
+            case "DELETE":
+              delete checkpoints[body.checkpoint.checkpointNumber];
+          }
+
+          res.json({
+            responseMessage: "GOOD",
+            returnCode: 0,
+            checkpoints,
+          });
         });
-      });
-    });
+      }
+    );
   } catch (err) {
     console.log(err);
     returnError(res, 1);
@@ -461,65 +464,69 @@ app.post("/api/updateracecheckpoints", (req, res) => {
 });
 
 app.post("/api/addcheckpointentry", (req, res) => {
-  const body = req?.body || {}
+  const body = req?.body || {};
   if (!body.password || !body.raceId || !body.bibNumber || !body.checkpointNumber) {
-    returnError(res, 405)
-    return
+    returnError(res, 405);
+    return;
   }
   if (!["CREATE", "DELETE"].includes(body.action)) {
-    returnError(res, 406)
-    return
+    returnError(res, 406);
+    return;
   }
 
   try {
-    client.query("SELECT races.race_id, admin_password, checkpoint_password, checkpoint_number, runners_passed from public.races JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1 AND checkpoint_number = $2", [body.raceId, body.checkpointNumber], (err, res2) => {
-      if (err) {
-        console.log(err)
-        returnError(res, 2);
-        return;
-      }
-      if (res2.rows.length === 0) {
-        returnError(res, 3);
-        return;
-      }
-      // Authenticate and allow either password to work
-      if (decrypt(res2.rows[0].checkpoint_password, body.password) !== genericKey && decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
-        returnError(res, 201);
-        return;
-      }
-
-      const dbInfo = res2.rows[0];
-      const resultRunnersPassed = {
-        ...dbInfo.runners_passed,
-        [body.bibNumber]: [...(dbInfo.runners_passed?.[body.bibNumber] || [])]
-      }
-      switch (body.action) {
-        case "CREATE":
-          resultRunnersPassed[body.bibNumber].push(Date.now())
-          break;
-        case "DELETE":
-          if (resultRunnersPassed[body.bibNumber]?.length > 0) {
-            resultRunnersPassed[body.bibNumber].slice(resultRunnersPassed[body.bibNumber].length - 1, 1)
-          }
-          break;
-        }
-
-      client.query("UPDATE public.checkpoints SET runners_passed=$3 WHERE race_id=$1 AND checkpoint_number=$2", [body.raceId, body.checkpointNumber, resultRunnersPassed], (err2, res3) => {
-        if (err2) {
-          console.log(err)
+    client.query(
+      "SELECT races.race_id, admin_password, checkpoint_password, checkpoint_number, runners_passed from public.races JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1 AND checkpoint_number = $2",
+      [body.raceId, body.checkpointNumber],
+      (err, res2) => {
+        if (err) {
+          console.log(err);
           returnError(res, 2);
           return;
         }
-        res.json({
-          responseMessage: "GOOD",
-          returnCode: 0,
-          previousEntry: {
-            bibNumber: body.bibNumber,
-            checkpointNumber: body.checkpointNumber
+        if (res2.rows.length === 0) {
+          returnError(res, 3);
+          return;
+        }
+        // Authenticate and allow either password to work
+        if (decrypt(res2.rows[0].checkpoint_password, body.password) !== genericKey && decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
+          returnError(res, 201);
+          return;
+        }
+
+        const dbInfo = res2.rows[0];
+        const resultRunnersPassed = {
+          ...dbInfo.runners_passed,
+          [body.bibNumber]: [...(dbInfo.runners_passed?.[body.bibNumber] || [])],
+        };
+        switch (body.action) {
+          case "CREATE":
+            resultRunnersPassed[body.bibNumber].push(Date.now());
+            break;
+          case "DELETE":
+            if (resultRunnersPassed[body.bibNumber]?.length > 0) {
+              resultRunnersPassed[body.bibNumber].slice(resultRunnersPassed[body.bibNumber].length - 1, 1);
+            }
+            break;
+        }
+
+        client.query("UPDATE public.checkpoints SET runners_passed=$3 WHERE race_id=$1 AND checkpoint_number=$2", [body.raceId, body.checkpointNumber, resultRunnersPassed], (err2, res3) => {
+          if (err2) {
+            console.log(err);
+            returnError(res, 2);
+            return;
           }
+          res.json({
+            responseMessage: "GOOD",
+            returnCode: 0,
+            previousEntry: {
+              bibNumber: body.bibNumber,
+              checkpointNumber: body.checkpointNumber,
+            },
+          });
         });
-      });
-    });
+      }
+    );
   } catch (err) {
     console.log(err);
     returnError(res, 1);
@@ -547,16 +554,20 @@ app.post("/api/updateracepasswords", (req, res) => {
         returnError(res, 201);
         return;
       }
-      client.query("UPDATE public.races SET admin_password=$2, checkpoint_password=$3 WHERE races.race_id=$1", [raceId, encrypt(genericKey, body.newAdminPassword), encrypt(genericKey, body.newCheckpointPassword)], (err2, res3) => {
-        if (err2) {
-          returnError(res, 2);
-          return;
+      client.query(
+        "UPDATE public.races SET admin_password=$2, checkpoint_password=$3 WHERE races.race_id=$1",
+        [raceId, encrypt(genericKey, body.newAdminPassword), encrypt(genericKey, body.newCheckpointPassword)],
+        (err2, res3) => {
+          if (err2) {
+            returnError(res, 2);
+            return;
+          }
+          res.json({
+            responseMessage: "GOOD",
+            returnCode: 0,
+          });
         }
-        res.json({
-          responseMessage: "GOOD",
-          returnCode: 0,
-        });
-      });
+      );
     });
   } catch (err) {
     console.log(err);

@@ -19,7 +19,7 @@ export function RaceHome({
   const { race, loading, allResults } = useSelector(
     (state: RootStore) => state.raceDetails
   );
-  const hasStarted = raceHasStarted(race)
+  const hasStarted = raceHasStarted(race);
 
   if (loading) {
     return (
@@ -36,7 +36,7 @@ export function RaceHome({
     );
   }
   const runnerArray: Runner[] = Object.values(race?.runners || []);
-  
+
   return (
     <>
       <h1>{`${race.raceName} Race Home`}</h1>

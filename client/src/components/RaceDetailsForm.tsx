@@ -117,7 +117,12 @@ export function RaceDetailsForm(props: Props) {
     <>
       {props.isUpdate && <h2>Edit Race Details</h2>}
       <p>
-        {`${props.isUpdate ? "Update" : "Enter"} all of your race details below.${!props.isUpdate && " Everything except Race ID will be editable later."}`}
+        {`${
+          props.isUpdate ? "Update" : "Enter"
+        } all of your race details below.${
+          !props.isUpdate &&
+          " Everything except Race ID will be editable later."
+        }`}
       </p>
       {getFormInputField("raceName", "Race Name")}
       {!props.isUpdate &&
@@ -188,7 +193,7 @@ export function RaceDetailsForm(props: Props) {
         </p>
       ) : (
         <>
-          <div className="container" style={{marginTop: 32}}>
+          <div className="container" style={{ marginTop: 32 }}>
             <h3>Security</h3>
             <p style={{ marginTop: 10, fontSize: 12 }}>
               Don't lose these passwords! You may not be able to get them back.
@@ -211,7 +216,7 @@ export function RaceDetailsForm(props: Props) {
         </>
       )}
       {!hasStarted && (
-        <div className="container" style={{marginTop: 32}}>
+        <div className="container" style={{ marginTop: 32 }}>
           <h3>Distances</h3>
           <p style={{ fontSize: 12 }}>
             For each race distance, add it here. Distances will always be in
@@ -271,9 +276,7 @@ export function RaceDetailsForm(props: Props) {
               onClick={() => {
                 if (
                   !newDistanceValue ||
-                  raceDetails.raceDetails?.distances.includes(
-                    newDistanceValue
-                  )
+                  raceDetails.raceDetails?.distances.includes(newDistanceValue)
                 )
                   return;
                 const newDistances = [
@@ -293,10 +296,9 @@ export function RaceDetailsForm(props: Props) {
               Add
             </button>
           </div>
-        
         </div>
       )}
-      <div className="container" style={{marginTop: 32}}>
+      <div className="container" style={{ marginTop: 32 }}>
         <h3>Extra Information</h3>
         <p style={{ margin: 0 }}>The following information is all optional:</p>
         {getFormInputField("website", "Website", undefined, true)}

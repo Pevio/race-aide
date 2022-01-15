@@ -75,7 +75,9 @@ export const updateRaceDetails =
       });
       const data = await res.json();
       if (data.returnCode === 0)
-        dispatch(setSelectedRace({...race, ...data.race}, data.returnCode === 0));
+        dispatch(
+          setSelectedRace({ ...race, ...data.race }, data.returnCode === 0)
+        );
     } catch (error) {
       dispatch(setRaceLoading(false, false));
     }

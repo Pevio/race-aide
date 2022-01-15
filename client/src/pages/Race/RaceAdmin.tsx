@@ -101,14 +101,12 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
               isUpdate
               onClickSubmit={(race: Partial<FullRace>) => {
                 if (saveInProgress) return;
-                setSaveInProgress(true)
+                setSaveInProgress(true);
                 dispatch(updateRaceDetails(race, raceData.password));
               }}
               defaultData={raceData.race}
             />
-            {errorMessage &&
-              <p style={{marginTop: 16}}>{errorMessage}</p>
-            }
+            {errorMessage && <p style={{ marginTop: 16 }}>{errorMessage}</p>}
           </>
         )}
       </>

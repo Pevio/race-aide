@@ -28,10 +28,9 @@ export function RaceParticipants({
   const { raceId } = match.params;
   const dispatch = useDispatch();
   const location: any = useLocation();
-  const { race, authorization, password, loading, success, allResults } = useSelector(
-    (state: RootStore) => state.raceDetails
-  );
-  const hasStarted = raceHasStarted(race)
+  const { race, authorization, password, loading, success, allResults } =
+    useSelector((state: RootStore) => state.raceDetails);
+  const hasStarted = raceHasStarted(race);
 
   const isAdmin = authorization === "RACE_ADMIN";
 
@@ -77,7 +76,7 @@ export function RaceParticipants({
       setSaveInProgress(false);
     }
   }, [loading]);
-  
+
   return (
     <>
       <h1>{`Race ${hasStarted ? "Results" : "Participants"}`}</h1>
@@ -149,7 +148,9 @@ export function RaceParticipants({
                   },
                   ...checkpointInfo.map(
                     (info: CheckpointDistance, checkpointIndex: number) => ({
-                      name: `${info.distance} Mile${info.distance === 1 ? "" : "s"}${
+                      name: `${info.distance} Mile${
+                        info.distance === 1 ? "" : "s"
+                      }${
                         checkpointIndex === checkpointInfo.length - 1
                           ? " (End)"
                           : ""
@@ -162,7 +163,7 @@ export function RaceParticipants({
                           ]?.checkpointInfo[checkpointIndex]?.timestamp;
                         if (!timestamp) return "";
                         return displayTime(
-                          (timestamp - (runner.offset * 1000) - race.startTime) /
+                          (timestamp - runner.offset * 1000 - race.startTime) /
                             1000,
                           true
                         );
@@ -263,7 +264,11 @@ export function RaceParticipants({
           }
           defaultSortFieldId={hasStarted ? "distance" : "name"}
         />
-      ) : <p>{`Select a distance to see ${hasStarted ? "Results" : "Participants"} for that race.`}</p>}
+      ) : (
+        <p>{`Select a distance to see ${
+          hasStarted ? "Results" : "Participants"
+        } for that race.`}</p>
+      )}
       {isAdmin && (
         <>
           <hr />
