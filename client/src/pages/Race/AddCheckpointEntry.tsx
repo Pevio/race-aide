@@ -17,7 +17,7 @@ export function AddCheckpointEntry({
   const { raceId, checkpointId } = match.params;
   const dispatch = useDispatch();
 
-  const {race, loading, success, password} = useSelector((state: RootStore) => state.raceDetails);
+  const {race, loading, success, password, authorization } = useSelector((state: RootStore) => state.raceDetails);
   const checkpointDetails: Checkpoint | undefined = race?.checkpoints[checkpointId]
 
   const [selectedBib, setSelectedBib] = useState<string>("");
@@ -36,6 +36,10 @@ export function AddCheckpointEntry({
       setSaveInProgress(false);
     }
   }, [loading]);
+
+  if (!authorization || !["RACE_ADMIN", "RACE_ASSISTANT"].includes(authorization)) {
+    return <Redirect to={`/${raceId}`} />
+  }
 
   if (!checkpointDetails) {
     if (loading) {

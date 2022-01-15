@@ -32,7 +32,7 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
           <p>If you have access to edit this race, enter the password below.</p>
           <div style={{ marginTop: 10 }}>
             <input
-              type="string"
+              type="password"
               value={enteredPassword}
               onChange={(e) => setEnteredPassword(e.target.value)}
             />

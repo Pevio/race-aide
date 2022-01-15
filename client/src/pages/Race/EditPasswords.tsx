@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
-import { RouteComponentProps } from "react-router";
+import { Redirect, RouteComponentProps } from "react-router";
 import { updateRacePasswords } from "../../state/actions/RaceDetails";
 
 interface EditPasswordProps {
@@ -15,7 +15,7 @@ export function EditRacePasswords({
   const dispatch = useDispatch()
   const { raceId } = match.params;
 
-  const { race, password, loading, success } = useSelector(
+  const { race, password, loading, success, authorization } = useSelector(
     (state: RootStore) => state.raceDetails
   );
 
@@ -46,7 +46,9 @@ export function EditRacePasswords({
       </>
     );
   }
-
+  if (authorization !== "RACE_ADMIN") {
+    return <Redirect to={`/${raceId}`} />
+  }
   return (
     <>
       <h1>Edit Race Passwords</h1>

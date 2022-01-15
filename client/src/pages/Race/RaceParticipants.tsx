@@ -111,17 +111,25 @@ export function RaceParticipants({
                     selector: (runner, index) => {
                       if (index !== undefined) return String(index + 1)
                       return "";
-                    }
+                    },
+                    id: "rank"
                   },
                   {
                     name: "Runner Name",
                     selector: (runner) => runner.runnerName,
-                    sortField: "runnerName"
+                    sortField: "runnerName",
+                    id: "name"
                   },
                   {
                     name: "Bib Number",
                     selector: (runner) => runner.bibNumber,
-                    sortField: "bibNumber"
+                    sortFunction: (r1: Runner, r2: Runner) => {
+                      const n1 = Number.parseFloat(r1.bibNumber)
+                      const n2 = Number.parseFloat(r2.bibNumber)
+                      if (!isNaN(n1) && !isNaN(n2)) return n1 - n2
+                      return r1.bibNumber.localeCompare(r2.bibNumber)
+                    },
+                    id: "bib"
                   },
                   ...checkpointInfo.map((info: CheckpointDistance, checkpointIndex: number) => ({
                     name: `${info.distance} Miles${checkpointIndex === checkpointInfo.length - 1 ? " (End)" : ""}`,
@@ -139,7 +147,8 @@ export function RaceParticipants({
                       if (t2 && !t1) return -1
                       if (t1 && t2) return t1 - t2;
                       return 0
-                    }
+                    },
+                    id: `checkpooint-${checkpointIndex}`
                   })),
                   {
                     name: "Distance",
@@ -158,26 +167,31 @@ export function RaceParticipants({
                       const distanceDiff = d1.distance - d2.distance
                       if (distanceDiff !== 0) return distanceDiff
                       return d2.lastTime - d1.lastTime
-                    }
+                    },
+                    id: "distance"
                   }
                 ]
               : [
                   {
                     name: "Runner Name",
                     selector: (runner) => runner.runnerName,
+                    id: "name"
                   },
                   {
                     name: "Bib Number",
                     selector: (runner) => runner.bibNumber,
+                    id: "bib"
                   },
                   {
                     name: "Distance",
                     selector: (runner) => `${runner.distance} Miles`,
+                    id: "distance"
                   },
                   {
                     name: "Start Time Offset",
                     selector: (runner) =>
                       runner.offset ? displayTime(runner.offset) : "-",
+                    id: "offset"
                   },
                 ]
           }
@@ -193,6 +207,8 @@ export function RaceParticipants({
                 }
               : undefined
           }
+          defaultSortAsc={!hasStarted}
+          defaultSortFieldId={hasStarted ? "distance" : "name"}
         />
       )}
       {isAdmin && (
