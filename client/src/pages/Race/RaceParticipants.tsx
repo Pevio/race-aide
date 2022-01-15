@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RouteComponentProps, useLocation } from "react-router";
 import DataTable from "react-data-table-component";
-import { CheckpointDistance, ResultCheckpointInfo, Runner } from "../../types/generalTypes";
-import { updateRaceParticipants } from "../../state/actions/RaceDetails";
+import { CheckpointDistance, Runner } from "../../types/generalTypes";
+import { getRaceDetails, updateRaceParticipants } from "../../state/actions/RaceDetails";
 import { displayTime } from "../../util/timeUtils";
-import { compileResults, getDistanceCheckpoints, runnerDistance } from "../../util/resultsUtils";
+import { compileResults, getDistanceCheckpoints, runnerAtCheckpoint, runnerDistance } from "../../util/resultsUtils";
 import { tableProps } from "../../util/table";
 
 interface ParticipantsProps {
@@ -17,6 +17,7 @@ export function RaceParticipants({
   match,
   history,
 }: RouteComponentProps<ParticipantsProps>) {
+  const { raceId } = match.params;
   const dispatch = useDispatch();
   const location: any = useLocation();
   const { race, authorization, password, loading, success } = useSelector(
@@ -73,7 +74,7 @@ export function RaceParticipants({
   return (
     <>
       <h1>{`Race ${hasStarted ? "Results" : "Participants"}`}</h1>
-      <div>
+      <div style={{position: "relative"}}>
         <span>Select a Distance:</span>
         <select
           onChange={(e) => {
@@ -91,6 +92,13 @@ export function RaceParticipants({
             </option>
           ))}
         </select>
+        <button
+          className="highlight-button"
+          style={{position: "absolute", right: 0}}
+          onClick={() => dispatch(getRaceDetails(raceId))}
+        >
+          {`Refresh ${hasStarted ? "Results" : "Participants"}`}
+        </button>
       </div>
       {isAdmin && <p style={{marginTop: 5}}>Click a runner to edit their details.</p>}
       {(!hasStarted || selectedDistance) && (
@@ -121,7 +129,13 @@ export function RaceParticipants({
                       return displayTime((timestamp - (runner.offset * 1000) - race.startTime) / 1000, true)
                     },
                     sortFunction: (r1: Runner, r2: Runner) => {
-                      return 0;
+                      if (!allResults) return 0;
+                      const t1 = runnerAtCheckpoint(allResults[String(selectedDistance)].runners[r1.bibNumber], checkpointIndex)
+                      const t2 = runnerAtCheckpoint(allResults[String(selectedDistance)].runners[r2.bibNumber], checkpointIndex)
+                      if (t1 && !t2) return -1;
+                      if (t2 && !t1) return -1
+                      if (t1 && t2) return t1 - t2;
+                      return 0
                     }
                   })),
                   {
@@ -136,7 +150,7 @@ export function RaceParticipants({
                     },
                     sortFunction: (r1, r2) => {
                       if (!allResults) return 0;
-                      const distanceDiff = runnerDistance(allResults[String(selectedDistance)].runners[r2.bibNumber]) - runnerDistance(allResults[String(selectedDistance)].runners[r1.bibNumber])
+                      const distanceDiff = runnerDistance(allResults[String(selectedDistance)].runners[r1.bibNumber]) - runnerDistance(allResults[String(selectedDistance)].runners[r2.bibNumber])
                       if (distanceDiff !== 0) return distanceDiff
                       return 0;
                       //const t1 = allResults[String(selectedDistance)].runners[r2.bibNumber].checkpointInfo

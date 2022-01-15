@@ -70,7 +70,7 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
 
     result[String(runner.distance)].checkpoints.forEach((checkpoint: CheckpointDistance, checkpointIndex: number) => {
       const runnersPassed: number[] | undefined = race.checkpoints[checkpoint.checkpointNumber]?.runnersPassed[key];
-      const index = iterationIndecies[checkpoint.checkpointNumber] || 0
+      const index: number = iterationIndecies[checkpoint.checkpointNumber] || 0
       if (runnersPassed && runnersPassed[index]) {
         const timestamp = runnersPassed[index]
         if (timestamp) lastNonUndefined = checkpointIndex;
@@ -87,17 +87,17 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
     })
 
     // Chop out checkpoints the runner hasn't gotten to yet
-    runnerResult.checkpointInfo = runnerResult.checkpointInfo.slice(0, lastNonUndefined);
+    runnerResult.checkpointInfo = runnerResult.checkpointInfo.slice(0, lastNonUndefined + 1);
 
-    result[String(runner.distance)].runners[runnerResult.bibNumber] = runnerResult
+    result[String(runner.distance)].runners[key] = runnerResult
   })
 
-  console.log(result);
+  
   return result;
 }
 
 export const runnerAtCheckpoint = (runner: RaceResult, checkpointIndex: number): number | undefined => {
-  const timestamp = runner.checkpointInfo[checkpointIndex].timestamp;
+  const timestamp = runner.checkpointInfo[checkpointIndex]?.timestamp;
   if (!timestamp) return undefined;
   return timestamp - (runner.offset * 1000)
 }

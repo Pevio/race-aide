@@ -126,7 +126,7 @@ export function CheckpointPage({
               ? (check) => {
                   if (hasStarted) {
                     history.push(
-                      `/${raceId}/addresults/${check.checkpointNumber}`
+                      `/${raceId}/addresults/${check.checkpointNumber}`, location.state
                     );
                     return
                   }
