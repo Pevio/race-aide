@@ -112,7 +112,7 @@ export function CheckpointPage({
             },
             {
               name: "Distance",
-              selector: (check) => check.distance + " Miles",
+              selector: (check) => check.distance + " Miles" + (check.distance === selectedDistance ? " (End)" : ""),
             },
           ]}
           data={checkpoints}
@@ -121,6 +121,7 @@ export function CheckpointPage({
           noDataComponent={
             <p>No checkpoints have been added to this distance yet.</p>
           }
+          pointerOnHover={isAdmin || isAssistant}
           onRowClicked={
             isAdmin || isAssistant
               ? (check) => {

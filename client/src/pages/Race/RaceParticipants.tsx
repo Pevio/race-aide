@@ -199,6 +199,7 @@ export function RaceParticipants({
           {...tableProps}
           keyField="bibNumber"
           noDataComponent={<p>There are no runners in this race yet.</p>}
+          pointerOnHover={isAdmin}
           onRowClicked={
             isAdmin
               ? (row) => {

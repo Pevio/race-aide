@@ -74,6 +74,7 @@ export function RaceList() {
         keyField="raceId"
         noDataComponent={<p>There are no races available.</p>}
         onRowClicked={(race) => history.push(`/${race.raceId}`)}
+        pointerOnHover
         {...tableProps}
       />
     </>

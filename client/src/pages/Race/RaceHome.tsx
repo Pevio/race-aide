@@ -4,6 +4,8 @@ import DataTable from "react-data-table-component";
 import { Runner } from "../../types/generalTypes";
 import { RouteComponentProps } from "react-router";
 import { tableProps } from "../../util/table";
+import { compileResults, runnerDistance } from "../../util/resultsUtils";
+import { displayTime } from "../../util/timeUtils";
 
 interface RaceHomeProps {
   raceId: string;
@@ -33,6 +35,7 @@ export function RaceHome({
     );
   }
   const runnerArray: Runner[] = Object.values(race?.runners || []);
+  const allResults = hasStarted ? compileResults(race) : undefined;
   return (
     <>
       <h1>{`${race.raceName} Race Home`}</h1>
@@ -81,14 +84,18 @@ export function RaceHome({
           { name: "Runner Name", selector: (runner) => runner.runnerName },
           { name: "Bib Number", selector: (runner) => runner.bibNumber },
           {
-            name: "Distance",
+            name: "Distance Running",
             selector: (runner) => runner.distance || "Unknown",
           },
           {
-            name: "Time",
+            name: "Distance Covered",
             omit: !hasStarted,
-            selector: (runner) => {
-              return "";
+            selector: (runner: Runner) => {
+              if (!allResults) return "";
+              const distance = runnerDistance(allResults[String(runner.distance)].runners[runner.bibNumber])
+              if (!distance) return "";
+              const timeString = displayTime((distance.lastTime - race.startTime) / 1000, true)
+              return `${distance.distance} Miles in ${timeString}`
             },
           },
         ]}
