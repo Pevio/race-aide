@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 import { Runner } from "../../types/generalTypes";
 import { RouteComponentProps } from "react-router";
 import { tableProps } from "../../util/table";
-import { runnerDistance } from "../../util/resultsUtils";
+import { raceHasStarted, runnerDistance } from "../../util/resultsUtils";
 import { displayTime } from "../../util/timeUtils";
 
 interface RaceHomeProps {
@@ -18,7 +18,7 @@ export function RaceHome({
   const { race, loading, allResults } = useSelector(
     (state: RootStore) => state.raceDetails
   );
-  const hasStarted = race && race.startTime < Date.now();
+  const hasStarted = raceHasStarted(race)
 
   if (loading) {
     return (

@@ -11,8 +11,8 @@ import {
   RunnerDistance,
 } from "../types/generalTypes";
 
-export const raceHasStarted = (race: FullRace | Race): boolean => {
-  return Date.now() > race.startTime
+export const raceHasStarted = (race?: FullRace | Race): boolean => {
+  return (race !== undefined) && (Date.now() > race.startTime)
 }
 
 /**

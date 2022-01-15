@@ -11,6 +11,7 @@ import {
 import { displayTime } from "../../util/timeUtils";
 import {
   getDistanceCheckpoints,
+  raceHasStarted,
   runnerAtCheckpoint,
   runnerDistance,
 } from "../../util/resultsUtils";
@@ -30,7 +31,7 @@ export function RaceParticipants({
   const { race, authorization, password, loading, success, allResults } = useSelector(
     (state: RootStore) => state.raceDetails
   );
-  const hasStarted = race && race.startTime < Date.now();
+  const hasStarted = raceHasStarted(race)
 
   const isAdmin = authorization === "RACE_ADMIN";
 
@@ -154,7 +155,7 @@ export function RaceParticipants({
                           : ""
                       }`,
                       selector: (runner: Runner) => {
-                        if (!allResults) return "";
+                        if (!allResults || !race) return "";
                         const timestamp =
                           allResults[String(selectedDistance)].runners[
                             runner.bibNumber

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RouteComponentProps, useLocation } from "react-router";
 import DataTable from "react-data-table-component";
-import { getDistanceCheckpoints } from "../../util/resultsUtils";
+import { getDistanceCheckpoints, raceHasStarted } from "../../util/resultsUtils";
 import { Checkpoint, CheckpointDetails, CheckpointDistance, RaceResult } from "../../types/generalTypes";
 import { updateRaceCheckpoints } from "../../state/actions/RaceDetails";
 import { tableProps } from "../../util/table";
@@ -26,7 +26,7 @@ export function CheckpointPage({
 
   const isAdmin = authorization === "RACE_ADMIN";
   const isAssistant = authorization === "RACE_ASSISTANT";
-  const hasStarted = race && race.startTime < Date.now();
+  const hasStarted = raceHasStarted(race)
 
   const [selectedDistance, setSelectedDistanceState] = useState<
     number | undefined
