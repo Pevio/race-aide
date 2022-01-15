@@ -6,6 +6,7 @@ import { RootStore } from "../../state/store";
 import DataTable from "react-data-table-component";
 import { DateTime } from "luxon";
 import { useHistory } from "react-router";
+import { tableProps } from "../../util/table";
 
 export function RaceList() {
   const dispatch = useDispatch();
@@ -21,7 +22,10 @@ export function RaceList() {
   return (
     <>
       <h1>Upcoming Races</h1>
-      <div>
+      <p style={{marginTop: 32}}>
+        Click on a race to find out more details for it.
+      </p>
+      <div style={{marginTop: 10}}>
         <input
           type="radio"
           id="radio-timezone-local"
@@ -68,12 +72,9 @@ export function RaceList() {
         ]}
         data={races}
         keyField="raceId"
-        responsive
-        striped
-        highlightOnHover
-        pointerOnHover
         noDataComponent={<p>There are no races available.</p>}
         onRowClicked={(race) => history.push(`/${race.raceId}`)}
+        {...tableProps}
       />
     </>
   );

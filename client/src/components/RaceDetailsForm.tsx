@@ -296,13 +296,6 @@ export function RaceDetailsForm(props: Props) {
                 Add
               </button>
             </div>
-            <h3>Checkpoints</h3>
-            <p style={{ fontSize: 12 }}>
-              Add all checkpoints here. Once the race begins, you will not be
-              able to add or change any checkpoints. Each checkpoint must have a
-              unique checkpoint number, and can be used any number of times for
-              any distance race.
-            </p>
           </>
         )}
       </div>

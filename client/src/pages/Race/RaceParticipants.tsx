@@ -7,6 +7,7 @@ import { CheckpointDistance, Runner } from "../../types/generalTypes";
 import { updateRaceParticipants } from "../../state/actions/RaceDetails";
 import { displayTime } from "../../util/timeUtils";
 import { getDistanceCheckpoints } from "../../util/resultsUtils";
+import { tableProps } from "../../util/table";
 
 interface ParticipantsProps {
   raceId: string;
@@ -82,7 +83,7 @@ export function RaceParticipants({
           value={selectedDistance || "ALL"}
           style={{ marginLeft: 10 }}
         >
-          {!hasStarted && <option value="ALL">Show All Distances</option>}
+          <option value="0">Select a Distance</option>
           {race?.raceDetails?.distances?.map((distance) => (
             <option key={distance} value={String(distance)}>
               {`${distance} Miles`}
@@ -90,15 +91,23 @@ export function RaceParticipants({
           ))}
         </select>
       </div>
-      {isAdmin && <p>Click a runner to edit their details.</p>}
+      {isAdmin && <p style={{marginTop: 5}}>Click a runner to edit their details.</p>}
       {(!hasStarted || selectedDistance) && (
         <DataTable
           columns={
             hasStarted && selectedDistance
               ? [
                   {
+                    name: "Rank",
+                    selector: (runner) => "rank"
+                  },
+                  {
                     name: "Runner Name",
                     selector: (runner) => runner.runnerName,
+                  },
+                  {
+                    name: "Bib Number",
+                    selector: (runner) => runner.bibNumber,
                   },
                   ...checkpointInfo.map((info: CheckpointDistance) => ({
                     name: `${info.distance} Miles`,
@@ -126,9 +135,7 @@ export function RaceParticipants({
                 ]
           }
           data={runnerArray}
-          highlightOnHover
-          responsive
-          striped
+          {...tableProps}
           keyField="bibNumber"
           noDataComponent={<p>There are no runners in this race yet.</p>}
           onRowClicked={
@@ -150,6 +157,7 @@ export function RaceParticipants({
               <h2>{makingNewRunner ? "Edit Runner" : "Add Runner"}</h2>
               <button
                 style={{ position: "absolute", right: 0 }}
+                className="highlight-button"
                 onClick={() => {
                   setMakingNewRunner(true);
                   setRunnerEditing(getDefaultRunnerData());
@@ -187,14 +195,17 @@ export function RaceParticipants({
                   }
                 />
               ) : (
-                <span>{runnerEditing.bibNumber}</span>
+                <>
+                  &nbsp;
+                  <span>{runnerEditing.bibNumber}</span>
+                </>
               )}
             </div>
             <div style={{ marginTop: 10 }}>
               <span>Distance:</span>
               <select
                 style={{ marginLeft: 10 }}
-                value={runnerEditing.distance}
+                value={runnerEditing.distance || 0}
                 onChange={(e) =>
                   setRunnerEditing({
                     ...runnerEditing,
@@ -202,7 +213,7 @@ export function RaceParticipants({
                   })
                 }
               >
-                <option key="not-selected">Select a Distance</option>
+                <option key="0">Select a Distance</option>
                 {race?.raceDetails?.distances?.map((distance) => (
                   <option key={distance} value={String(distance)}>
                     {`${distance} Miles`}
@@ -255,6 +266,8 @@ export function RaceParticipants({
               </button>
               {!makingNewRunner && (
                 <button
+                  className="highlight-button"
+                  style={{marginLeft: 32}}
                   onClick={() => {
                     if (!race || saveInProgress) return;
                     const newRunners = { ...race?.runners };

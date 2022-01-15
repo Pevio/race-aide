@@ -6,14 +6,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-overflow-scrolling: touch;
-  background-color: white;
+  background-color: #f8f8f8;
   height: 100vh;
 }
 
+/* These have to be separate classes */
 .root {
-  background-color: white;
+  background-color: #f8f8f8;
 }
-
 :root {
   --header-height: 100px;
   --sider-width: 200px;

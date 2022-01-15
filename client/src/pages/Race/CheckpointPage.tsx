@@ -6,6 +6,7 @@ import DataTable from "react-data-table-component";
 import { getDistanceCheckpoints } from "../../util/resultsUtils";
 import { Checkpoint, CheckpointDetails } from "../../types/generalTypes";
 import { updateRaceCheckpoints } from "../../state/actions/RaceDetails";
+import { tableProps } from "../../util/table";
 
 interface CheckpointProps {
   raceId: string;
@@ -115,9 +116,7 @@ export function CheckpointPage({
             },
           ]}
           data={checkpoints}
-          highlightOnHover
-          responsive
-          striped
+          {...tableProps}
           keyField="checkpointNumber"
           noDataComponent={
             <p>No checkpoints have been added to this distance yet.</p>

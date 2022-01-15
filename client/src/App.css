@@ -1,8 +1,8 @@
 .App {
   color: black;
-  background-color: #eeeeee;
 
   --main-red: #fa103c;
+  --main-red-faded: rgba(250, 16, 60, 0.5);
   --main-dark-red: #b10c31;
 }
 
@@ -44,7 +44,7 @@
 .sider-link {
   font-size: 16px !important;
   border-left: 10px solid transparent;
-  padding-left: 12px;
+  padding-left: 12px !important;
   min-width: 120px;
   margin-top: 10px;
 }
@@ -66,6 +66,9 @@
   transition: 0.3s;
   transition-property: color;
   font-weight: bold;
+  padding: 2px;
+  cursor: pointer;
+  background-color: transparent;
 }
 .highlight-button:hover {
   color: var(--main-dark-red);
@@ -83,11 +86,13 @@
   font-weight: bold;
   background-color: var(--main-red);
   border-radius: 10px;
+  padding: 6px 16px;
+  cursor: pointer;
 }
-.highlight-button:hover {
+.clickable-button:hover {
   background-color: var(--main-dark-red);
 }
-.highlight-button:focus {
+.clickable-button:focus {
   background-color: var(--main-dark-red);
 }
 
@@ -95,7 +100,7 @@
 /* Overriding HTML Elements */
 
 h1 {
-  font-size: 16px;
+  font-size: 18px;
   color: black;
   font-weight: bold;
 }
@@ -112,7 +117,7 @@ h3 {
 
 input[type="text"],
 input[type="number"] {
-  height: 22px;
+  height: 25px;
   font-size: 14px;
 }
 input {
@@ -122,10 +127,10 @@ input {
   outline: none;
 }
 input:hover {
-  border-color: pink;
+  border-color: var(--main-red-faded);
 }
 input:focus {
-  border-color: pink;
+  border-color: var(--main-red-faded);
 }
 select {
   border: 1px solid #cccccc;
@@ -137,8 +142,8 @@ select {
   min-width: 180px;
 }
 select:hover {
-  border-color: pink;
+  border-color: var(--main-red-faded);
 }
 select:focus {
-  border-color: pink;
+  border-color: var(--main-red-faded);
 }

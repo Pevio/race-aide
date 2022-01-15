@@ -3,6 +3,7 @@ import { RootStore } from "../../state/store";
 import DataTable from "react-data-table-component";
 import { Runner } from "../../types/generalTypes";
 import { RouteComponentProps } from "react-router";
+import { tableProps } from "../../util/table";
 
 interface RaceHomeProps {
   raceId: string;
@@ -92,9 +93,7 @@ export function RaceHome({
           },
         ]}
         data={runnerArray}
-        highlightOnHover
-        responsive
-        striped
+        {...tableProps}
         keyField="bibNumber"
         noDataComponent={<p>There are no runners in this race yet.</p>}
       />
