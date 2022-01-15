@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { RaceDetailsForm } from "../../components/RaceDetailsForm";
@@ -24,6 +24,19 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
 
   const [enteredPassword, setEnteredPassword] = useState<string>("");
   const [passwordError, setPasswordError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!raceData.loading && saveInProgress) {
+      if (raceData.success) {
+        setErrorMessage("Race details saved successfully!");
+      } else {
+        setErrorMessage("Race details could not be saved.");
+      }
+      setSaveInProgress(false);
+    }
+  }, [raceData.loading]);
 
   const getMainContent = () => {
     if (!raceData.authorization) {
@@ -83,13 +96,20 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
           </button>
         </p>
         {raceData.authorization === "RACE_ADMIN" && (
-          <RaceDetailsForm
-            isUpdate
-            onClickSubmit={(race: Partial<FullRace>) => {
-              dispatch(updateRaceDetails(race, raceData.password));
-            }}
-            defaultData={raceData.race}
-          />
+          <>
+            <RaceDetailsForm
+              isUpdate
+              onClickSubmit={(race: Partial<FullRace>) => {
+                if (saveInProgress) return;
+                setSaveInProgress(true)
+                dispatch(updateRaceDetails(race, raceData.password));
+              }}
+              defaultData={raceData.race}
+            />
+            {errorMessage &&
+              <p>{errorMessage}</p>
+            }
+          </>
         )}
       </>
     );

@@ -42,7 +42,7 @@ export function RaceHome({
       {race.raceDetails.website && (
         <>
           <a
-            href={race?.raceDetails.website}
+            href={"//" + race?.raceDetails.website}
             target="_blank" // Open in new tab
             rel="noopener noreferrer" // For security
             className="highlight-button"
@@ -56,7 +56,7 @@ export function RaceHome({
       {race.raceDetails.registration && (
         <>
           <a
-            href={race?.raceDetails.registration}
+            href={"//" + race?.raceDetails.registration}
             target="_blank" // Open in new tab
             rel="noopener noreferrer" // For security
             className="highlight-button"
