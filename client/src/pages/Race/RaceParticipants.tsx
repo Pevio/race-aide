@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RouteComponentProps, useLocation } from "react-router";
-import { RacePageWrapper } from "../RacePageWrapper";
 import DataTable from "react-data-table-component";
 import { CheckpointDistance, Runner } from "../../types/generalTypes";
 import { updateRaceParticipants } from "../../state/actions/RaceDetails";
@@ -70,7 +69,7 @@ export function RaceParticipants({
   }, [loading]);
 
   return (
-    <RacePageWrapper>
+    <>
       <h1>{`Race ${hasStarted ? "Results" : "Participants"}`}</h1>
       <div>
         <span>Select a Distance:</span>
@@ -274,6 +273,6 @@ export function RaceParticipants({
           </div>
         </>
       )}
-    </RacePageWrapper>
+    </>
   );
 }

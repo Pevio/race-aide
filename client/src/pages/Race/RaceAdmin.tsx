@@ -11,7 +11,6 @@ import {
   FullRace,
   RaceAuthorizationDescription,
 } from "../../types/generalTypes";
-import { RacePageWrapper } from "../RacePageWrapper";
 
 interface AdminProps {
   raceId: string;
@@ -97,9 +96,9 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
   };
 
   return (
-    <RacePageWrapper>
+    <>
       <h1>Admin Tools</h1>
       {getMainContent()}
-    </RacePageWrapper>
+    </>
   );
 }

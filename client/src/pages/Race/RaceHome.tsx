@@ -1,6 +1,5 @@
 import { useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
-import { RacePageWrapper } from "../RacePageWrapper";
 import DataTable from "react-data-table-component";
 import { Runner } from "../../types/generalTypes";
 import { RouteComponentProps } from "react-router";
@@ -20,21 +19,21 @@ export function RaceHome({
 
   if (loading) {
     return (
-      <RacePageWrapper>
+      <>
         <p>Race Loading...</p>
-      </RacePageWrapper>
+      </>
     );
   }
   if (!race) {
     return (
-      <RacePageWrapper>
+      <>
         <p>The race could not be loaded</p>
-      </RacePageWrapper>
+      </>
     );
   }
   const runnerArray: Runner[] = Object.values(race?.runners || []);
   return (
-    <RacePageWrapper>
+    <>
       <h1>{`${race.raceName} Race Home`}</h1>
       {race.raceDetails.website && (
         <>
@@ -84,6 +83,6 @@ export function RaceHome({
         keyField="bibNumber"
         noDataComponent={<p>There are no runners in this race yet.</p>}
       />
-    </RacePageWrapper>
+    </>
   );
 }

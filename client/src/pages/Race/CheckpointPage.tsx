@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RouteComponentProps, useLocation } from "react-router";
 import DataTable from "react-data-table-component";
-import { RacePageWrapper } from "../RacePageWrapper";
 import { getDistanceCheckpoints } from "../../util/resultsUtils";
 import { Checkpoint, CheckpointDetails } from "../../types/generalTypes";
 import { updateRaceCheckpoints } from "../../state/actions/RaceDetails";
@@ -66,7 +65,7 @@ export function CheckpointPage({
   }, [loading]);
 
   return (
-    <RacePageWrapper>
+    <>
       <h1>Race Checkpoints</h1>
       <p>
         Race Aide uses a checkpoint system to log results. Below you will see
@@ -330,6 +329,6 @@ export function CheckpointPage({
           </div>
         </>
       )}
-    </RacePageWrapper>
+    </>
   );
 }

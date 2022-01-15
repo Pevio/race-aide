@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getRaceList } from "../../state/actions/RaceList";
 import { RootStore } from "../../state/store";
-import { HomePageWrapper } from "../HomePageWrapper";
 import DataTable from "react-data-table-component";
 import { DateTime } from "luxon";
 import { useHistory } from "react-router";
@@ -20,7 +19,7 @@ export function RaceList() {
   }, []);
 
   return (
-    <HomePageWrapper>
+    <>
       <h1>Upcoming Races</h1>
       <input
         type="radio"
@@ -74,6 +73,6 @@ export function RaceList() {
         noDataComponent={<p>There are no races available.</p>}
         onRowClicked={(race) => history.push(`/${race.raceId}`)}
       />
-    </HomePageWrapper>
+    </>
   );
 }

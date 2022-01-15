@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
-import { RacePageWrapper } from "../RacePageWrapper";
 import { RouteComponentProps } from "react-router";
 
 interface EditPasswordProps {
@@ -23,14 +22,14 @@ export function EditRacePasswords({
 
   if (!race) {
     return (
-      <RacePageWrapper>
+      <>
         <p>The race could not be loaded</p>
-      </RacePageWrapper>
+      </>
     );
   }
 
   return (
-    <RacePageWrapper>
+    <>
       <h1>Edit Race Passwords</h1>
       <p>Enter your new passwords below.</p>
       <div>
@@ -71,6 +70,6 @@ export function EditRacePasswords({
       <div>
         <button onClick={() => {}}>Save Passwords</button>
       </div>
-    </RacePageWrapper>
+    </>
   );
 }

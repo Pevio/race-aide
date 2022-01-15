@@ -1,8 +1,7 @@
-import { HomePageWrapper } from "../HomePageWrapper";
 
 export function About() {
   return (
-    <HomePageWrapper>
+    <>
       <h1>About Race Aide</h1>
       <p>
         At Race Aide, you don't have to worry about tracking your race. With
@@ -23,6 +22,6 @@ export function About() {
         checkpoint they were at, greatly assiting in potential searches
       </p>
       <p>For more information, contact Peter Gossell.</p>
-    </HomePageWrapper>
+    </>
   );
 }

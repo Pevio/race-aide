@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { HomePageWrapper } from "../HomePageWrapper";
 import { FullRace } from "../../types/generalTypes";
 import { createRace } from "../../state/actions/RaceDetails";
 import { RaceDetailsForm } from "../../components/RaceDetailsForm";
@@ -13,9 +12,9 @@ export function CreateRace() {
   };
 
   return (
-    <HomePageWrapper>
+    <>
       <h1>Create a New Race</h1>
       <RaceDetailsForm isUpdate={false} onClickSubmit={onSubmit} />
-    </HomePageWrapper>
+    </>
   );
 }

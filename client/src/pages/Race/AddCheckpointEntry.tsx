@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { Redirect, RouteComponentProps } from "react-router";
-import { RacePageWrapper } from "../RacePageWrapper";
 import { Checkpoint } from "../../types/generalTypes";
 import { addCheckpointEntry } from "../../state/actions/RaceDetails";
 
@@ -42,17 +41,17 @@ export function AddCheckpointEntry({
   if (!checkpointDetails) {
     if (loading) {
       return (
-        <RacePageWrapper>
+        <>
           <h1>Enter Checkpoint Information</h1>
           <p>Race Data Loading...</p>
-        </RacePageWrapper>
+        </>
       );
     }
     return <Redirect to={`/${raceId}/admin`} />;
   }
 
   return (
-    <RacePageWrapper>
+    <>
       <h1>Enter Checkpoint Information</h1>
       <div>
         <p>{`Selected Checkpoint: ${checkpointId}`}</p>
@@ -80,6 +79,6 @@ export function AddCheckpointEntry({
         </button>
         <p>{errorMessage}</p>
       </div>
-    </RacePageWrapper>
+    </>
   );
 }
