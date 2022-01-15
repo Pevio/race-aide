@@ -57,8 +57,8 @@ export interface ResultCheckpointInfo extends CheckpointDistance {
   timestamp?: number;
 }
 
-export interface RunnerAtCheckpoint {
-  bibNumber?: string; // If not provided
+export interface RunnerDistance {
+  lastTime: number; // If not provided
   distance: number;
 }
 export type RaceAuthorization = "RACE_ADMIN" | "RACE_ASSISTANT";

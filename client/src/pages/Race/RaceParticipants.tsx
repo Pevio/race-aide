@@ -150,10 +150,11 @@ export function RaceParticipants({
                     },
                     sortFunction: (r1, r2) => {
                       if (!allResults) return 0;
-                      const distanceDiff = runnerDistance(allResults[String(selectedDistance)].runners[r1.bibNumber]) - runnerDistance(allResults[String(selectedDistance)].runners[r2.bibNumber])
+                      const d1 = runnerDistance(allResults[String(selectedDistance)].runners[r1.bibNumber])
+                      const d2 = runnerDistance(allResults[String(selectedDistance)].runners[r2.bibNumber])
+                      const distanceDiff = d1.distance - d2.distance
                       if (distanceDiff !== 0) return distanceDiff
-                      return 0;
-                      //const t1 = allResults[String(selectedDistance)].runners[r2.bibNumber].checkpointInfo
+                      return d2.lastTime - d1.lastTime
                     }
                   }
                 ]
