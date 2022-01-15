@@ -84,15 +84,6 @@ const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   });
 };
 
-// Cached Data
-let raceListCache = [];
-let raceListUpdated = 0;
-
-let raceResultsCache = {};
-let raceResultsUpdated = 0;
-
-let raceUpdateBuffer = [];
-
 // API
 app.post("/api/createrace", (req, res) => {
   try {
@@ -160,15 +151,6 @@ app.post("/api/createrace", (req, res) => {
 });
 
 app.get("/api/getracelist", (req, res) => {
-  const now = Date.now();
-  if (raceListUpdated + 1000 > Date.now()) {
-    res.json({
-      races: raceListCache,
-      returnCode: 0,
-    });
-    return;
-  }
-
   try {
     client.query("SELECT race_id, race_name, city, start_time, timezone from public.races", (err, res2) => {
       if (err) {
@@ -185,8 +167,6 @@ app.get("/api/getracelist", (req, res) => {
           timezone: row.timezone,
         });
       });
-      raceListCache = newRaces;
-      raceListUpdated = now;
       res.json({
         responseMessage: "GOOD",
         returnCode: 0,
