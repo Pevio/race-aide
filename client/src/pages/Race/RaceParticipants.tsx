@@ -79,6 +79,7 @@ export function RaceParticipants({
   }, [loading]);
 
   const allResults = hasStarted ? compileResults(race) : undefined;
+  
   return (
     <>
       <h1>{`Race ${hasStarted ? "Results" : "Participants"}`}</h1>
@@ -128,6 +129,7 @@ export function RaceParticipants({
                     name: "Runner Name",
                     selector: (runner) => runner.runnerName,
                     sortField: "runnerName",
+                    sortable: true,
                     id: "name",
                   },
                   {
@@ -141,9 +143,15 @@ export function RaceParticipants({
                     },
                     id: "bib",
                   },
+                  {
+                    name: "Start Time Offset",
+                    selector: (runner) =>
+                      runner.offset ? displayTime(runner.offset) : "-",
+                    id: "offset",
+                  },
                   ...checkpointInfo.map(
                     (info: CheckpointDistance, checkpointIndex: number) => ({
-                      name: `${info.distance} Miles${
+                      name: `${info.distance} Mile${info.distance === 1 ? "" : "s"}${
                         checkpointIndex === checkpointInfo.length - 1
                           ? " (End)"
                           : ""
@@ -153,7 +161,7 @@ export function RaceParticipants({
                         const timestamp =
                           allResults[String(selectedDistance)].runners[
                             runner.bibNumber
-                          ].checkpointInfo[checkpointIndex]?.timestamp;
+                          ]?.checkpointInfo[checkpointIndex]?.timestamp;
                         if (!timestamp) return "";
                         return displayTime(
                           (timestamp - (runner.offset * 1000) - race.startTime) /
@@ -163,24 +171,24 @@ export function RaceParticipants({
                       },
                       sortFunction: (r1: Runner, r2: Runner) => {
                         if (!allResults) return 0;
-                        const t1 = runnerAtCheckpoint(
+                        const t1: number | undefined = runnerAtCheckpoint(
                           allResults[String(selectedDistance)].runners[
                             r1.bibNumber
                           ],
                           checkpointIndex
                         );
-                        const t2 = runnerAtCheckpoint(
+                        const t2: number | undefined = runnerAtCheckpoint(
                           allResults[String(selectedDistance)].runners[
                             r2.bibNumber
                           ],
                           checkpointIndex
                         );
-                        if (t1 && !t2) return -1;
+                        if (t1 && !t2) return 1;
                         if (t2 && !t1) return -1;
                         if (t1 && t2) return t1 - t2;
                         return 0;
                       },
-                      id: `checkpooint-${checkpointIndex}`,
+                      id: `checkpoint-${checkpointIndex}`,
                     })
                   ),
                   {
@@ -199,7 +207,7 @@ export function RaceParticipants({
                         distance.distance === 1 ? "" : "s"
                       }`;
                     },
-                    sortFunction: (r1, r2) => {
+                    sortFunction: (r1: Runner, r2: Runner) => {
                       if (!allResults) return 0;
                       const d1 = runnerDistance(
                         allResults[String(selectedDistance)].runners[
@@ -211,9 +219,9 @@ export function RaceParticipants({
                           r2.bibNumber
                         ]
                       );
-                      const distanceDiff = d1.distance - d2.distance;
+                      const distanceDiff = d2.distance - d1.distance;
                       if (distanceDiff !== 0) return distanceDiff;
-                      return d2.lastTime - d1.lastTime;
+                      return d1.lastTime - d2.lastTime;
                     },
                     id: "distance",
                   },
@@ -255,7 +263,6 @@ export function RaceParticipants({
                 }
               : undefined
           }
-          defaultSortAsc={!hasStarted}
           defaultSortFieldId={hasStarted ? "distance" : "name"}
         />
       )}
@@ -337,7 +344,7 @@ export function RaceParticipants({
               <input
                 type="number"
                 style={{ marginLeft: 10 }}
-                value={runnerEditing.offset}
+                value={runnerEditing.offset || 0}
                 onChange={(e) =>
                   setRunnerEditing({
                     ...runnerEditing,
