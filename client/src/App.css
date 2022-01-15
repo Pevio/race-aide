@@ -1,5 +1,6 @@
 .App {
   color: black;
+  min-width: 700px;
 
   --main-red: #fa103c;
   --main-red-faded: rgba(250, 16, 60, 0.5);
@@ -7,7 +8,7 @@
 }
 
 .page {
-  margin: 32px 32px 32px calc(var(--sider-width) + 64px);
+  margin: 16px 16px 16px calc(var(--sider-width) + 32px);
   padding-bottom: 64px;
   max-width: 1440px;
   font-size: 14px;
@@ -28,12 +29,12 @@
   top: 0px;
   margin-top: var(--header-height);
   height: calc(100% - var(--header-height));
-  padding-top: 32px;
-  background-color: #333333;
+  padding-top: 24px;
+  background-color: #404040;
   width: var(--sider-width);
   color: white;
   z-index: 0;
-  padding-left: 30px;
+  padding-left: 8px;
 }
 .sider hr {
   background-color: lightgray;
@@ -42,7 +43,8 @@
   margin: 0px;
 }
 .sider-bar {
-  width: 10px;
+  min-width: 10px;
+  max-width: 10px;
   height: 55px;
 }
 .sider-bar-active {
@@ -82,6 +84,7 @@
   padding: 2px;
   cursor: pointer;
   background-color: transparent;
+  text-decoration: none;
 }
 .highlight-button:hover {
   color: var(--main-dark-red);

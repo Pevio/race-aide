@@ -32,7 +32,7 @@ export function HomePageWrapper(props: Props) {
       <div className="header" style={{ display: "flex" }}>
         <img
           src={siteIcon}
-          style={{ height: 100, width: 100, marginLeft: 50 }}
+          style={{ height: 100, width: 100, marginLeft: 32 }}
           alt=""
         />
         <p
