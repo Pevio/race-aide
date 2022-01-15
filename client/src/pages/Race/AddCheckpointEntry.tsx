@@ -17,8 +17,11 @@ export function AddCheckpointEntry({
   const { raceId, checkpointId } = match.params;
   const dispatch = useDispatch();
 
-  const {race, loading, success, password, authorization } = useSelector((state: RootStore) => state.raceDetails);
-  const checkpointDetails: Checkpoint | undefined = race?.checkpoints[checkpointId]
+  const { race, loading, success, password, authorization } = useSelector(
+    (state: RootStore) => state.raceDetails
+  );
+  const checkpointDetails: Checkpoint | undefined =
+    race?.checkpoints[checkpointId];
 
   const [selectedBib, setSelectedBib] = useState<string>("");
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
@@ -27,10 +30,16 @@ export function AddCheckpointEntry({
   useEffect(() => {
     if (!loading && saveInProgress) {
       if (success) {
-        const runnerInfo = race?.runners[selectedBib]
-        const runnerPart = runnerInfo ? `, ${runnerInfo.runnerName}, running ${runnerInfo.distance} mile${runnerInfo.distance === 1 ? "" : "s"},` : ""
-        setErrorMessage(`Bib Number ${selectedBib}${runnerPart} saved successfully!`);
-        setSelectedBib("")
+        const runnerInfo = race?.runners[selectedBib];
+        const runnerPart = runnerInfo
+          ? `, ${runnerInfo.runnerName}, running ${runnerInfo.distance} mile${
+              runnerInfo.distance === 1 ? "" : "s"
+            },`
+          : "";
+        setErrorMessage(
+          `Bib Number ${selectedBib}${runnerPart} saved successfully!`
+        );
+        setSelectedBib("");
       } else {
         setErrorMessage("The runner entry could not be added.");
       }
@@ -38,8 +47,11 @@ export function AddCheckpointEntry({
     }
   }, [loading]);
 
-  if (!authorization || !["RACE_ADMIN", "RACE_ASSISTANT"].includes(authorization)) {
-    return <Redirect to={`/${raceId}`} />
+  if (
+    !authorization ||
+    !["RACE_ADMIN", "RACE_ASSISTANT"].includes(authorization)
+  ) {
+    return <Redirect to={`/${raceId}`} />;
   }
 
   if (!checkpointDetails) {
@@ -63,26 +75,34 @@ export function AddCheckpointEntry({
       <div style={{ marginTop: 20 }}>
         <span>Runner's Bib Number:</span>
         <input
-          style={{marginLeft: 10}}
+          style={{ marginLeft: 10 }}
           type="text"
           value={selectedBib || ""}
           onChange={(e) => setSelectedBib(e.target.value)}
         />
       </div>
-      <div style={{marginTop: 10}}>
+      <div style={{ marginTop: 10 }}>
         <button
           type="submit"
           className="clickable-button"
           onClick={() => {
             if (saveInProgress) return;
-            setSaveInProgress(true)
-            setErrorMessage("")
-            dispatch(addCheckpointEntry(raceId, checkpointId, selectedBib, "CREATE", password))
+            setSaveInProgress(true);
+            setErrorMessage("");
+            dispatch(
+              addCheckpointEntry(
+                raceId,
+                checkpointId,
+                selectedBib,
+                "CREATE",
+                password
+              )
+            );
           }}
         >
           Submit
         </button>
-        <p style={{marginTop: 16}}>{errorMessage}</p>
+        <p style={{ marginTop: 16 }}>{errorMessage}</p>
       </div>
     </>
   );

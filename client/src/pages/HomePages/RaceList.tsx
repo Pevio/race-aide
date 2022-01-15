@@ -22,10 +22,10 @@ export function RaceList() {
   return (
     <>
       <h1>Upcoming Races</h1>
-      <p style={{marginTop: 32}}>
+      <p style={{ marginTop: 32 }}>
         Click on a race to find out more details for it.
       </p>
-      <div style={{marginTop: 10}}>
+      <div style={{ marginTop: 10 }}>
         <input
           type="radio"
           id="radio-timezone-local"

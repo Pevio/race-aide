@@ -15,7 +15,9 @@ export function HomePageWrapper(props: Props) {
       <>
         <div style={{ display: "flex" }}>
           <div
-            className={`sider-bar ${location.pathname === to ? "sider-bar-active" : ""}`}
+            className={`sider-bar ${
+              location.pathname === to ? "sider-bar-active" : ""
+            }`}
           />
           <Link to={to} className="highlight-button sider-link">
             {text}

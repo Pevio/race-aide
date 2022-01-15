@@ -104,7 +104,8 @@ export function CheckpointPage({
           columns={[
             {
               name: "#",
-              selector: (check, index) => index !== undefined ? (index + 1) : "",
+              selector: (check, index) =>
+                index !== undefined ? index + 1 : "",
             },
             {
               name: "Checkpoint Number",
@@ -112,7 +113,10 @@ export function CheckpointPage({
             },
             {
               name: "Distance",
-              selector: (check) => check.distance + " Miles" + (check.distance === selectedDistance ? " (End)" : ""),
+              selector: (check) =>
+                check.distance +
+                " Miles" +
+                (check.distance === selectedDistance ? " (End)" : ""),
             },
           ]}
           data={checkpoints}
@@ -127,9 +131,10 @@ export function CheckpointPage({
               ? (check) => {
                   if (hasStarted) {
                     history.push(
-                      `/${raceId}/addresults/${check.checkpointNumber}`, location.state
+                      `/${raceId}/addresults/${check.checkpointNumber}`,
+                      location.state
                     );
-                    return
+                    return;
                   }
                   if (isAdmin) {
                     const editing = Object.values(race?.checkpoints || []).find(
@@ -179,7 +184,7 @@ export function CheckpointPage({
                 }
               />
             </div>
-            <div className="container" style={{padding: 16, marginTop: 16}}>
+            <div className="container" style={{ padding: 16, marginTop: 16 }}>
               <p>
                 Each checkpoint can be used for any number of races, and any
                 number of different distances within a race. Make sure to
@@ -243,7 +248,7 @@ export function CheckpointPage({
                     ))}
                   </select>
                 </div>
-                <div style={{marginTop: 10}}>
+                <div style={{ marginTop: 10 }}>
                   <span>Distance (Miles):</span>
                   <input
                     style={{ marginLeft: 10 }}

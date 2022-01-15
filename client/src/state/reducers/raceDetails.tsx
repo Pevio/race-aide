@@ -71,11 +71,11 @@ export default function raceDetails(
       return {
         ...state,
         loading: action.payload.isLoading,
-        success: action.payload.success
+        success: action.payload.success,
       };
     case SET_RACE_PASSWORD:
       if (state.race) {
-        const storageKey = `race-password-${state.race.raceId}`
+        const storageKey = `race-password-${state.race.raceId}`;
         if (action.payload.password) {
           localStorage.setItem(
             storageKey,
@@ -85,7 +85,7 @@ export default function raceDetails(
             })
           );
         } else {
-          localStorage.removeItem(storageKey)
+          localStorage.removeItem(storageKey);
         }
       }
 

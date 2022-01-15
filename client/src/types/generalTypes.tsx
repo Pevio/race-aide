@@ -30,7 +30,7 @@ export interface Runner {
 export interface Checkpoint {
   distances: CheckpointDetails[];
   checkpointNumber: string; // Key
-  runnersPassed: Record<string,  number[]>; // [bibNumber][index of the time this runner passed this checkpoint]
+  runnersPassed: Record<string, number[]>; // [bibNumber][index of the time this runner passed this checkpoint]
 }
 export interface CheckpointDetails {
   // This object does not have a key;
@@ -45,13 +45,13 @@ export interface CheckpointDistance {
 }
 
 // Results for a single runner
-export type RaceResultsFull = Record<string, RaceDistanceResults>
+export type RaceResultsFull = Record<string, RaceDistanceResults>;
 export interface RaceDistanceResults {
-  runners: Record<string, RaceResult>
-  checkpoints: CheckpointDistance[]
+  runners: Record<string, RaceResult>;
+  checkpoints: CheckpointDistance[];
 }
 export interface RaceResult extends Runner {
-  checkpointInfo: ResultCheckpointInfo[]
+  checkpointInfo: ResultCheckpointInfo[];
 }
 export interface ResultCheckpointInfo extends CheckpointDistance {
   timestamp?: number;

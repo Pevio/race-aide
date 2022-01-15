@@ -1,12 +1,17 @@
 import { Dispatch } from "redux";
 import { Race } from "../../types/generalTypes";
-import { SetRaceList, SetRaceListLoading, SET_RACE_LIST, SET_RACE_LIST_LOADING } from "../reducers/raceList";
+import {
+  SetRaceList,
+  SetRaceListLoading,
+  SET_RACE_LIST,
+  SET_RACE_LIST_LOADING,
+} from "../reducers/raceList";
 import { ThunkActionType } from "../store";
 
 export const getRaceList =
   (): ThunkActionType => async (dispatch: Dispatch) => {
     try {
-      dispatch(setRaceListLoading(true))
+      dispatch(setRaceListLoading(true));
       const res = await fetch("/api/getRaceList", {
         method: "GET",
       });
@@ -20,9 +25,9 @@ export const getRaceList =
 const setRaceListLoading = (isLoading: boolean): SetRaceListLoading => ({
   type: SET_RACE_LIST_LOADING,
   payload: {
-    isLoading
-  }
-})
+    isLoading,
+  },
+});
 const setRaceList = (races: Race[], success: boolean): SetRaceList => ({
   type: SET_RACE_LIST,
   payload: {

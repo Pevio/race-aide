@@ -1,6 +1,6 @@
 import { Race } from "../../types/generalTypes";
 export const SET_RACE_LIST = "SET_RACE_LIST";
-export const SET_RACE_LIST_LOADING = "SET_RACE_LIST_LOADING"
+export const SET_RACE_LIST_LOADING = "SET_RACE_LIST_LOADING";
 
 interface RaceListState {
   races: Race[];
@@ -42,8 +42,8 @@ export default function raceList(
     case SET_RACE_LIST_LOADING:
       return {
         ...state,
-        loading: action.payload.isLoading
-      }
+        loading: action.payload.isLoading,
+      };
     default:
       return state;
   }

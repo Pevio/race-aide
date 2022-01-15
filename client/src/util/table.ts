@@ -8,7 +8,7 @@ export const tableProps: Readonly<Partial<TableProps<any>>> = {
     table: {
       style: {
         marginTop: 20,
-      }
+      },
     },
-  }
-}
+  },
+};

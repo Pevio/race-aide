@@ -12,7 +12,7 @@ export function EditRacePasswords({
   match,
   history,
 }: RouteComponentProps<EditPasswordProps>) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { raceId } = match.params;
 
   const { race, password, loading, success, authorization } = useSelector(
@@ -30,8 +30,8 @@ export function EditRacePasswords({
     if (!loading && submitClicked) {
       if (success) {
         setErrorMessage("");
-        setAdminPassword("")
-        setCheckpointPassword("")
+        setAdminPassword("");
+        setCheckpointPassword("");
       } else {
         setErrorMessage("The checkpoint could not be saved.");
       }
@@ -47,7 +47,7 @@ export function EditRacePasswords({
     );
   }
   if (authorization !== "RACE_ADMIN") {
-    return <Redirect to={`/${raceId}`} />
+    return <Redirect to={`/${raceId}`} />;
   }
   return (
     <>
@@ -81,7 +81,7 @@ export function EditRacePasswords({
             }}
           />
         </div>
-        <div style={{marginTop: 10}}>
+        <div style={{ marginTop: 10 }}>
           <input
             type="checkbox"
             id="show-passwords"
@@ -90,12 +90,24 @@ export function EditRacePasswords({
           <label htmlFor="show-passwords">Show Passwords</label>
         </div>
       </div>
-      <div style={{marginTop: 10}}>
-        <button  className="clickable-button" onClick={() => {
-          if (submitClicked) return
-          dispatch(updateRacePasswords(raceId, password || "", adminPassword, checkpointPassword))
-          setSubmitClicked(true);
-        }}>Save Passwords</button>
+      <div style={{ marginTop: 10 }}>
+        <button
+          className="clickable-button"
+          onClick={() => {
+            if (submitClicked) return;
+            dispatch(
+              updateRacePasswords(
+                raceId,
+                password || "",
+                adminPassword,
+                checkpointPassword
+              )
+            );
+            setSubmitClicked(true);
+          }}
+        >
+          Save Passwords
+        </button>
       </div>
       <p>{errorMessage}</p>
     </>

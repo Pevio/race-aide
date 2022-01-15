@@ -8,19 +8,21 @@ import { useHistory } from "react-router";
 
 export function CreateRace() {
   const dispatch = useDispatch();
-  const history = useHistory()
-  const { race, loading, success } = useSelector((state: RootStore) => state.raceDetails);
+  const history = useHistory();
+  const { race, loading, success } = useSelector(
+    (state: RootStore) => state.raceDetails
+  );
 
   const onSubmit = (details: Partial<FullRace>) => {
-    setSubmitClicked(true)
+    setSubmitClicked(true);
     dispatch(createRace(details));
   };
 
-  const [submitClicked, setSubmitClicked] = useState<boolean>(false)
+  const [submitClicked, setSubmitClicked] = useState<boolean>(false);
   useEffect(() => {
     if (!loading && submitClicked) {
       if (success && race) {
-        history.push(`/${race.raceId}`)
+        history.push(`/${race.raceId}`);
       }
     }
   }, [loading]);

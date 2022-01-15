@@ -21,9 +21,11 @@ export function RaceDetailsForm(props: Props) {
     raceDetails: {
       distances: [],
       ...props.defaultData?.raceDetails,
-    }
-  })
-  const [raceDetails, setRaceDetails] = useState<Partial<FullRace>>(getDefaultRaceDetails());
+    },
+  });
+  const [raceDetails, setRaceDetails] = useState<Partial<FullRace>>(
+    getDefaultRaceDetails()
+  );
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [newDistanceValue, setNewDistanceValue] = useState<number>(0);
@@ -177,7 +179,10 @@ export function RaceDetailsForm(props: Props) {
       {props.isUpdate ? (
         <p style={{ marginTop: 10 }}>
           If you forgot your passwords, you can{" "}
-          <Link to={`/${raceDetails.raceId}/editpasswords`} className="highlight-button">
+          <Link
+            to={`/${raceDetails.raceId}/editpasswords`}
+            className="highlight-button"
+          >
             Change them now
           </Link>
           .
@@ -216,12 +221,7 @@ export function RaceDetailsForm(props: Props) {
           undefined,
           true
         )}
-        {getFormInputField(
-          "raceEmail",
-          "Race Email Address",
-          "",
-          true
-        )}
+        {getFormInputField("raceEmail", "Race Email Address", "", true)}
 
         {!hasStarted && (
           <>
@@ -282,7 +282,13 @@ export function RaceDetailsForm(props: Props) {
                 style={{ marginLeft: 10 }}
                 className="highlight-button"
                 onClick={() => {
-                  if (!newDistanceValue || raceDetails.raceDetails?.distances.includes(newDistanceValue)) return;
+                  if (
+                    !newDistanceValue ||
+                    raceDetails.raceDetails?.distances.includes(
+                      newDistanceValue
+                    )
+                  )
+                    return;
                   const newDistances = [
                     ...(raceDetails.raceDetails?.distances || []),
                     newDistanceValue,

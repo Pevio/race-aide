@@ -68,12 +68,12 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
     }
     return (
       <>
-        <p style={{marginBottom: 10}}>
+        <p style={{ marginBottom: 10 }}>
           <span>{`You are currently logged in as a ${
             RaceAuthorizationDescription[raceData.authorization]
           }.`}</span>
           <button
-             className="highlight-button"
+            className="highlight-button"
             style={{ marginLeft: 10 }}
             onClick={() => {
               dispatch(setRacePassword());

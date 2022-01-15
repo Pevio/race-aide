@@ -4,9 +4,17 @@ import { RootStore } from "../../state/store";
 import { RouteComponentProps, useLocation } from "react-router";
 import DataTable from "react-data-table-component";
 import { CheckpointDistance, Runner } from "../../types/generalTypes";
-import { getRaceDetails, updateRaceParticipants } from "../../state/actions/RaceDetails";
+import {
+  getRaceDetails,
+  updateRaceParticipants,
+} from "../../state/actions/RaceDetails";
 import { displayTime } from "../../util/timeUtils";
-import { compileResults, getDistanceCheckpoints, runnerAtCheckpoint, runnerDistance } from "../../util/resultsUtils";
+import {
+  compileResults,
+  getDistanceCheckpoints,
+  runnerAtCheckpoint,
+  runnerDistance,
+} from "../../util/resultsUtils";
 import { tableProps } from "../../util/table";
 
 interface ParticipantsProps {
@@ -74,7 +82,7 @@ export function RaceParticipants({
   return (
     <>
       <h1>{`Race ${hasStarted ? "Results" : "Participants"}`}</h1>
-      <div style={{position: "relative"}}>
+      <div style={{ position: "relative" }}>
         <span>Select a Distance:</span>
         <select
           onChange={(e) => {
@@ -94,13 +102,15 @@ export function RaceParticipants({
         </select>
         <button
           className="highlight-button"
-          style={{position: "absolute", right: 0}}
+          style={{ position: "absolute", right: 0 }}
           onClick={() => dispatch(getRaceDetails(raceId))}
         >
           {`Refresh ${hasStarted ? "Results" : "Participants"}`}
         </button>
       </div>
-      {isAdmin && <p style={{marginTop: 5}}>Click a runner to edit their details.</p>}
+      {isAdmin && (
+        <p style={{ marginTop: 5 }}>Click a runner to edit their details.</p>
+      )}
       {(!hasStarted || selectedDistance) && (
         <DataTable
           columns={
@@ -109,89 +119,126 @@ export function RaceParticipants({
                   {
                     name: "#",
                     selector: (runner, index) => {
-                      if (index !== undefined) return String(index + 1)
+                      if (index !== undefined) return String(index + 1);
                       return "";
                     },
-                    id: "rank"
+                    id: "rank",
                   },
                   {
                     name: "Runner Name",
                     selector: (runner) => runner.runnerName,
                     sortField: "runnerName",
-                    id: "name"
+                    id: "name",
                   },
                   {
                     name: "Bib Number",
                     selector: (runner) => runner.bibNumber,
                     sortFunction: (r1: Runner, r2: Runner) => {
-                      const n1 = Number.parseFloat(r1.bibNumber)
-                      const n2 = Number.parseFloat(r2.bibNumber)
-                      if (!isNaN(n1) && !isNaN(n2)) return n1 - n2
-                      return r1.bibNumber.localeCompare(r2.bibNumber)
+                      const n1 = Number.parseFloat(r1.bibNumber);
+                      const n2 = Number.parseFloat(r2.bibNumber);
+                      if (!isNaN(n1) && !isNaN(n2)) return n1 - n2;
+                      return r1.bibNumber.localeCompare(r2.bibNumber);
                     },
-                    id: "bib"
+                    id: "bib",
                   },
-                  ...checkpointInfo.map((info: CheckpointDistance, checkpointIndex: number) => ({
-                    name: `${info.distance} Miles${checkpointIndex === checkpointInfo.length - 1 ? " (End)" : ""}`,
-                    selector: (runner: Runner) => {
-                      if (!allResults) return "";
-                      const timestamp = allResults[String(selectedDistance)].runners[runner.bibNumber].checkpointInfo[checkpointIndex]?.timestamp
-                      if (!timestamp) return "";
-                      return displayTime((timestamp - (runner.offset * 1000) - race.startTime) / 1000, true)
-                    },
-                    sortFunction: (r1: Runner, r2: Runner) => {
-                      if (!allResults) return 0;
-                      const t1 = runnerAtCheckpoint(allResults[String(selectedDistance)].runners[r1.bibNumber], checkpointIndex)
-                      const t2 = runnerAtCheckpoint(allResults[String(selectedDistance)].runners[r2.bibNumber], checkpointIndex)
-                      if (t1 && !t2) return -1;
-                      if (t2 && !t1) return -1
-                      if (t1 && t2) return t1 - t2;
-                      return 0
-                    },
-                    id: `checkpooint-${checkpointIndex}`
-                  })),
+                  ...checkpointInfo.map(
+                    (info: CheckpointDistance, checkpointIndex: number) => ({
+                      name: `${info.distance} Miles${
+                        checkpointIndex === checkpointInfo.length - 1
+                          ? " (End)"
+                          : ""
+                      }`,
+                      selector: (runner: Runner) => {
+                        if (!allResults) return "";
+                        const timestamp =
+                          allResults[String(selectedDistance)].runners[
+                            runner.bibNumber
+                          ].checkpointInfo[checkpointIndex]?.timestamp;
+                        if (!timestamp) return "";
+                        return displayTime(
+                          (timestamp - runner.offset * 1000 - race.startTime) /
+                            1000,
+                          true
+                        );
+                      },
+                      sortFunction: (r1: Runner, r2: Runner) => {
+                        if (!allResults) return 0;
+                        const t1 = runnerAtCheckpoint(
+                          allResults[String(selectedDistance)].runners[
+                            r1.bibNumber
+                          ],
+                          checkpointIndex
+                        );
+                        const t2 = runnerAtCheckpoint(
+                          allResults[String(selectedDistance)].runners[
+                            r2.bibNumber
+                          ],
+                          checkpointIndex
+                        );
+                        if (t1 && !t2) return -1;
+                        if (t2 && !t1) return -1;
+                        if (t1 && t2) return t1 - t2;
+                        return 0;
+                      },
+                      id: `checkpooint-${checkpointIndex}`,
+                    })
+                  ),
                   {
                     name: "Distance",
                     selector: (runner) => {
                       if (!allResults) return "";
-                      const runnerResults = allResults[String(selectedDistance)].runners[runner.bibNumber]
-                      const distance = runnerDistance(runnerResults)
+                      const runnerResults =
+                        allResults[String(selectedDistance)].runners[
+                          runner.bibNumber
+                        ];
+                      const distance = runnerDistance(runnerResults);
                       if (!distance.distance) return "";
-                      if (distance.distance === runner.distance) return "Finished"
-                      return `${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`
+                      if (distance.distance === runner.distance)
+                        return "Finished";
+                      return `${distance.distance} Mile${
+                        distance.distance === 1 ? "" : "s"
+                      }`;
                     },
                     sortFunction: (r1, r2) => {
                       if (!allResults) return 0;
-                      const d1 = runnerDistance(allResults[String(selectedDistance)].runners[r1.bibNumber])
-                      const d2 = runnerDistance(allResults[String(selectedDistance)].runners[r2.bibNumber])
-                      const distanceDiff = d1.distance - d2.distance
-                      if (distanceDiff !== 0) return distanceDiff
-                      return d2.lastTime - d1.lastTime
+                      const d1 = runnerDistance(
+                        allResults[String(selectedDistance)].runners[
+                          r1.bibNumber
+                        ]
+                      );
+                      const d2 = runnerDistance(
+                        allResults[String(selectedDistance)].runners[
+                          r2.bibNumber
+                        ]
+                      );
+                      const distanceDiff = d1.distance - d2.distance;
+                      if (distanceDiff !== 0) return distanceDiff;
+                      return d2.lastTime - d1.lastTime;
                     },
-                    id: "distance"
-                  }
+                    id: "distance",
+                  },
                 ]
               : [
                   {
                     name: "Runner Name",
                     selector: (runner) => runner.runnerName,
-                    id: "name"
+                    id: "name",
                   },
                   {
                     name: "Bib Number",
                     selector: (runner) => runner.bibNumber,
-                    id: "bib"
+                    id: "bib",
                   },
                   {
                     name: "Distance",
                     selector: (runner) => `${runner.distance} Miles`,
-                    id: "distance"
+                    id: "distance",
                   },
                   {
                     name: "Start Time Offset",
                     selector: (runner) =>
                       runner.offset ? displayTime(runner.offset) : "-",
-                    id: "offset"
+                    id: "offset",
                   },
                 ]
           }
@@ -331,7 +378,7 @@ export function RaceParticipants({
               {!makingNewRunner && (
                 <button
                   className="highlight-button"
-                  style={{marginLeft: 32}}
+                  style={{ marginLeft: 32 }}
                   onClick={() => {
                     if (!race || saveInProgress) return;
                     const newRunners = { ...race?.runners };

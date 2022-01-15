@@ -27,7 +27,7 @@ export const getRaceDetails =
 
       dispatch(setSelectedRace(data.race, data.returnCode === 0));
     } catch (error) {
-      dispatch(setRaceLoading(false, false))
+      dispatch(setRaceLoading(false, false));
     }
   };
 
@@ -44,15 +44,15 @@ export const createRace =
         }),
       });
       const data = await res.json();
-      const success = data.returnCode === 0
+      const success = data.returnCode === 0;
       if (success) {
         dispatch(setSelectedRace(data.race, true));
-        dispatch(setRacePassword(race.adminPassword, "RACE_ADMIN"))
+        dispatch(setRacePassword(race.adminPassword, "RACE_ADMIN"));
       } else {
-        dispatch(setRaceLoading(false, false))
+        dispatch(setRaceLoading(false, false));
       }
     } catch (error) {
-      dispatch(setRaceLoading(false, false))
+      dispatch(setRaceLoading(false, false));
     }
   };
 
@@ -158,7 +158,7 @@ export const updateRacePasswords =
     raceId: string,
     password: string,
     newAdminPassword: string,
-    newCheckpointPassword: string,
+    newCheckpointPassword: string
   ): ThunkActionType =>
   async (dispatch: Dispatch) => {
     try {
@@ -170,15 +170,15 @@ export const updateRacePasswords =
           raceId,
           password,
           newAdminPassword,
-          newCheckpointPassword
+          newCheckpointPassword,
         }),
       });
       const data = await res.json();
-      const success = data.returnCode === 0
+      const success = data.returnCode === 0;
       dispatch(setRaceLoading(false, success));
 
       if (success) {
-        setRacePassword(newAdminPassword, "RACE_ADMIN")
+        setRacePassword(newAdminPassword, "RACE_ADMIN");
       }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
@@ -235,7 +235,10 @@ export const setRacePassword = (
     authorization,
   },
 });
-const setRaceLoading = (isLoading: boolean, success: boolean = false): SetRaceLoading => ({
+const setRaceLoading = (
+  isLoading: boolean,
+  success: boolean = false
+): SetRaceLoading => ({
   type: SET_RACE_LOADING,
   payload: {
     isLoading,

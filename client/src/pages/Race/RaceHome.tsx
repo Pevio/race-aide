@@ -49,7 +49,8 @@ export function RaceHome({
           >
             Race Website
           </a>
-          <br /><br />
+          <br />
+          <br />
         </>
       )}
       {race.raceDetails.registration && (
@@ -62,7 +63,8 @@ export function RaceHome({
           >
             Registration
           </a>
-          <br /><br />
+          <br />
+          <br />
         </>
       )}
       {race.raceDetails.raceEmail && (
@@ -81,21 +83,39 @@ export function RaceHome({
 
       <DataTable
         columns={[
-          { name: "Runner Name", selector: (runner: Runner) => runner.runnerName },
-          { name: "Bib Number", selector: (runner: Runner) => runner.bibNumber },
+          {
+            name: "Runner Name",
+            selector: (runner: Runner) => runner.runnerName,
+          },
+          {
+            name: "Bib Number",
+            selector: (runner: Runner) => runner.bibNumber,
+          },
           {
             name: "Distance Running",
-            selector: (runner: Runner) => `${runner.distance} Mile(${runner.distance === 1 ? "" : "s"})`,
+            selector: (runner: Runner) =>
+              `${runner.distance} Mile(${runner.distance === 1 ? "" : "s"})`,
           },
           {
             name: "Distance Covered",
             omit: !hasStarted,
             selector: (runner: Runner) => {
               if (!allResults) return "";
-              const distance = runnerDistance(allResults[String(runner.distance)].runners[runner.bibNumber])
+              const distance = runnerDistance(
+                allResults[String(runner.distance)].runners[runner.bibNumber]
+              );
               if (!distance) return "";
-              const timeString = displayTime((distance.lastTime - race.startTime) / 1000, true)
-              return `${distance.distance === runner.distance ? "Finished" : `${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`} in ${timeString}`
+              const timeString = displayTime(
+                (distance.lastTime - race.startTime) / 1000,
+                true
+              );
+              return `${
+                distance.distance === runner.distance
+                  ? "Finished"
+                  : `${distance.distance} Mile${
+                      distance.distance === 1 ? "" : "s"
+                    }`
+              } in ${timeString}`;
             },
           },
         ]}

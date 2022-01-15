@@ -4,15 +4,24 @@ import { HomePageWrapper } from "./pages/HomePageWrapper";
 import { RacePageWrapper } from "./pages/RacePageWrapper";
 
 export default function LayoutProvider() {
-  const location = useLocation()
+  const location = useLocation();
 
-  if (!location?.pathname) return null
-  const parts = location?.pathname?.split("/")
+  if (!location?.pathname) return null;
+  const parts = location?.pathname?.split("/");
 
-  if (!parts[1] || ["races", "about", "createrace"].includes(parts[1].toLowerCase())) return <HomePageWrapper><MainRouter /></HomePageWrapper>
+  if (
+    !parts[1] ||
+    ["races", "about", "createrace"].includes(parts[1].toLowerCase())
+  )
+    return (
+      <HomePageWrapper>
+        <MainRouter />
+      </HomePageWrapper>
+    );
 
-  return <RacePageWrapper>
-    <MainRouter />
-  </RacePageWrapper>
-
+  return (
+    <RacePageWrapper>
+      <MainRouter />
+    </RacePageWrapper>
+  );
 }

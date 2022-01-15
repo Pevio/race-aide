@@ -13,9 +13,7 @@ export function RacePageWrapper(props: Props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const raceId = location.pathname.split("/")[1];
-  const { race } = useSelector(
-    (state: RootStore) => state.raceDetails
-  );
+  const { race } = useSelector((state: RootStore) => state.raceDetails);
   const raceIsLoaded = race && race.raceId === raceId;
   const hasStarted = race && race.startTime < Date.now();
   useEffect(() => {
@@ -36,7 +34,9 @@ export function RacePageWrapper(props: Props) {
       <>
         <div style={{ display: "flex", ...style }}>
           <div
-            className={`sider-bar ${location.pathname === to ? "sider-bar-active" : ""}`}
+            className={`sider-bar ${
+              location.pathname === to ? "sider-bar-active" : ""
+            }`}
           />
           <Link
             to={{ pathname: to, state: location.state }}
