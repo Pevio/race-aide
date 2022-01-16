@@ -292,7 +292,7 @@ export function RaceParticipants({
               <input
                 type="text"
                 style={{ marginLeft: 10 }}
-                value={runnerEditing.runnerName}
+                value={runnerEditing.runnerName || ""}
                 onChange={(e) =>
                   setRunnerEditing({
                     ...runnerEditing,
@@ -307,7 +307,7 @@ export function RaceParticipants({
                 <input
                   type="text"
                   style={{ marginLeft: 10 }}
-                  value={runnerEditing.bibNumber}
+                  value={runnerEditing.bibNumber || ""}
                   onChange={(e) =>
                     setRunnerEditing({
                       ...runnerEditing,

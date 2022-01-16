@@ -122,7 +122,7 @@ export function CheckpointPage({
                 index !== undefined ? index + 1 : "",
             },
             {
-              name: "Checkpoint Number",
+              name: "Checkpoint Name",
               selector: (check) => check.checkpointNumber,
             },
             {
@@ -277,7 +277,7 @@ export function CheckpointPage({
           <div style={{ marginTop: 10 }}>
             <div style={{ display: "flex", position: "relative" }}>
               <h2>
-                {makingNewCheckpoint ? "Edit Checkpoint" : "Add Checkpoint"}
+                {`${makingNewCheckpoint ? "Add" : "Edit"} Checkpoint`}
               </h2>
               <button
                 style={{ position: "absolute", right: 0 }}
@@ -291,7 +291,7 @@ export function CheckpointPage({
               </button>
             </div>
             <div style={{ marginTop: 10 }}>
-              <span>Checkpoint Number:</span>
+              <span>Checkpoint Name:</span>
               <input
                 type="text"
                 style={{ marginLeft: 10 }}
@@ -386,7 +386,7 @@ export function CheckpointPage({
                     }}
                   />
                 </div>
-                {newDistance.raceDistance && newDistance.distance && (
+                {newDistance.raceDistance !== undefined && newDistance.distance && (
                   <button
                     className="highlight-button"
                     onClick={() => {
@@ -418,7 +418,7 @@ export function CheckpointPage({
                     !checkpointEditing.distances?.length
                   ) {
                     setErrorMessage(
-                      "Make sure you have a checkpoint number and at least one distance"
+                      "Make sure you have a Checkpoint Name and at least one distance"
                     );
                     return;
                   }
@@ -439,6 +439,8 @@ export function CheckpointPage({
               </button>
               {!makingNewCheckpoint && (
                 <button
+                  className="highlight-button"
+                  style={{marginLeft: 16}}
                   onClick={() => {
                     if (!race || saveInProgress) return;
                     setSaveInProgress(true);

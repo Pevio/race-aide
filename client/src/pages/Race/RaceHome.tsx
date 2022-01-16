@@ -124,7 +124,7 @@ export function RaceHome({
                 const distance = runnerDistance(
                   allResults[String(runner.distance)].runners[runner.bibNumber]
                 );
-                if (!distance) return "";
+                if (!distance.distance) return "0 Miles";
                 const timeString = displayTime(
                   (distance.lastTime - race.startTime) / 1000,
                   true
