@@ -121,6 +121,7 @@ export function RaceParticipants({
                       return "";
                     },
                     id: "rank",
+                    maxWidth: "32px"
                   },
                   {
                     name: "Runner Name",
@@ -371,15 +372,13 @@ export function RaceParticipants({
                     return;
                   }
                   setErrorMessage("");
-                  const newRunners = { ...race?.runners };
                   const enteredRunner: Runner = {
                     offset: 0,
                     ...runnerEditing,
                   } as Runner;
-                  newRunners[enteredRunner.bibNumber] = enteredRunner;
 
                   setSaveInProgress(true);
-                  dispatch(updateRaceParticipants(race, newRunners, password));
+                  dispatch(updateRaceParticipants(race, enteredRunner, makingNewRunner ? "CREATE" : "UPDATE", password));
                 }}
                 className="clickable-button"
               >
@@ -391,13 +390,11 @@ export function RaceParticipants({
                   style={{ marginLeft: 32 }}
                   onClick={() => {
                     if (!race || saveInProgress) return;
-                    const newRunners = { ...race?.runners };
-                    if (runnerEditing.bibNumber)
-                      delete newRunners[runnerEditing.bibNumber];
+                    setErrorMessage("");
 
                     setSaveInProgress(true);
                     dispatch(
-                      updateRaceParticipants(race, newRunners, password)
+                      updateRaceParticipants(race, runnerEditing as Runner, "DELETE", password)
                     );
                   }}
                 >

@@ -73,6 +73,27 @@ export function CheckpointPage({
     }
   }, [loading]);
 
+  const onRowClicked = isAdmin || isAssistant
+  ? (check: Checkpoint | CheckpointDistance) => {
+      if (hasStarted) {
+        history.push(
+          `/${raceId}/addresults/${check.checkpointNumber}`,
+          location.state
+        );
+        return;
+      }
+      if (isAdmin) {
+        const editing = Object.values(race?.checkpoints || []).find(
+          (checkpoint) =>
+            checkpoint.checkpointNumber === check.checkpointNumber
+        );
+        if (!editing) return;
+        setCheckpointEditing(editing);
+        setMakingNewCheckpoint(false);
+      }
+    }
+  : undefined
+
   return (
     <>
       <h1>Race Checkpoints</h1>
@@ -113,13 +134,14 @@ export function CheckpointPage({
           Click on a checkpoint to enter results for it.
         </p>
       )}
-      {selectedDistance && (
+      {selectedDistance ? (
         <DataTable
           columns={[
             {
               name: "#",
               selector: (check, index) =>
                 index !== undefined ? index + 1 : "",
+                maxWidth: "32px"
             },
             {
               name: "Checkpoint Name",
@@ -163,12 +185,12 @@ export function CheckpointPage({
                           runner.checkpointInfo.length >= checkpointIndex + 1
                         ) {
                           const thisTimestamp =
-                            runner.checkpointInfo[checkpointIndex].timestamp;
+                            runner.checkpointInfo[checkpointIndex]?.timestamp;
                           const previousTimestamp =
                             checkpointIndex === 0
                               ? (race?.startTime || 0) + runner.offset
                               : runner.checkpointInfo[checkpointIndex - 1]
-                                  .timestamp;
+                                  ?.timestamp;
                           if (
                             thisTimestamp !== undefined &&
                             previousTimestamp
@@ -214,12 +236,12 @@ export function CheckpointPage({
                           runner.checkpointInfo.length >= checkpointIndex + 1
                         ) {
                           const thisTimestamp =
-                            runner.checkpointInfo[checkpointIndex].timestamp;
+                            runner.checkpointInfo[checkpointIndex]?.timestamp;
                           const previousTimestamp =
                             checkpointIndex === 0
                               ? (race?.startTime || 0) + runner.offset
                               : runner.checkpointInfo[checkpointIndex - 1]
-                                  .timestamp;
+                                  ?.timestamp;
                           if (thisTimestamp && previousTimestamp) {
                             const diff = thisTimestamp - previousTimestamp;
                             if (
@@ -246,28 +268,16 @@ export function CheckpointPage({
             <p>No checkpoints have been added to this distance yet.</p>
           }
           pointerOnHover={isAdmin || isAssistant}
-          onRowClicked={
-            isAdmin || isAssistant
-              ? (check) => {
-                  if (hasStarted) {
-                    history.push(
-                      `/${raceId}/addresults/${check.checkpointNumber}`,
-                      location.state
-                    );
-                    return;
-                  }
-                  if (isAdmin) {
-                    const editing = Object.values(race?.checkpoints || []).find(
-                      (checkpoint) =>
-                        checkpoint.checkpointNumber === check.checkpointNumber
-                    );
-                    if (!editing) return;
-                    setCheckpointEditing(editing);
-                    setMakingNewCheckpoint(false);
-                  }
-                }
-              : undefined
-          }
+          onRowClicked={onRowClicked}
+        />
+      ) : (
+        <DataTable
+          columns={[{
+            name: "Checkpoint Name",
+            selector: (check) => check.checkpointNumber
+          }]}
+          data={Object.values(race?.checkpoints || {})}
+          onRowClicked={onRowClicked}
         />
       )}
       {isAdmin && !hasStarted && (

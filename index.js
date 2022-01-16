@@ -67,6 +67,9 @@ const responseMessages = {
 
   // Race Participants
   301: "Missing fields for race participants",
+  302: "Invalid action for race participant CRUD",
+  303: "Runner bibNumber already exists",
+  304: "Runner bibNumber does not exist",
 
   // Race Checkpoints
   401: "Missing fields for race checkpoints",
@@ -329,7 +332,11 @@ app.post("/api/updateracedetails", (req, res) => {
 app.post("/api/updateraceparticipants", (req, res) => {
   const body = req?.body || {};
   const raceId = body.raceId;
-  if (!body.password || !body.raceId || !(typeof body.runners === "object")) {
+  if (!["CREATE", "UPDATE", "DELETE"].includes(body.action)) {
+    returnError(res, 302)
+    return
+  }
+  if (!body.password || !body.raceId || !(typeof body.runner === "object")) {
     returnError(res, 301);
     return;
   }
@@ -348,6 +355,28 @@ app.post("/api/updateraceparticipants", (req, res) => {
         return;
       }
       let statement = "";
+      const runners = res2.rows[0].runners;
+      switch (body.action) {
+        case "CREATE":
+          if (runners[body.runner.bibNumber]) {
+            returnError(res, 303)
+            return
+          }
+          runners[body.runner.bibNumber] = body.runner;
+        case "UPDATE":
+          if (!runners[body.runner.bibNumber]) {
+            returnError(res, 304)
+            return
+          }
+          runners[body.runner.bibNumber] = body.runner;
+        case "DELETE":
+          if (!runners[body.runner.bibNumber]) {
+            returnError(res, 304)
+            return
+          }
+          delete runners[body.runner.bibNumber];
+      }
+
       if (res2.rows[0].runners) {
         // UPDATE
         statement = "UPDATE public.runners SET runners = $2 WHERE race_id = $1";
@@ -355,7 +384,7 @@ app.post("/api/updateraceparticipants", (req, res) => {
         // CREATE
         statement = "INSERT INTO public.runners (race_id, runners) VALUES ($1, $2)";
       }
-      client.query(statement, [raceId, body.runners], (err2, res3) => {
+      client.query(statement, [raceId, runners], (err2, res3) => {
         if (err2) {
           returnError(res, 2);
           return;
@@ -364,7 +393,7 @@ app.post("/api/updateraceparticipants", (req, res) => {
       res.json({
         responseMessage: "GOOD",
         returnCode: 0,
-        runners: body.runners,
+        runners: runners,
       });
     });
   } catch (err) {
@@ -400,20 +429,24 @@ app.post("/api/updateracecheckpoints", (req, res) => {
         }
 
         let statement = "";
+        let params = []
         const emptyRunners = {};
         switch (body.action) {
           case "CREATE":
             statement = "INSERT INTO public.checkpoints (race_id, checkpoint_number, checkpoint_distances, runners_passed) VALUES ($1, $2, $3, $4)";
+            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, emptyRunners]
             break;
           case "UPDATE":
             statement = "UPDATE public.checkpoints SET checkpoint_distances = $3 WHERE race_id = $1 AND checkpoint_number = $2";
+            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances]
             break;
           case "DELETE":
             statement = "DELETE FROM public.checkpoints WHERE race_id = $1 AND checkpoint_number = $2";
+            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances]
             break;
         }
 
-        client.query(statement, [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, emptyRunners], (err, res3) => {
+        client.query(statement, params, (err, res3) => {
           if (err) {
             console.log(err);
             returnError(res, err.code === "23505" ? 403 : 2);
@@ -440,11 +473,7 @@ app.post("/api/updateracecheckpoints", (req, res) => {
               };
               break;
             case "UPDATE":
-              Object.values(checkpoints).forEach((check) => {
-                if (check.checkpointNumber === body.checkpoint.checkpointNumber) {
-                  check.distances = body.checkpoint.distances;
-                }
-              });
+              checkpoints[body.checkpoint.checkpointNumber].distances = checkpoint.distances
             case "DELETE":
               delete checkpoints[body.checkpoint.checkpointNumber];
           }

@@ -40,6 +40,8 @@ export function AddCheckpointEntry({
           `Bib Number ${selectedBib}${runnerPart} saved successfully!`
         );
         setSelectedBib("");
+        const inputElement = document.getElementById("check-bib-number")
+        if (inputElement) inputElement.focus();
       } else {
         setErrorMessage("The runner entry could not be added.");
       }
@@ -77,6 +79,7 @@ export function AddCheckpointEntry({
         <input
           style={{ marginLeft: 10 }}
           type="text"
+          id="check-bib-number"
           value={selectedBib || ""}
           onChange={(e) => setSelectedBib(e.target.value)}
         />
