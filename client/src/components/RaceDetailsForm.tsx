@@ -220,7 +220,7 @@ export function RaceDetailsForm(props: Props) {
           <h3>Distances</h3>
           <p style={{ fontSize: 12 }}>
             For each race distance, add it here. Distances will always be in
-            miles.
+            miles. You must have at least one distance.
           </p>
           <div style={{ marginTop: 5, marginBottom: 5 }}>
             {raceDetails.raceDetails?.distances?.map(

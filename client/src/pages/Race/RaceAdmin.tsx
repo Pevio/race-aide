@@ -54,10 +54,10 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
               className="clickable-button"
               style={{ marginLeft: 10 }}
               onClick={async () => {
-                const res = await fetch(`/api/validatepassword/${raceId}`, {
+                const res = await fetch(`/api/validatepassword`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ password: enteredPassword }),
+                  body: JSON.stringify({ password: enteredPassword, raceId }),
                 });
                 const data = await res.json();
                 if (data.access in RaceAuthorizationDescription) {
@@ -79,12 +79,25 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
         </>
       );
     }
+    const getAuthorizationDescription = (): string => {
+      if (!raceData.authorization) return "You are not logged in";
+      let details = ""
+      switch (raceData.authorization) {
+        case "RACE_ADMIN":
+          details = "This gives you all capabilities in Race Aide."
+          break;
+        case "RACE_ASSISTANT":
+          details = "This allows you to edit runner information and record runners at checkpoints."
+          break;
+      }
+      return `You are currently logged in as a ${
+        RaceAuthorizationDescription[raceData.authorization]
+      }. ${details}`
+    }
     return (
       <>
         <p style={{ marginBottom: 10 }}>
-          <span>{`You are currently logged in as a ${
-            RaceAuthorizationDescription[raceData.authorization]
-          }.`}</span>
+          <span>{getAuthorizationDescription()}</span>
           <button
             className="highlight-button"
             style={{ marginLeft: 10 }}

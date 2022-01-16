@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import DataTable from "react-data-table-component";
-import { Runner } from "../../types/generalTypes";
+import { RaceResult, Runner } from "../../types/generalTypes";
 import { RouteComponentProps } from "react-router";
 import { tableProps } from "../../util/table";
 import { raceHasStarted, runnerDistance } from "../../util/resultsUtils";
@@ -121,9 +121,9 @@ export function RaceHome({
               omit: !hasStarted,
               selector: (runner: Runner) => {
                 if (!allResults) return "";
-                const distance = runnerDistance(
-                  allResults[String(runner.distance)].runners[runner.bibNumber]
-                );
+                const runnerResult: RaceResult | undefined = allResults[String(runner.distance)].runners[runner.bibNumber]
+                if (runnerResult?.dnf) return "DNF"
+                const distance = runnerDistance(runnerResult);
                 if (!distance.distance) return "0 Miles";
                 const timeString = displayTime(
                   (distance.lastTime - race.startTime) / 1000,

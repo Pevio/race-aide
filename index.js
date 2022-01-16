@@ -233,8 +233,8 @@ app.get("/api/getracedetails/:raceId", (req, res) => {
   }
 });
 
-app.post("/api/validatepassword/:raceId", (req, res) => {
-  const raceId = req.params.raceId;
+app.post("/api/validatepassword", (req, res) => {
+  const raceId = req.body?.raceId;
   const password = req.body?.password;
   const noAccess = "NO_ACCESS";
   let result = noAccess;
