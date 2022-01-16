@@ -368,6 +368,7 @@ export function RaceParticipants({
             <div style={{ marginTop: 10 }}>
               <input
                 type="checkbox"
+                id="runner-dnf"
                 checked={runnerEditing.dnf || false}
                 onChange={(e) =>
                   setRunnerEditing({
@@ -376,7 +377,7 @@ export function RaceParticipants({
                   })
                 }
               />
-              <span>Start Offset (Seconds):</span>
+              <label htmlFor="runner-dnf">Did Not Finish</label>
             </div>
             <div style={{ marginTop: 10 }}>
               {errorMessage && <p>{errorMessage}</p>}
