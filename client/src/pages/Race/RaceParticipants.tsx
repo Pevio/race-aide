@@ -266,7 +266,7 @@ export function RaceParticipants({
         />
       ) : (
         <p>{`Select a distance to see ${
-          hasStarted ? "Results" : "Participants"
+          hasStarted ? "results" : "participants"
         } for that race.`}</p>
       )}
       {isAdmin && (

@@ -12,7 +12,7 @@ export const getRaceList =
   (): ThunkActionType => async (dispatch: Dispatch) => {
     try {
       dispatch(setRaceListLoading(true));
-      const res = await fetch("/api/getRaceList", {
+      const res = await fetch("/api/getracelist", {
         method: "GET",
       });
       const data = await res.json();

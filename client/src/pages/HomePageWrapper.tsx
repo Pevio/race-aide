@@ -29,17 +29,17 @@ export function HomePageWrapper(props: Props) {
   };
   return (
     <>
-      <div className="header" style={{ display: "flex" }}>
+      <div className="header" style={{paddingTop: 10}}>
         <img
           src={siteIcon}
-          style={{ height: 100, width: 100, marginLeft: 32 }}
+          style={{ height: 100, width: 100 }}
           alt=""
         />
         <p
           style={{
-            fontSize: 48,
+            fontSize: 52,
             marginLeft: 32,
-            marginTop: 12,
+            marginTop: 16,
           }}
         >
           Race Aide

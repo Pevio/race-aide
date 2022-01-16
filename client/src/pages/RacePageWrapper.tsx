@@ -14,6 +14,7 @@ export function RacePageWrapper(props: Props) {
   const location = useLocation();
   const raceId = location.pathname.split("/")[1];
   const { race } = useSelector((state: RootStore) => state.raceDetails);
+
   const raceIsLoaded = race && race.raceId === raceId;
   const hasStarted = race && race.startTime < Date.now();
   useEffect(() => {
@@ -52,27 +53,18 @@ export function RacePageWrapper(props: Props) {
 
   return (
     <>
-      <div className="header">
-        <p
-          style={{
-            fontSize: 40,
-            marginLeft: 32,
-            paddingTop: 20,
-          }}
+      <div className="header" style={{paddingTop: 10, maxHeight: 80}}>
+        <Link
+          to="/"
+          className="highlight-button"
+          style={{ fontSize: 52, marginTop: 8, minWidth: 50 }}
         >
-          <Link
-            to="/"
-            className="highlight-button"
-            style={{ fontSize: 40, marginTop: -4, minWidth: 50 }}
-          >
-            {"<"}
-          </Link>
-          <span style={{ marginLeft: 10 }}>
-            {race?.raceName || "Race Aide"}
-          </span>
-          &nbsp;&nbsp;&nbsp;
-          <span style={{ fontSize: 14 }}>{race?.city}</span>
-        </p>
+          {"<"}
+        </Link>
+        <div style={{ marginLeft: 10, fontSize: 44, marginTop: 16 }}>
+          {race?.raceName || "Race Aide"}
+        </div>
+        <div style={{ marginLeft: 20, marginTop: 40, fontSize: 16 }}>{race?.city}</div>
       </div>
       <div className="sider">
         {getSideMenuItem("Race Home", `/${raceId}`)}

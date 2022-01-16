@@ -15,20 +15,23 @@
 }
 .header {
   background-color: black;
-  height: var(--header-height);
+  min-height: 100px;
+  max-height: 100px;
+  overflow: hidden;
   color: lightgrey;
   z-index: 4;
   position: sticky;
   top: 0px;
-  padding-top: 10px;
+  padding-left: 32px;
+  display: flex;
 }
 
 .sider {
   position: fixed;
   left: 0px;
   top: 0px;
-  margin-top: var(--header-height);
-  height: calc(100% - var(--header-height));
+  margin-top: 100px;
+  height: calc(100% - 100px);
   padding-top: 24px;
   background-color: #404040;
   width: var(--sider-width);
