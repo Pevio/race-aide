@@ -55,6 +55,7 @@ export type RaceResultsFull = Record<string, RaceDistanceResults>;
 export interface RaceDistanceResults {
   runners: Record<string, RaceResult>;
   checkpoints: CheckpointDistance[];
+  startTime: number; // Start time for this distance
 }
 export interface RaceResult extends Runner {
   checkpointInfo: ResultCheckpointInfo[];

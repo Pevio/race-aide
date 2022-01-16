@@ -7,7 +7,7 @@ import DatePicker from "@mui/lab/DatePicker";
 import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
 import { FullRace, RaceDetails, RaceDistance } from "../types/generalTypes";
-import { combineDateTime, timezoneDescriptions } from "../util/timeUtils";
+import { combineDateTime, timezoneDescriptions, displayTimestamp } from "../util/timeUtils";
 
 interface Props {
   isUpdate: boolean;
@@ -237,7 +237,7 @@ export function RaceDetailsForm(props: Props) {
                 <React.Fragment key={distance.distance}>
                   {`${distance.distance} Mile${
                     distance.distance === 1 ? "" : "s"
-                  }`}
+                  } at ${displayTimestamp(distance.startTime, raceDetails.timezone, "hh:mm a")}`}
                   <button
                     className="highlight-button"
                     style={{
@@ -272,7 +272,7 @@ export function RaceDetailsForm(props: Props) {
               <h4>Add New Distance</h4>
               <div style={{ marginTop: 10, display: "flex" }}>
                 <div style={{ marginRight: 5, paddingTop: 10 }}>
-                  Event Start Date:
+                  Distance Start Date:
                 </div>
                 <DatePicker
                   value={startDate}
@@ -283,23 +283,9 @@ export function RaceDetailsForm(props: Props) {
                   className="datepicker"
                 />
               </div>
-              <div style={{ marginTop: 10, display: "flex" }}>
-                <div>Distance:</div>
-                <input
-                  style={{ marginLeft: 10 }}
-                  type="number"
-                  step="any"
-                  min={0}
-                  value={newDistanceValue}
-                  onChange={(e) => {
-                    const newDistance = Number.parseFloat(e.target.value);
-                    if (!newDistance) return;
-                    setNewDistanceValue(newDistance);
-                  }}
-                />
-              </div>
-              <div>
-                <span>Start Time:</span>
+
+              <div style={{marginTop: 10}}>
+                <span>Distance Start Time:</span>
                 <TimePicker
                   value={newDistanceStartTime}
                   onChange={(newValue) => {
@@ -307,6 +293,20 @@ export function RaceDetailsForm(props: Props) {
                   }}
                   renderInput={(params) => <TextField {...params} />}
                   minutesStep={1}
+                />
+              </div>
+              <div style={{ marginTop: 10, display: "flex" }}>
+                <div>Distance (Miles):</div>
+                <input
+                  style={{ marginLeft: 10 }}
+                  type="number"
+                  step="any"
+                  min={0}
+                  value={newDistanceValue}
+                  onChange={(e) => {
+                    const newDistance = Number.parseFloat(e.target.value || "0");
+                    setNewDistanceValue(newDistance);
+                  }}
                 />
               </div>
               <div style={{ marginTop: 10 }}>
@@ -345,7 +345,7 @@ export function RaceDetailsForm(props: Props) {
                     setNewDistanceStartTime(startTime);
                   }}
                 >
-                  Add
+                  Add Distance
                 </button>
               </div>
             </div>

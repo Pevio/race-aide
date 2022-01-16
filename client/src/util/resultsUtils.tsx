@@ -4,6 +4,7 @@ import {
   CheckpointDistance,
   FullRace,
   Race,
+  RaceDistance,
   RaceResult,
   RaceResultsFull,
   ResultCheckpointInfo,
@@ -59,17 +60,19 @@ export const getDistanceCheckpoints = (
 
 export const compileResults = (race: FullRace): RaceResultsFull => {
   const result: RaceResultsFull = {};
-  race.raceDetails.distances.forEach((distance: number) => {
+  race.raceDetails.distances.forEach((distance: RaceDistance) => {
     // Start with an empty map of runners and the computed checkpoint list
     result[String(distance)] = {
       runners: {},
-      checkpoints: getDistanceCheckpoints(race, distance),
+      checkpoints: getDistanceCheckpoints(race, distance.distance),
+      startTime: distance.startTime
     };
   });
   Object.keys(race.runners).forEach((key: string) => {
     const runner: Runner = race.runners[key];
     const runnerResult: RaceResult = {
       ...runner,
+      offset: runner.offset + (result[String(runner.distance)].startTime - race.startTime),
       checkpointInfo: [],
     };
     const iterationIndecies: Record<string, number> = {};

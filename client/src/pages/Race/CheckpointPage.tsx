@@ -376,7 +376,7 @@ export function CheckpointPage({
                     <React.Fragment
                       key={`${distance.distance}-${distance.raceDistance}`}
                     >
-                      {`${distance.raceDistance} Mile Race: ${distance.distance} Miles`}
+                      {`${distance.raceDistance} Mile Race: ${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`}
                       <button
                         style={{
                           marginLeft: 2,

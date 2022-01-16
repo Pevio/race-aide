@@ -480,7 +480,7 @@ app.post("/api/updateracecheckpoints", (req, res) => {
               };
               break;
             case "UPDATE":
-              checkpoints[body.checkpoint.checkpointNumber].distances = checkpoint.distances;
+              checkpoints[body.checkpoint.checkpointNumber].distances = body.checkpoint.distances;
             case "DELETE":
               delete checkpoints[body.checkpoint.checkpointNumber];
           }
