@@ -47,6 +47,7 @@ export interface CheckpointDetails {
 export interface CheckpointDistance {
   checkpointNumber: string;
   distance: number;
+  id: string;
 }
 
 // Results for a single runner

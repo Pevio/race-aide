@@ -45,7 +45,7 @@ export function CheckpointPage({
       selectedDistance: value,
     });
   };
-  const checkpoints = getDistanceCheckpoints(race, selectedDistance);
+  const checkpoints: CheckpointDistance[] = getDistanceCheckpoints(race, selectedDistance);
 
   const [makingNewCheckpoint, setMakingNewCheckpoint] = useState<boolean>(true);
   const getDefaultCheckpointData = (): Partial<Checkpoint> => {
@@ -135,7 +135,7 @@ export function CheckpointPage({
       )}
       {hasStarted && (isAdmin || isAssistant) && (selectedDistance !== undefined) && (
         <p style={{ marginTop: 16 }}>
-          Click on a checkpoint to enter results for it.
+          Click on a checkpoint to enter results for it. If you see your checkpoint multiple times, click on any of them.
         </p>
       )}
       {selectedDistance ? (
@@ -145,11 +145,13 @@ export function CheckpointPage({
               name: "#",
               selector: (check, index) =>
                 index !== undefined ? index + 1 : "",
-                maxWidth: "32px"
+                maxWidth: "32px",
+              id: "number"
             },
             {
               name: "Checkpoint Name",
               selector: (check) => check.checkpointNumber,
+              id: "check-name"
             },
             {
               name: "Distance",
@@ -157,24 +159,21 @@ export function CheckpointPage({
                 check.distance +
                 " Miles" +
                 (check.distance === selectedDistance ? " (End)" : ""),
+              id: "distance"
             },
             ...(hasStarted
               ? [
                   {
                     name: "Average Split",
-                    selector: (check: Checkpoint) => {
+                    selector: (check: CheckpointDistance) => {
                       if (!allResults) return "";
                       let checkpointIndex = -1;
                       allResults[String(selectedDistance)].checkpoints.forEach(
                         (
-                          checkpointDistance: CheckpointDistance,
+                          checkDistance: CheckpointDistance,
                           index: number
                         ) => {
-                          if (
-                            checkpointDistance.checkpointNumber ===
-                            check.checkpointNumber
-                          )
-                            checkpointIndex = index;
+                          if (checkDistance.id === check.id) checkpointIndex = index;
                         }
                       );
 
@@ -211,27 +210,24 @@ export function CheckpointPage({
                       if (runnersSeen === 0) return "-";
                       return displayTime(totalTime / 1000 / runnersSeen);
                     },
+                    id: "average"
                   },
                   {
                     name: "Fastest Split",
-                    selector: (check: Checkpoint) => {
+                    selector: (check: CheckpointDistance) => {
                       if (!allResults) return "";
                       let checkpointIndex = -1;
                       allResults[String(selectedDistance)].checkpoints.forEach(
                         (
-                          checkpointDistance: CheckpointDistance,
+                          checkDistance: CheckpointDistance,
                           index: number
                         ) => {
-                          if (
-                            checkpointDistance.checkpointNumber ===
-                            check.checkpointNumber
-                          )
-                            checkpointIndex = index;
+                          if (checkDistance.id === check.id) checkpointIndex = index;
                         }
                       );
 
                       let fastestTime = 0; // Milliseconds
-
+                      let fastestTimePerson = ""
                       Object.values(
                         allResults[String(selectedDistance)].runners
                       ).forEach((runner: RaceResult) => {
@@ -253,21 +249,24 @@ export function CheckpointPage({
                               (diff < fastestTime || fastestTime === 0)
                             ) {
                               fastestTime = diff;
+                              fastestTimePerson = runner.runnerName
                             }
                           }
                         }
                       });
 
                       if (fastestTime === 0) return "-";
-                      return displayTime(fastestTime / 1000);
+                      return `${displayTime(fastestTime / 1000)} (${fastestTimePerson})`;
                     },
+                    id: "fastest"
                   },
                 ]
               : []),
           ]}
           data={checkpoints}
           {...tableProps}
-          keyField="checkpointNumber"
+          keyField="id"
+          key="checkpoints-for-distance"
           noDataComponent={
             <p>No checkpoints have been added to this distance yet.</p>
           }
@@ -281,6 +280,7 @@ export function CheckpointPage({
             selector: (check) => check.checkpointNumber
           }]}
           keyField="checkpointNumber"
+          key="generic-checkpoints"
           data={Object.values(race?.checkpoints || {})}
           onRowClicked={onRowClicked}
           {...tableProps}
