@@ -107,7 +107,7 @@ export function RaceParticipants({
           {`Refresh ${hasStarted ? "Results" : "Participants"}`}
         </button>
       </div>
-      {hasWriteAccess && (selectedDistance !== undefined) && (
+      {hasWriteAccess && showRunnerForm && (selectedDistance !== undefined) && (
         <p style={{ marginTop: 5 }}>Click a runner to edit their details.</p>
       )}
       {selectedDistance ? (
@@ -257,9 +257,9 @@ export function RaceParticipants({
           {...tableProps}
           keyField="bibNumber"
           noDataComponent={<p>There are no runners in this race yet.</p>}
-          pointerOnHover={hasWriteAccess}
+          pointerOnHover={hasWriteAccess && showRunnerForm}
           onRowClicked={
-            hasWriteAccess
+            hasWriteAccess && showRunnerForm
               ? (row) => {
                   setRunnerEditing(row);
                   setMakingNewRunner(false);
@@ -275,7 +275,7 @@ export function RaceParticipants({
       )}
       {hasWriteAccess && !showRunnerForm && (
         <div style={{marginTop: 32}}>
-          <button className="highlight-button" onClick={() => setShowRunnerForm(true)}>Add More Runners</button>
+          <button className="highlight-button" onClick={() => setShowRunnerForm(true)}>Add or Edit Runner Information</button>
         </div>
       )}
       {(hasWriteAccess && showRunnerForm) && (

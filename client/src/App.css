@@ -155,9 +155,7 @@ h3 {
 
 input[type="text"],
 input[type="password"],
-input[type="number"],
-input[type="radio"],
-input[type="checkbox"] {
+input[type="number"] {
   height: 25px;
   font-size: 14px;
 }
