@@ -74,13 +74,16 @@ export function CheckpointPage({
     }
   }, [loading]);
 
+  const beginAddingEntries = (check: Checkpoint | CheckpointDistance) => {
+    history.push(
+      `/${raceId}/addresults/${check.checkpointNumber}`,
+      location.state
+    );
+  }
   const onRowClicked = isAdmin || isAssistant
   ? (check: Checkpoint | CheckpointDistance) => {
-      if (hasStarted) {
-        history.push(
-          `/${raceId}/addresults/${check.checkpointNumber}`,
-          location.state
-        );
+      if (!showCheckpointForm) {
+        beginAddingEntries(check)
         return;
       }
       if (isAdmin) {
@@ -277,6 +280,7 @@ export function CheckpointPage({
             name: "Checkpoint Name",
             selector: (check) => check.checkpointNumber
           }]}
+          keyField="checkpointNumber"
           data={Object.values(race?.checkpoints || {})}
           onRowClicked={onRowClicked}
           {...tableProps}
@@ -307,20 +311,33 @@ export function CheckpointPage({
                 Add New Checkpoint
               </button>
             </div>
-            <div style={{ marginTop: 8 }}>
-              <span>Checkpoint Name:</span>
-              <input
-                type="text"
-                style={{ marginLeft: 10 }}
-                value={checkpointEditing.checkpointNumber || ""}
-                onChange={(e) =>
-                  setCheckpointEditing({
-                    ...checkpointEditing,
-                    checkpointNumber: e.target.value,
-                  })
-                }
-              />
-            </div>
+            {makingNewCheckpoint &&
+              <div style={{ marginTop: 8 }}>
+                <span>Checkpoint Name:</span>
+                <input
+                  type="text"
+                  style={{ marginLeft: 10 }}
+                  value={checkpointEditing.checkpointNumber || ""}
+                  onChange={(e) =>
+                    setCheckpointEditing({
+                      ...checkpointEditing,
+                      checkpointNumber: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            }
+            {hasStarted && !makingNewCheckpoint &&
+              <div style={{marginTop: 10}}>
+                <button
+                  style={{ marginRight: 16 }}
+                  className="highlight-button"
+                  onClick={() => beginAddingEntries(checkpointEditing as Checkpoint)}
+                >
+                  Add Runner Entires for this Checkpoint
+                </button>
+              </div>
+            }
             <div className="container" style={{ marginTop: 16 }}>
               <h3>Checkpoint Distances</h3>
               <p>

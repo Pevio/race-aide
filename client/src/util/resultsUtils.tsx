@@ -116,7 +116,7 @@ export const runnerAtCheckpoint = (
   if (!timestamp) return undefined;
   return timestamp - runner.offset * 1000;
 };
-export const runnerDistance = (runner: RaceResult): RunnerDistance => {
+export const runnerDistance = (runner?: RaceResult): RunnerDistance => {
   if (!runner || runner.dnf) return { distance: 0, lastTime: 0 };
   const lastDistance: ResultCheckpointInfo | undefined =
     runner.checkpointInfo[runner.checkpointInfo.length - 1];

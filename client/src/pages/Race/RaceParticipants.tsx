@@ -99,13 +99,15 @@ export function RaceParticipants({
             </option>
           ))}
         </select>
-        <button
-          className="highlight-button"
-          style={{ position: "absolute", right: 0 }}
-          onClick={() => dispatch(getRaceDetails(raceId))}
-        >
-          {`Refresh ${hasStarted ? "Results" : "Participants"}`}
-        </button>
+        {selectedDistance !== undefined &&
+          <button
+            className="highlight-button"
+            style={{ position: "absolute", right: 0 }}
+            onClick={() => dispatch(getRaceDetails(raceId))}
+          >
+            {`Refresh ${hasStarted ? "Results" : "Participants"}`}
+          </button>
+        }
       </div>
       {hasWriteAccess && showRunnerForm && (selectedDistance !== undefined) && (
         <p style={{ marginTop: 5 }}>Click a runner to edit their details.</p>
@@ -200,7 +202,7 @@ export function RaceParticipants({
                         allResults[String(selectedDistance)].runners[
                           runner.bibNumber
                         ];
-                      if (runnerResults.dnf) return "DNF"
+                      if (runnerResults?.dnf) return "DNF"
                       const distance = runnerDistance(runnerResults);
                       if (!distance.distance) return "";
                       if (distance.distance === runner.distance)
