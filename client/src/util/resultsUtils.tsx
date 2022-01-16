@@ -62,7 +62,7 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
   const result: RaceResultsFull = {};
   race.raceDetails.distances.forEach((distance: RaceDistance) => {
     // Start with an empty map of runners and the computed checkpoint list
-    result[String(distance)] = {
+    result[String(distance.distance)] = {
       runners: {},
       checkpoints: getDistanceCheckpoints(race, distance.distance),
       startTime: distance.startTime

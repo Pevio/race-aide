@@ -37,9 +37,6 @@ export function RaceDetailsForm(props: Props) {
     null
   );
 
-  const hasStarted =
-    props.defaultData?.startTime && props.defaultData.startTime < Date.now();
-
   useEffect(() => {
     setRaceDetails(getDefaultRaceDetails());
     if (props.defaultData?.startTime && props.defaultData.timezone) {
@@ -224,12 +221,11 @@ export function RaceDetailsForm(props: Props) {
           </div>
         </>
       )}
-      {!hasStarted && (
         <div className="container" style={{ marginTop: 32 }}>
           <h3>Distances</h3>
           <p style={{ fontSize: 12 }}>
             For each race distance, add it here. Distances will always be in
-            miles. You must have at least one distance.
+            miles. You must have at least one distance. To edit a distance, remove it and re-add it again.
           </p>
           <div style={{ marginTop: 5, marginBottom: 5 }}>
             {raceDetails.raceDetails?.distances?.map(
@@ -351,7 +347,6 @@ export function RaceDetailsForm(props: Props) {
             </div>
           </LocalizationProvider>
         </div>
-      )}
       <div className="container" style={{ marginTop: 32 }}>
         <h3>Extra Information</h3>
         <p style={{ margin: 0 }}>The following information is all optional:</p>

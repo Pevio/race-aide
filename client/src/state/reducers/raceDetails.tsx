@@ -60,21 +60,17 @@ export default function raceDetails(
         action.payload.race &&
         state.race?.raceId !== action.payload.race.raceId
       ) {
-        console.log("hi")
         const jsonFromStorage = localStorage.getItem(
           `race-password-${action.payload.race.raceId}`
         )
-        console.log(jsonFromStorage)
         if (jsonFromStorage) storage = JSON.parse(jsonFromStorage);
       }
 
-      console.log("yo")
       const results: RaceResultsFull | undefined =
         action.payload.race && raceHasStarted(action.payload.race)
           ? compileResults(action.payload.race)
           : undefined;
 
-      console.log(storage, results);
       return {
         ...state,
         ...storage,
