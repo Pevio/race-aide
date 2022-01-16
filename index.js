@@ -333,8 +333,8 @@ app.post("/api/updateraceparticipants", (req, res) => {
   const body = req?.body || {};
   const raceId = body.raceId;
   if (!["CREATE", "UPDATE", "DELETE"].includes(body.action)) {
-    returnError(res, 302)
-    return
+    returnError(res, 302);
+    return;
   }
   if (!body.password || !body.raceId || !body.runner?.bibNumber || !body.runner?.runnerName) {
     returnError(res, 301);
@@ -358,27 +358,27 @@ app.post("/api/updateraceparticipants", (req, res) => {
       const runners = res2.rows[0].runners || {};
       const bodyRunner = {
         offset: 0,
-        ...body.runner
-      }
+        ...body.runner,
+      };
       switch (body.action) {
         case "CREATE":
           if (runners[bodyRunner.bibNumber]) {
-            returnError(res, 303)
-            return
+            returnError(res, 303);
+            return;
           }
           runners[bodyRunner.bibNumber] = bodyRunner;
           break;
         case "UPDATE":
           if (!runners[bodyRunner.bibNumber]) {
-            returnError(res, 304)
-            return
+            returnError(res, 304);
+            return;
           }
           runners[bodyRunner.bibNumber] = bodyRunner;
           break;
         case "DELETE":
           if (!runners[bodyRunner.bibNumber]) {
-            returnError(res, 304)
-            return
+            returnError(res, 304);
+            return;
           }
           delete runners[bodyRunner.bibNumber];
           break;
@@ -436,20 +436,20 @@ app.post("/api/updateracecheckpoints", (req, res) => {
         }
 
         let statement = "";
-        let params = []
+        let params = [];
         const emptyRunners = {};
         switch (body.action) {
           case "CREATE":
             statement = "INSERT INTO public.checkpoints (race_id, checkpoint_number, checkpoint_distances, runners_passed) VALUES ($1, $2, $3, $4)";
-            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, emptyRunners]
+            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances, emptyRunners];
             break;
           case "UPDATE":
             statement = "UPDATE public.checkpoints SET checkpoint_distances = $3 WHERE race_id = $1 AND checkpoint_number = $2";
-            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances]
+            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances];
             break;
           case "DELETE":
             statement = "DELETE FROM public.checkpoints WHERE race_id = $1 AND checkpoint_number = $2";
-            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances]
+            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances];
             break;
         }
 
@@ -480,7 +480,7 @@ app.post("/api/updateracecheckpoints", (req, res) => {
               };
               break;
             case "UPDATE":
-              checkpoints[body.checkpoint.checkpointNumber].distances = checkpoint.distances
+              checkpoints[body.checkpoint.checkpointNumber].distances = checkpoint.distances;
             case "DELETE":
               delete checkpoints[body.checkpoint.checkpointNumber];
           }

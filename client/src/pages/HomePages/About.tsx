@@ -13,8 +13,10 @@ export function About() {
         are some of our features:
       </p>
       <p style={pTagStyles}>
-        <b>Runner and Checkpoint Tracking:</b> With Race Aide, you can easily enter in who your runners are and the checkpoints they will be running at.
-        Your assistants will record the runners' bib numbers as they pass the checkpoints.
+        <b>Runner and Checkpoint Tracking:</b> With Race Aide, you can easily
+        enter in who your runners are and the checkpoints they will be running
+        at. Your assistants will record the runners' bib numbers as they pass
+        the checkpoints.
       </p>
       <p style={pTagStyles}>
         <b>Results:</b> Race Aide will show you the results of your race, with
@@ -22,9 +24,10 @@ export function About() {
         directors.
       </p>
       <p style={pTagStyles}>
-        <b>Ease of use:</b> Your assistants at checkpoints and aid stations don't need to know the map of the race or who the runners are; they must only
-        need to see the bib number of runners to log times. Friends following
-        along will see where favorite runners are at.
+        <b>Ease of use:</b> Your assistants at checkpoints and aid stations
+        don't need to know the map of the race or who the runners are; they must
+        only need to see the bib number of runners to log times. Friends
+        following along will see where favorite runners are at.
       </p>
       <p style={pTagStyles}>
         <b>Metrics:</b> Wondering which leg of the race was the most difficult?
@@ -34,11 +37,14 @@ export function About() {
       </p>
       <p style={pTagStyles}>
         <b>Safety:</b> If a runner gets lost, Race Aide will tell you the last
-        checkpoint they were at, greatly assiting in potential searches by reducing the land area where the runner might be.
-        You will also not have to do a head count at the end of the race, since your results page will already be populated with checkpoint data.
+        checkpoint they were at, greatly assiting in potential searches by
+        reducing the land area where the runner might be. You will also not have
+        to do a head count at the end of the race, since your results page will
+        already be populated with checkpoint data.
       </p>
       <p style={pTagStyles}>
-        <b>Accountability:</b> If a runner skips a checkpoint, you will know before they even "finish" the race.
+        <b>Accountability:</b> If a runner skips a checkpoint, you will know
+        before they even "finish" the race.
       </p>
       <p style={pTagStyles}>For more information, contact Peter Gossell.</p>
     </>

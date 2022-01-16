@@ -45,7 +45,10 @@ export function CheckpointPage({
       selectedDistance: value,
     });
   };
-  const checkpoints: CheckpointDistance[] = getDistanceCheckpoints(race, selectedDistance);
+  const checkpoints: CheckpointDistance[] = getDistanceCheckpoints(
+    race,
+    selectedDistance
+  );
 
   const [makingNewCheckpoint, setMakingNewCheckpoint] = useState<boolean>(true);
   const getDefaultCheckpointData = (): Partial<Checkpoint> => {
@@ -59,8 +62,10 @@ export function CheckpointPage({
   const [newDistance, setNewDistance] = useState<Partial<CheckpointDetails>>(
     {}
   );
-  const [showCheckpointForm, setShowCheckpointForm] = useState<boolean>(!hasStarted);
-  
+  const [showCheckpointForm, setShowCheckpointForm] = useState<boolean>(
+    !hasStarted
+  );
+
   useEffect(() => {
     if (!loading && saveInProgress) {
       if (success) {
@@ -79,24 +84,25 @@ export function CheckpointPage({
       `/${raceId}/addresults/${check.checkpointNumber}`,
       location.state
     );
-  }
-  const onRowClicked = isAdmin || isAssistant
-  ? (check: Checkpoint | CheckpointDistance) => {
-      if (!showCheckpointForm) {
-        beginAddingEntries(check)
-        return;
-      }
-      if (isAdmin) {
-        const editing = Object.values(race?.checkpoints || []).find(
-          (checkpoint) =>
-            checkpoint.checkpointNumber === check.checkpointNumber
-        );
-        if (!editing) return;
-        setCheckpointEditing(editing);
-        setMakingNewCheckpoint(false);
-      }
-    }
-  : undefined
+  };
+  const onRowClicked =
+    isAdmin || isAssistant
+      ? (check: Checkpoint | CheckpointDistance) => {
+          if (!showCheckpointForm) {
+            beginAddingEntries(check);
+            return;
+          }
+          if (isAdmin) {
+            const editing = Object.values(race?.checkpoints || []).find(
+              (checkpoint) =>
+                checkpoint.checkpointNumber === check.checkpointNumber
+            );
+            if (!editing) return;
+            setCheckpointEditing(editing);
+            setMakingNewCheckpoint(false);
+          }
+        }
+      : undefined;
 
   return (
     <>
@@ -128,16 +134,19 @@ export function CheckpointPage({
           ))}
         </select>
       </div>
-      {isAdmin && !hasStarted && (selectedDistance !== undefined) && (
+      {isAdmin && !hasStarted && selectedDistance !== undefined && (
         <p>
           Click on a checkpoint to edit its details or enter results for it.
         </p>
       )}
-      {hasStarted && (isAdmin || isAssistant) && (selectedDistance !== undefined) && (
-        <p style={{ marginTop: 16 }}>
-          Click on a checkpoint to enter results for it. If you see your checkpoint multiple times, click on any of them.
-        </p>
-      )}
+      {hasStarted &&
+        (isAdmin || isAssistant) &&
+        selectedDistance !== undefined && (
+          <p style={{ marginTop: 16 }}>
+            Click on a checkpoint to enter results for it. If you see your
+            checkpoint multiple times, click on any of them.
+          </p>
+        )}
       {selectedDistance ? (
         <DataTable
           columns={[
@@ -145,13 +154,16 @@ export function CheckpointPage({
               name: "#",
               selector: (check, index) =>
                 index !== undefined ? index + 1 : "",
-                maxWidth: "32px",
-              id: "number"
+              maxWidth: "32px",
+              id: "number",
+              grow: 1
             },
             {
               name: "Checkpoint Name",
               selector: (check) => check.checkpointNumber,
-              id: "check-name"
+              id: "check-name",
+              compact: true,
+              grow: 3
             },
             {
               name: "Distance",
@@ -159,7 +171,9 @@ export function CheckpointPage({
                 check.distance +
                 " Miles" +
                 (check.distance === selectedDistance ? " (End)" : ""),
-              id: "distance"
+              id: "distance",
+              compact: true,
+              grow: 2
             },
             ...(hasStarted
               ? [
@@ -169,11 +183,9 @@ export function CheckpointPage({
                       if (!allResults) return "";
                       let checkpointIndex = -1;
                       allResults[String(selectedDistance)].checkpoints.forEach(
-                        (
-                          checkDistance: CheckpointDistance,
-                          index: number
-                        ) => {
-                          if (checkDistance.id === check.id) checkpointIndex = index;
+                        (checkDistance: CheckpointDistance, index: number) => {
+                          if (checkDistance.id === check.id)
+                            checkpointIndex = index;
                         }
                       );
 
@@ -210,7 +222,9 @@ export function CheckpointPage({
                       if (runnersSeen === 0) return "-";
                       return displayTime(totalTime / 1000 / runnersSeen);
                     },
-                    id: "average"
+                    id: "average",
+                    compact: true,
+                    grow: 2
                   },
                   {
                     name: "Fastest Split",
@@ -218,16 +232,14 @@ export function CheckpointPage({
                       if (!allResults) return "";
                       let checkpointIndex = -1;
                       allResults[String(selectedDistance)].checkpoints.forEach(
-                        (
-                          checkDistance: CheckpointDistance,
-                          index: number
-                        ) => {
-                          if (checkDistance.id === check.id) checkpointIndex = index;
+                        (checkDistance: CheckpointDistance, index: number) => {
+                          if (checkDistance.id === check.id)
+                            checkpointIndex = index;
                         }
                       );
 
                       let fastestTime = 0; // Milliseconds
-                      let fastestTimePerson = ""
+                      let fastestTimePerson = "";
                       Object.values(
                         allResults[String(selectedDistance)].runners
                       ).forEach((runner: RaceResult) => {
@@ -249,16 +261,20 @@ export function CheckpointPage({
                               (diff < fastestTime || fastestTime === 0)
                             ) {
                               fastestTime = diff;
-                              fastestTimePerson = runner.runnerName
+                              fastestTimePerson = runner.runnerName;
                             }
                           }
                         }
                       });
 
                       if (fastestTime === 0) return "-";
-                      return `${displayTime(fastestTime / 1000)} (${fastestTimePerson})`;
+                      return `${displayTime(
+                        fastestTime / 1000
+                      )} (${fastestTimePerson})`;
                     },
-                    id: "fastest"
+                    id: "fastest",
+                    compact: true,
+                    grow: 3
                   },
                 ]
               : []),
@@ -275,10 +291,12 @@ export function CheckpointPage({
         />
       ) : (
         <DataTable
-          columns={[{
-            name: "Checkpoint Name",
-            selector: (check) => check.checkpointNumber
-          }]}
+          columns={[
+            {
+              name: "Checkpoint Name",
+              selector: (check) => check.checkpointNumber,
+            },
+          ]}
           keyField="checkpointNumber"
           key="generic-checkpoints"
           data={Object.values(race?.checkpoints || {})}
@@ -287,19 +305,22 @@ export function CheckpointPage({
         />
       )}
       {isAdmin && !showCheckpointForm && (
-        <div style={{marginTop: 32}}>
-          <button className="highlight-button" onClick={() => setShowCheckpointForm(true)}>DANGER: Add and Edit Checkpoints</button>
+        <div style={{ marginTop: 32 }}>
+          <button
+            className="highlight-button"
+            onClick={() => setShowCheckpointForm(true)}
+          >
+            DANGER: Add and Edit Checkpoints
+          </button>
         </div>
       )}
       {isAdmin && showCheckpointForm && (
         <>
-          <hr style={{marginTop: 32}} />
+          <hr style={{ marginTop: 32 }} />
           <div className="container" style={{ marginTop: 32 }}>
             <h3>Edit Race Checkpoints</h3>
             <div style={{ display: "flex", position: "relative" }}>
-              <h2>
-                {`${makingNewCheckpoint ? "Add" : "Edit"} Checkpoint`}
-              </h2>
+              <h2>{`${makingNewCheckpoint ? "Add" : "Edit"} Checkpoint`}</h2>
               <button
                 style={{ position: "absolute", right: 0 }}
                 className="highlight-button"
@@ -311,7 +332,7 @@ export function CheckpointPage({
                 Add New Checkpoint
               </button>
             </div>
-            {makingNewCheckpoint &&
+            {makingNewCheckpoint && (
               <div style={{ marginTop: 8 }}>
                 <span>Checkpoint Name:</span>
                 <input
@@ -326,18 +347,20 @@ export function CheckpointPage({
                   }
                 />
               </div>
-            }
-            {hasStarted && !makingNewCheckpoint &&
-              <div style={{marginTop: 10}}>
+            )}
+            {hasStarted && !makingNewCheckpoint && (
+              <div style={{ marginTop: 10 }}>
                 <button
                   style={{ marginRight: 16 }}
                   className="highlight-button"
-                  onClick={() => beginAddingEntries(checkpointEditing as Checkpoint)}
+                  onClick={() =>
+                    beginAddingEntries(checkpointEditing as Checkpoint)
+                  }
                 >
                   Add Runner Entires for this Checkpoint
                 </button>
               </div>
-            }
+            )}
             <div className="container" style={{ marginTop: 16 }}>
               <h3>Checkpoint Distances</h3>
               <p>
@@ -383,7 +406,7 @@ export function CheckpointPage({
               </div>
               <div>
                 <p>Add New Distance:</p>
-                <div style={{marginTop: 10}}>
+                <div style={{ marginTop: 10 }}>
                   <span>Race:</span>
                   <select
                     style={{ marginLeft: 10 }}
@@ -421,30 +444,36 @@ export function CheckpointPage({
                     }}
                   />
                 </div>
-                {newDistance.raceDistance !== undefined && newDistance.distance && (
-                  <button
-                    className="highlight-button"
-                    onClick={() => {
-                      if (!newDistance.raceDistance || !newDistance.distance)
-                        return;
-                      setCheckpointEditing({
-                        ...checkpointEditing,
-                        distances: [
-                          ...(checkpointEditing.distances || []),
-                          newDistance as CheckpointDetails,
-                        ],
-                      });
-                      setNewDistance({});
-                    }}
-                  >
-                    Add
-                  </button>
-                )}
+                {newDistance.raceDistance !== undefined &&
+                  newDistance.distance && (
+                    <button
+                      className="highlight-button"
+                      onClick={() => {
+                        if (!newDistance.raceDistance || !newDistance.distance)
+                          return;
+                        setCheckpointEditing({
+                          ...checkpointEditing,
+                          distances: [
+                            ...(checkpointEditing.distances || []),
+                            newDistance as CheckpointDetails,
+                          ],
+                        });
+                        setNewDistance({});
+                      }}
+                    >
+                      Add
+                    </button>
+                  )}
               </div>
             </div>
             <div style={{ marginTop: 32 }}>
               {errorMessage && <p>{errorMessage}</p>}
-              {hasStarted && <p style={{marginBottom: 16}}>The race has started. Be VERY CAREFUL when editing checkpoints to ensure you don't lose race data!</p>}
+              {hasStarted && (
+                <p style={{ marginBottom: 16 }}>
+                  The race has started. Be VERY CAREFUL when editing checkpoints
+                  to ensure you don't lose race data!
+                </p>
+              )}
               <button
                 onClick={() => {
                   if (saveInProgress) return;
@@ -476,7 +505,7 @@ export function CheckpointPage({
               {!makingNewCheckpoint && (
                 <button
                   className="highlight-button"
-                  style={{marginLeft: 16}}
+                  style={{ marginLeft: 16 }}
                   onClick={() => {
                     if (!race || saveInProgress) return;
                     setSaveInProgress(true);

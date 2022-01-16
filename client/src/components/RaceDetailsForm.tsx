@@ -138,7 +138,9 @@ export function RaceDetailsForm(props: Props) {
       )}
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div style={{ marginTop: 10, display: "flex" }}>
-          <div style={{ marginRight: 5, paddingTop: 10 }}>Event Start Date:</div>
+          <div style={{ marginRight: 5, paddingTop: 10 }}>
+            Event Start Date:
+          </div>
           <DatePicker
             value={startDate}
             onChange={(newValue) => {
@@ -149,7 +151,9 @@ export function RaceDetailsForm(props: Props) {
           />
         </div>
         <div style={{ marginTop: 10, display: "flex" }}>
-          <div style={{ marginRight: 5, paddingTop: 10 }}>Event Start Time:</div>
+          <div style={{ marginRight: 5, paddingTop: 10 }}>
+            Event Start Time:
+          </div>
           <TimePicker
             value={startTime}
             onChange={(newValue) => {

@@ -32,7 +32,8 @@ export function RaceParticipants({
     useSelector((state: RootStore) => state.raceDetails);
   const hasStarted = raceHasStarted(race);
 
-  const hasWriteAccess = (authorization === "RACE_ADMIN") || (authorization === "RACE_ASSISTANT");
+  const hasWriteAccess =
+    authorization === "RACE_ADMIN" || authorization === "RACE_ASSISTANT";
 
   const [selectedDistance, setSelectedDistanceState] = useState<
     number | undefined
@@ -99,7 +100,7 @@ export function RaceParticipants({
             </option>
           ))}
         </select>
-        {selectedDistance !== undefined &&
+        {selectedDistance !== undefined && (
           <button
             className="highlight-button"
             style={{ position: "absolute", right: 0 }}
@@ -107,9 +108,9 @@ export function RaceParticipants({
           >
             {`Refresh ${hasStarted ? "Results" : "Participants"}`}
           </button>
-        }
+        )}
       </div>
-      {hasWriteAccess && showRunnerForm && (selectedDistance !== undefined) && (
+      {hasWriteAccess && showRunnerForm && selectedDistance !== undefined && (
         <p style={{ marginTop: 5 }}>Click a runner to edit their details.</p>
       )}
       {selectedDistance ? (
@@ -124,7 +125,7 @@ export function RaceParticipants({
                       return "";
                     },
                     id: "rank",
-                    maxWidth: "16px"
+                    grow: 1
                   },
                   {
                     name: "Runner Name",
@@ -132,6 +133,8 @@ export function RaceParticipants({
                     sortField: "runnerName",
                     sortable: true,
                     id: "name",
+                    compact: true,
+                    grow: 3,
                   },
                   {
                     name: "Bib Number",
@@ -143,12 +146,17 @@ export function RaceParticipants({
                       return r1.bibNumber.localeCompare(r2.bibNumber);
                     },
                     id: "bib",
+                    compact: true,
+                    grow: 1
                   },
                   {
                     name: "Start Time Offset",
                     selector: (runner) =>
                       runner.offset ? displayTime(runner.offset) : "-",
                     id: "offset",
+                    compact: true,
+                    hide: 1000,
+                    grow: 1
                   },
                   ...checkpointInfo.map(
                     (info: CheckpointDistance, checkpointIndex: number) => ({
@@ -186,12 +194,14 @@ export function RaceParticipants({
                           ],
                           checkpointIndex
                         );
-                        if (t1 && !t2) return 1;
-                        if (t2 && !t1) return -1;
+                        if (t1 && !t2) return -1;
+                        if (t2 && !t1) return 1;
                         if (t1 && t2) return t1 - t2;
                         return 0;
                       },
                       id: `checkpoint-${checkpointIndex}`,
+                      compact: true,
+                      grow: 1
                     })
                   ),
                   {
@@ -202,7 +212,7 @@ export function RaceParticipants({
                         allResults[String(selectedDistance)].runners[
                           runner.bibNumber
                         ];
-                      if (runnerResults?.dnf) return "DNF"
+                      if (runnerResults?.dnf) return "DNF";
                       const distance = runnerDistance(runnerResults);
                       if (!distance.distance) return "";
                       if (distance.distance === runner.distance)
@@ -223,12 +233,14 @@ export function RaceParticipants({
                           r2.bibNumber
                         ]
                       );
-                      
+
                       const distanceDiff = d2.distance - d1.distance;
                       if (distanceDiff !== 0) return distanceDiff;
                       return d1.lastTime - d2.lastTime;
                     },
                     id: "distance",
+                    compact: true,
+                    grow: 2
                   },
                 ]
               : [
@@ -241,17 +253,20 @@ export function RaceParticipants({
                     name: "Bib Number",
                     selector: (runner) => runner.bibNumber,
                     id: "bib",
+                    compact: true,
                   },
                   {
                     name: "Distance",
                     selector: (runner) => `${runner.distance} Miles`,
                     id: "distance",
+                    compact: true,
                   },
                   {
                     name: "Start Time Offset",
                     selector: (runner) =>
                       runner.offset ? displayTime(runner.offset) : "-",
                     id: "offset",
+                    compact: true,
                   },
                 ]
           }
@@ -276,13 +291,18 @@ export function RaceParticipants({
         } for that race.`}</p>
       )}
       {hasWriteAccess && !showRunnerForm && (
-        <div style={{marginTop: 32}}>
-          <button className="highlight-button" onClick={() => setShowRunnerForm(true)}>Add or Edit Runner Information</button>
+        <div style={{ marginTop: 32 }}>
+          <button
+            className="highlight-button"
+            onClick={() => setShowRunnerForm(true)}
+          >
+            Add or Edit Runner Information
+          </button>
         </div>
       )}
-      {(hasWriteAccess && showRunnerForm) && (
+      {hasWriteAccess && showRunnerForm && (
         <>
-          <hr style={{marginTop: 32}} />
+          <hr style={{ marginTop: 32 }} />
           <div className="container" style={{ marginTop: 32 }}>
             <h3>Runner Check-In</h3>
             <div style={{ display: "flex", position: "relative" }}>
@@ -398,7 +418,14 @@ export function RaceParticipants({
                   setErrorMessage("");
 
                   setSaveInProgress(true);
-                  dispatch(updateRaceParticipants(race, runnerEditing as Runner, makingNewRunner ? "CREATE" : "UPDATE", password));
+                  dispatch(
+                    updateRaceParticipants(
+                      race,
+                      runnerEditing as Runner,
+                      makingNewRunner ? "CREATE" : "UPDATE",
+                      password
+                    )
+                  );
                 }}
                 className="clickable-button"
               >
@@ -414,7 +441,12 @@ export function RaceParticipants({
 
                     setSaveInProgress(true);
                     dispatch(
-                      updateRaceParticipants(race, runnerEditing as Runner, "DELETE", password)
+                      updateRaceParticipants(
+                        race,
+                        runnerEditing as Runner,
+                        "DELETE",
+                        password
+                      )
                     );
                   }}
                 >

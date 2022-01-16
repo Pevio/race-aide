@@ -107,10 +107,7 @@ export const updateRaceParticipants =
 
       if (data.returnCode === 0) {
         dispatch(
-          setSelectedRace(
-            { ...originalRace, runners: data.runners },
-            true
-          )
+          setSelectedRace({ ...originalRace, runners: data.runners }, true)
         );
       } else {
         dispatch(setRaceLoading(false, false));

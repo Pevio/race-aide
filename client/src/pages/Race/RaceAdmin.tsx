@@ -81,19 +81,20 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
     }
     const getAuthorizationDescription = (): string => {
       if (!raceData.authorization) return "You are not logged in";
-      let details = ""
+      let details = "";
       switch (raceData.authorization) {
         case "RACE_ADMIN":
-          details = "This gives you all capabilities in Race Aide."
+          details = "This gives you all capabilities in Race Aide.";
           break;
         case "RACE_ASSISTANT":
-          details = "This allows you to edit runner information and record runners at checkpoints."
+          details =
+            "This allows you to edit runner information and record runners at checkpoints.";
           break;
       }
       return `You are currently logged in as a ${
         RaceAuthorizationDescription[raceData.authorization]
-      }. ${details}`
-    }
+      }. ${details}`;
+    };
     return (
       <>
         <p style={{ marginBottom: 10 }}>

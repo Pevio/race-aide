@@ -106,23 +106,29 @@ export function RaceHome({
             {
               name: "Runner Name",
               selector: (runner: Runner) => runner.runnerName,
+              grow: 3
             },
             {
               name: "Bib Number",
               selector: (runner: Runner) => runner.bibNumber,
+              compact: true,
+              grow: 1
             },
             {
               name: "Distance Running",
               selector: (runner: Runner) =>
                 `${runner.distance} Mile${runner.distance === 1 ? "" : "s"}`,
+              compact: true,
+              grow: 1
             },
             {
               name: "Distance Covered",
               omit: !hasStarted,
               selector: (runner: Runner) => {
                 if (!allResults) return "";
-                const runnerResult: RaceResult | undefined = allResults[String(runner.distance)].runners[runner.bibNumber]
-                if (runnerResult?.dnf) return "DNF"
+                const runnerResult: RaceResult | undefined =
+                  allResults[String(runner.distance)].runners[runner.bibNumber];
+                if (runnerResult?.dnf) return "DNF";
                 const distance = runnerDistance(runnerResult);
                 if (!distance.distance) return "0 Miles";
                 const timeString = displayTime(
@@ -137,6 +143,8 @@ export function RaceHome({
                       }`
                 } in ${timeString}`;
               },
+              compact: true,
+              grow: 2
             },
           ]}
           data={runnerArray}

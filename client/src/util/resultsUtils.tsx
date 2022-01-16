@@ -33,7 +33,7 @@ export const compileCheckpoints = (
       result[distanceKey].push({
         checkpointNumber: check.checkpointNumber,
         distance: distance.distance,
-        id: `${check.checkpointNumber}-${distance.distance}`
+        id: `${check.checkpointNumber}-${distance.distance}`,
       });
     });
   });
