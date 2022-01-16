@@ -30,8 +30,12 @@ export function RaceDetailsForm(props: Props) {
   const [startTime, setStartTime] = useState<Date | null>(null);
 
   const [newDistanceValue, setNewDistanceValue] = useState<number>(0);
-  const [newDistanceStartDate, setNewDistanceStartDate] = useState<Date | null>(null);
-  const [newDistanceStartTime, setNewDistanceStartTime] = useState<Date | null>(null);
+  const [newDistanceStartDate, setNewDistanceStartDate] = useState<Date | null>(
+    null
+  );
+  const [newDistanceStartTime, setNewDistanceStartTime] = useState<Date | null>(
+    null
+  );
 
   const hasStarted =
     props.defaultData?.startTime && props.defaultData.startTime < Date.now();
@@ -140,7 +144,7 @@ export function RaceDetailsForm(props: Props) {
             value={startDate}
             onChange={(newValue) => {
               setStartDate(newValue);
-              setNewDistanceStartDate(newValue)
+              setNewDistanceStartDate(newValue);
             }}
             renderInput={(params) => <TextField {...params} />}
             className="datepicker"
@@ -154,13 +158,15 @@ export function RaceDetailsForm(props: Props) {
             value={startTime}
             onChange={(newValue) => {
               setStartTime(newValue);
-              setNewDistanceStartTime(newValue)
+              setNewDistanceStartTime(newValue);
             }}
             renderInput={(params) => <TextField {...params} />}
             minutesStep={1}
           />
         </div>
-        <p style={{fontSize: 12}}>Each race distance may have its own start time.</p>
+        <p style={{ fontSize: 12 }}>
+          Each race distance may have its own start time.
+        </p>
       </LocalizationProvider>
       <div style={{ marginTop: 10 }}>
         <label htmlFor="timezone">Timezone:</label>
@@ -229,7 +235,9 @@ export function RaceDetailsForm(props: Props) {
             {raceDetails.raceDetails?.distances?.map(
               (distance: RaceDistance, index: number) => (
                 <React.Fragment key={distance.distance}>
-                  {`${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`}
+                  {`${distance.distance} Mile${
+                    distance.distance === 1 ? "" : "s"
+                  }`}
                   <button
                     className="highlight-button"
                     style={{
@@ -275,7 +283,7 @@ export function RaceDetailsForm(props: Props) {
                   className="datepicker"
                 />
               </div>
-              <div style={{marginTop: 10, display: "flex"}}>
+              <div style={{ marginTop: 10, display: "flex" }}>
                 <div>Distance:</div>
                 <input
                   style={{ marginLeft: 10 }}
@@ -301,37 +309,44 @@ export function RaceDetailsForm(props: Props) {
                   minutesStep={1}
                 />
               </div>
-              <div style={{marginTop: 10}}>
-              <button
-                className="highlight-button"
-                onClick={() => {
-                  if (
-                    !newDistanceValue ||
-                    raceDetails.raceDetails?.distances.some((distance: RaceDistance) => distance.distance === newDistanceValue)
-                  )
-                    return;
-                  const newDistance: RaceDistance = {
-                    distance: newDistanceValue,
-                    startTime: combineDateTime(newDistanceStartDate, newDistanceStartTime, raceDetails.timezone)
-                  }
-                  const newDistances = [
-                    ...(raceDetails.raceDetails?.distances || []),
-                    newDistance,
-                  ].sort((d1, d2) => d1.distance - d2.distance);
-                  setRaceDetails({
-                    ...raceDetails,
-                    raceDetails: {
-                      ...raceDetails.raceDetails,
-                      distances: newDistances,
-                    },
-                  });
-                  setNewDistanceValue(0);
-                  setNewDistanceStartDate(startDate)
-                  setNewDistanceStartTime(startTime)
-                }}
-              >
-                Add
-              </button>
+              <div style={{ marginTop: 10 }}>
+                <button
+                  className="highlight-button"
+                  onClick={() => {
+                    if (
+                      !newDistanceValue ||
+                      raceDetails.raceDetails?.distances.some(
+                        (distance: RaceDistance) =>
+                          distance.distance === newDistanceValue
+                      )
+                    )
+                      return;
+                    const newDistance: RaceDistance = {
+                      distance: newDistanceValue,
+                      startTime: combineDateTime(
+                        newDistanceStartDate,
+                        newDistanceStartTime,
+                        raceDetails.timezone
+                      ),
+                    };
+                    const newDistances = [
+                      ...(raceDetails.raceDetails?.distances || []),
+                      newDistance,
+                    ].sort((d1, d2) => d1.distance - d2.distance);
+                    setRaceDetails({
+                      ...raceDetails,
+                      raceDetails: {
+                        ...raceDetails.raceDetails,
+                        distances: newDistances,
+                      },
+                    });
+                    setNewDistanceValue(0);
+                    setNewDistanceStartDate(startDate);
+                    setNewDistanceStartTime(startTime);
+                  }}
+                >
+                  Add
+                </button>
               </div>
             </div>
           </LocalizationProvider>

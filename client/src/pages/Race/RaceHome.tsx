@@ -5,7 +5,7 @@ import { RaceDistance, RaceResult, Runner } from "../../types/generalTypes";
 import { RouteComponentProps } from "react-router";
 import { tableProps } from "../../util/table";
 import { raceHasStarted, runnerDistance } from "../../util/resultsUtils";
-import { displayTime } from "../../util/timeUtils";
+import { displayTime, displayTimestamp } from "../../util/timeUtils";
 import { formatURL } from "../../util/generalUtils";
 import { DateTime } from "luxon";
 
@@ -42,7 +42,9 @@ export function RaceHome({
     const distances = race.raceDetails.distances;
     let result = `Distance${distances.length === 1 ? "" : "s"}: `;
     distances.forEach((distance: RaceDistance, index) => {
-      result += `${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`;
+      result += `${distance.distance} Mile${
+        distance.distance === 1 ? "" : "s"
+      } at ${displayTimestamp(distance.startTime, race.timezone, "hh:mm a")}`;
       if (index < distances.length - 1) result += ", ";
     });
     return result;
@@ -106,20 +108,20 @@ export function RaceHome({
             {
               name: "Runner Name",
               selector: (runner: Runner) => runner.runnerName,
-              grow: 3
+              grow: 3,
             },
             {
               name: "Bib Number",
               selector: (runner: Runner) => runner.bibNumber,
               compact: true,
-              grow: 1
+              grow: 1,
             },
             {
               name: "Distance Running",
               selector: (runner: Runner) =>
                 `${runner.distance} Mile${runner.distance === 1 ? "" : "s"}`,
               compact: true,
-              grow: 1
+              grow: 1,
             },
             {
               name: "Distance Covered",
@@ -144,7 +146,7 @@ export function RaceHome({
                 } in ${timeString}`;
               },
               compact: true,
-              grow: 2
+              grow: 2,
             },
           ]}
           data={runnerArray}

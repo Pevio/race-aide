@@ -157,14 +157,14 @@ export function CheckpointPage({
                 index !== undefined ? index + 1 : "",
               maxWidth: "32px",
               id: "number",
-              grow: 1
+              grow: 1,
             },
             {
               name: "Checkpoint Name",
               selector: (check) => check.checkpointNumber,
               id: "check-name",
               compact: true,
-              grow: 3
+              grow: 3,
             },
             {
               name: "Distance",
@@ -174,7 +174,7 @@ export function CheckpointPage({
                 (check.distance === selectedDistance ? " (End)" : ""),
               id: "distance",
               compact: true,
-              grow: 2
+              grow: 2,
             },
             ...(hasStarted
               ? [
@@ -225,7 +225,7 @@ export function CheckpointPage({
                     },
                     id: "average",
                     compact: true,
-                    grow: 2
+                    grow: 2,
                   },
                   {
                     name: "Fastest Split",
@@ -275,7 +275,7 @@ export function CheckpointPage({
                     },
                     id: "fastest",
                     compact: true,
-                    grow: 3
+                    grow: 3,
                   },
                 ]
               : []),
@@ -421,11 +421,16 @@ export function CheckpointPage({
                     }
                   >
                     <option key="not-selected">Select a Distance</option>
-                    {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
-                      <option key={distance.distance} value={String(distance.distance)}>
-                        {`${distance.distance} Miles`}
-                      </option>
-                    ))}
+                    {race?.raceDetails?.distances?.map(
+                      (distance: RaceDistance) => (
+                        <option
+                          key={distance.distance}
+                          value={String(distance.distance)}
+                        >
+                          {`${distance.distance} Miles`}
+                        </option>
+                      )
+                    )}
                   </select>
                 </div>
                 <div style={{ marginTop: 10 }}>

@@ -35,7 +35,11 @@ export const timezoneDescriptions: Record<string, string> = {
   CAT: "Central African Time",
 };
 
-export const combineDateTime = (date: Date | null, timeOfDay: Date | null, timezone?: string): number => {
+export const combineDateTime = (
+  date: Date | null,
+  timeOfDay: Date | null,
+  timezone?: string
+): number => {
   if (!date || !timeOfDay) return 0;
   const timeObj = DateTime.now()
     .setZone(timezone)
@@ -47,13 +51,17 @@ export const combineDateTime = (date: Date | null, timeOfDay: Date | null, timez
       minute: timeOfDay.getMinutes(),
     });
   return timeObj.toMillis();
-}
-export const displayTimestamp = (millis?: number, timezone?: string): string => {
+};
+export const displayTimestamp = (
+  millis?: number,
+  timezone?: string,
+  format: string = "DD, hh:mm a"
+): string => {
   if (!millis) return "";
   const resultTime = DateTime.fromMillis(millis);
-  if (timezone) resultTime.setZone(timezone)
-  return resultTime.toFormat("DD, hh:mm a");
-}
+  if (timezone) resultTime.setZone(timezone);
+  return resultTime.toFormat(format);
+};
 
 export const displayTime = (
   seconds: number,

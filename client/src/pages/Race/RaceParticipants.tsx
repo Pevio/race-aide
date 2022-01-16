@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RouteComponentProps, useLocation } from "react-router";
 import DataTable from "react-data-table-component";
-import { CheckpointDistance, RaceDistance, Runner } from "../../types/generalTypes";
+import {
+  CheckpointDistance,
+  RaceDistance,
+  Runner,
+} from "../../types/generalTypes";
 import {
   getRaceDetails,
   updateRaceParticipants,
@@ -125,7 +129,7 @@ export function RaceParticipants({
                       return "";
                     },
                     id: "rank",
-                    grow: 1
+                    grow: 1,
                   },
                   {
                     name: "Runner Name",
@@ -147,7 +151,7 @@ export function RaceParticipants({
                     },
                     id: "bib",
                     compact: true,
-                    grow: 2
+                    grow: 2,
                   },
                   {
                     name: "Start Time Offset",
@@ -156,7 +160,7 @@ export function RaceParticipants({
                     id: "offset",
                     compact: true,
                     hide: 1000,
-                    grow: 2
+                    grow: 2,
                   },
                   ...checkpointInfo.map(
                     (info: CheckpointDistance, checkpointIndex: number) => ({
@@ -201,7 +205,7 @@ export function RaceParticipants({
                       },
                       id: `checkpoint-${checkpointIndex}`,
                       compact: true,
-                      grow: 2
+                      grow: 2,
                     })
                   ),
                   {
@@ -240,7 +244,7 @@ export function RaceParticipants({
                     },
                     id: "distance",
                     compact: true,
-                    grow: 3
+                    grow: 3,
                   },
                 ]
               : [
@@ -248,21 +252,21 @@ export function RaceParticipants({
                     name: "Runner Name",
                     selector: (runner) => runner.runnerName,
                     id: "name",
-                    grow: 3
+                    grow: 3,
                   },
                   {
                     name: "Bib Number",
                     selector: (runner) => runner.bibNumber,
                     id: "bib",
                     compact: true,
-                    grow: 2
+                    grow: 2,
                   },
                   {
                     name: "Distance",
                     selector: (runner) => `${runner.distance} Miles`,
                     id: "distance",
                     compact: true,
-                    grow: 2
+                    grow: 2,
                   },
                   {
                     name: "Start Time Offset",
@@ -270,7 +274,7 @@ export function RaceParticipants({
                       runner.offset ? displayTime(runner.offset) : "-",
                     id: "offset",
                     compact: true,
-                    grow: 2
+                    grow: 2,
                   },
                 ]
           }
@@ -371,7 +375,10 @@ export function RaceParticipants({
               >
                 <option key="none">Select a Distance</option>
                 {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
-                  <option key={distance.distance} value={String(distance.distance)}>
+                  <option
+                    key={distance.distance}
+                    value={String(distance.distance)}
+                  >
                     {`${distance.distance} Miles`}
                   </option>
                 ))}
