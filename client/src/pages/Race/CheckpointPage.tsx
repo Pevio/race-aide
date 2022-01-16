@@ -59,7 +59,8 @@ export function CheckpointPage({
   const [newDistance, setNewDistance] = useState<Partial<CheckpointDetails>>(
     {}
   );
-
+  const [showCheckpointForm, setShowCheckpointForm] = useState<boolean>(!hasStarted);
+  
   useEffect(() => {
     if (!loading && saveInProgress) {
       if (success) {
@@ -124,12 +125,12 @@ export function CheckpointPage({
           ))}
         </select>
       </div>
-      {isAdmin && !hasStarted && selectedDistance && (
+      {isAdmin && !hasStarted && (selectedDistance !== undefined) && (
         <p>
           Click on a checkpoint to edit its details or enter results for it.
         </p>
       )}
-      {hasStarted && (isAdmin || isAssistant) && selectedDistance && (
+      {hasStarted && (isAdmin || isAssistant) && (selectedDistance !== undefined) && (
         <p style={{ marginTop: 16 }}>
           Click on a checkpoint to enter results for it.
         </p>
@@ -278,13 +279,19 @@ export function CheckpointPage({
           }]}
           data={Object.values(race?.checkpoints || {})}
           onRowClicked={onRowClicked}
+          {...tableProps}
         />
       )}
-      {isAdmin && !hasStarted && (
+      {isAdmin && !showCheckpointForm && (
+        <div style={{marginTop: 32}}>
+          <button className="highlight-button" onClick={() => setShowCheckpointForm(true)}>DANGER: Add and Edit Checkpoints</button>
+        </div>
+      )}
+      {isAdmin && showCheckpointForm && (
         <>
-          <hr />
-          <h3>Edit Race Checkpoints</h3>
-          <div style={{ marginTop: 10 }}>
+          <hr style={{marginTop: 32}} />
+          <div className="container" style={{ marginTop: 32 }}>
+            <h3>Edit Race Checkpoints</h3>
             <div style={{ display: "flex", position: "relative" }}>
               <h2>
                 {`${makingNewCheckpoint ? "Add" : "Edit"} Checkpoint`}
@@ -300,7 +307,7 @@ export function CheckpointPage({
                 Add New Checkpoint
               </button>
             </div>
-            <div style={{ marginTop: 10 }}>
+            <div style={{ marginTop: 8 }}>
               <span>Checkpoint Name:</span>
               <input
                 type="text"
@@ -314,7 +321,8 @@ export function CheckpointPage({
                 }
               />
             </div>
-            <div className="container" style={{ padding: 16, marginTop: 16 }}>
+            <div className="container" style={{ marginTop: 16 }}>
+              <h3>Checkpoint Distances</h3>
               <p>
                 Each checkpoint can be used for any number of races, and any
                 number of different distances within a race. Make sure to
@@ -358,7 +366,7 @@ export function CheckpointPage({
               </div>
               <div>
                 <p>Add New Distance:</p>
-                <div>
+                <div style={{marginTop: 10}}>
                   <span>Race:</span>
                   <select
                     style={{ marginLeft: 10 }}
@@ -419,6 +427,7 @@ export function CheckpointPage({
             </div>
             <div style={{ marginTop: 32 }}>
               {errorMessage && <p>{errorMessage}</p>}
+              {hasStarted && <p style={{marginBottom: 16}}>The race has started. Be VERY CAREFUL when editing checkpoints to ensure you don't lose race data!</p>}
               <button
                 onClick={() => {
                   if (saveInProgress) return;

@@ -336,7 +336,7 @@ app.post("/api/updateraceparticipants", (req, res) => {
     returnError(res, 302)
     return
   }
-  if (!body.password || !body.raceId || !(typeof body.runner === "object")) {
+  if (!body.password || !body.raceId || !body.runner?.bibNumber || !body.runner?.runnerName) {
     returnError(res, 301);
     return;
   }
@@ -355,26 +355,33 @@ app.post("/api/updateraceparticipants", (req, res) => {
         return;
       }
       let statement = "";
-      const runners = res2.rows[0].runners;
+      const runners = res2.rows[0].runners || {};
+      const bodyRunner = {
+        offset: 0,
+        ...body.runner
+      }
       switch (body.action) {
         case "CREATE":
-          if (runners[body.runner.bibNumber]) {
+          if (runners[bodyRunner.bibNumber]) {
             returnError(res, 303)
             return
           }
-          runners[body.runner.bibNumber] = body.runner;
+          runners[bodyRunner.bibNumber] = bodyRunner;
+          break;
         case "UPDATE":
-          if (!runners[body.runner.bibNumber]) {
+          if (!runners[bodyRunner.bibNumber]) {
             returnError(res, 304)
             return
           }
-          runners[body.runner.bibNumber] = body.runner;
+          runners[bodyRunner.bibNumber] = bodyRunner;
+          break;
         case "DELETE":
-          if (!runners[body.runner.bibNumber]) {
+          if (!runners[bodyRunner.bibNumber]) {
             returnError(res, 304)
             return
           }
-          delete runners[body.runner.bibNumber];
+          delete runners[bodyRunner.bibNumber];
+          break;
       }
 
       if (res2.rows[0].runners) {

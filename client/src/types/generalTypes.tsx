@@ -19,12 +19,17 @@ export interface RaceDetails {
   distances: number[];
   raceEmail?: string;
 }
+export interface RaceDistance {
+  distance: number;
+  startTime: number;
+}
 
 export interface Runner {
   bibNumber: string; // Key
   runnerName: string;
   distance: number;
   offset: number; // If this runner is starting in a different wave
+  dnf?: boolean;
 }
 
 export interface Checkpoint {

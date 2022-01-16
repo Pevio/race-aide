@@ -69,7 +69,7 @@
   box-sizing: border-box;
   border: 1px solid #dddddd;
   border-radius: 8px;
-  padding: 12px;
+  padding: 16px;
   background-color: var(--background-light-grey);
   box-shadow: 0 2px 14px 0 rgba(0, 0, 0, 0.08);
 }
@@ -142,6 +142,7 @@ h2 {
   font-size: 14px;
   color: black;
   font-weight: bold;
+  margin-top: 0px;
   margin-bottom: 16px;
 }
 h3 {
@@ -155,7 +156,8 @@ h3 {
 input[type="text"],
 input[type="password"],
 input[type="number"],
-input[type="check"] {
+input[type="radio"],
+input[type="checkbox"] {
   height: 25px;
   font-size: 14px;
 }

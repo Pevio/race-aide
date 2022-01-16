@@ -32,7 +32,7 @@ export function RaceParticipants({
     useSelector((state: RootStore) => state.raceDetails);
   const hasStarted = raceHasStarted(race);
 
-  const isAdmin = authorization === "RACE_ADMIN";
+  const hasWriteAccess = (authorization === "RACE_ADMIN") || (authorization === "RACE_ASSISTANT");
 
   const [selectedDistance, setSelectedDistanceState] = useState<
     number | undefined
@@ -64,11 +64,12 @@ export function RaceParticipants({
   );
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
+  const [showRunnerForm, setShowRunnerForm] = useState<boolean>(!hasStarted);
 
   useEffect(() => {
     if (!loading && saveInProgress) {
       if (success) {
-        setErrorMessage("");
+        setErrorMessage("Runner information saved!");
         if (makingNewRunner) setRunnerEditing(getDefaultRunnerData());
       } else {
         setErrorMessage("The runner could not be saved.");
@@ -106,7 +107,7 @@ export function RaceParticipants({
           {`Refresh ${hasStarted ? "Results" : "Participants"}`}
         </button>
       </div>
-      {isAdmin && selectedDistance && (
+      {hasWriteAccess && (selectedDistance !== undefined) && (
         <p style={{ marginTop: 5 }}>Click a runner to edit their details.</p>
       )}
       {selectedDistance ? (
@@ -121,7 +122,7 @@ export function RaceParticipants({
                       return "";
                     },
                     id: "rank",
-                    maxWidth: "32px"
+                    maxWidth: "16px"
                   },
                   {
                     name: "Runner Name",
@@ -193,12 +194,13 @@ export function RaceParticipants({
                   ),
                   {
                     name: "Distance",
-                    selector: (runner) => {
+                    selector: (runner: Runner) => {
                       if (!allResults) return "";
                       const runnerResults =
                         allResults[String(selectedDistance)].runners[
                           runner.bibNumber
                         ];
+                      if (runnerResults.dnf) return "DNF"
                       const distance = runnerDistance(runnerResults);
                       if (!distance.distance) return "";
                       if (distance.distance === runner.distance)
@@ -219,6 +221,7 @@ export function RaceParticipants({
                           r2.bibNumber
                         ]
                       );
+                      
                       const distanceDiff = d2.distance - d1.distance;
                       if (distanceDiff !== 0) return distanceDiff;
                       return d1.lastTime - d2.lastTime;
@@ -254,9 +257,9 @@ export function RaceParticipants({
           {...tableProps}
           keyField="bibNumber"
           noDataComponent={<p>There are no runners in this race yet.</p>}
-          pointerOnHover={isAdmin}
+          pointerOnHover={hasWriteAccess}
           onRowClicked={
-            isAdmin
+            hasWriteAccess
               ? (row) => {
                   setRunnerEditing(row);
                   setMakingNewRunner(false);
@@ -270,11 +273,16 @@ export function RaceParticipants({
           hasStarted ? "results" : "participants"
         } for that race.`}</p>
       )}
-      {isAdmin && (
+      {hasWriteAccess && !showRunnerForm && (
+        <div style={{marginTop: 32}}>
+          <button className="highlight-button" onClick={() => setShowRunnerForm(true)}>Add More Runners</button>
+        </div>
+      )}
+      {(hasWriteAccess && showRunnerForm) && (
         <>
-          <hr />
-          <h3>Runner Check-In</h3>
-          <div style={{ marginTop: 10 }}>
+          <hr style={{marginTop: 32}} />
+          <div className="container" style={{ marginTop: 32 }}>
+            <h3>Runner Check-In</h3>
             <div style={{ display: "flex", position: "relative" }}>
               <h2>{makingNewRunner ? "Add Runner" : "Edit Runner"}</h2>
               <button
@@ -327,7 +335,7 @@ export function RaceParticipants({
               <span>Distance:</span>
               <select
                 style={{ marginLeft: 10 }}
-                value={runnerEditing.distance || 0}
+                value={runnerEditing.distance || "none"}
                 onChange={(e) =>
                   setRunnerEditing({
                     ...runnerEditing,
@@ -335,7 +343,7 @@ export function RaceParticipants({
                   })
                 }
               >
-                <option key="0">Select a Distance</option>
+                <option key="none">Select a Distance</option>
                 {race?.raceDetails?.distances?.map((distance) => (
                   <option key={distance} value={String(distance)}>
                     {`${distance} Miles`}
@@ -358,6 +366,19 @@ export function RaceParticipants({
               />
             </div>
             <div style={{ marginTop: 10 }}>
+              <input
+                type="checkbox"
+                checked={runnerEditing.dnf || false}
+                onChange={(e) =>
+                  setRunnerEditing({
+                    ...runnerEditing,
+                    dnf: e.target.checked,
+                  })
+                }
+              />
+              <span>Start Offset (Seconds):</span>
+            </div>
+            <div style={{ marginTop: 10 }}>
               {errorMessage && <p>{errorMessage}</p>}
               <button
                 onClick={() => {
@@ -372,13 +393,9 @@ export function RaceParticipants({
                     return;
                   }
                   setErrorMessage("");
-                  const enteredRunner: Runner = {
-                    offset: 0,
-                    ...runnerEditing,
-                  } as Runner;
 
                   setSaveInProgress(true);
-                  dispatch(updateRaceParticipants(race, enteredRunner, makingNewRunner ? "CREATE" : "UPDATE", password));
+                  dispatch(updateRaceParticipants(race, runnerEditing as Runner, makingNewRunner ? "CREATE" : "UPDATE", password));
                 }}
                 className="clickable-button"
               >
