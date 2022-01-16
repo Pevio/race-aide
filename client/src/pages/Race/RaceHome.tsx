@@ -39,29 +39,25 @@ export function RaceHome({
   const runnerArray: Runner[] = Object.values(race?.runners || []);
 
   const getDistanceDisplay = (): string => {
-    const distances = race.raceDetails.distances
-    let result = `Distance${distances.length > 0 ? "s" : ""}: `
+    const distances = race.raceDetails.distances;
+    let result = `Distance${distances.length === 1 ? "" : "s"}: `;
     distances.forEach((distance: number, index) => {
-      result += `${distance} Mile${distance === 1 ? "" : "s"}`
-      if (index < distances.length - 1) result += ", "
-    })
+      result += `${distance} Mile${distance === 1 ? "" : "s"}`;
+      if (index < distances.length - 1) result += ", ";
+    });
     return result;
-  }
+  };
   const getStartTimeDisplay = (): string => {
     const start = DateTime.fromMillis(race.startTime);
-    const raceTime = start.setZone(race.timezone).toFormat("DD, hh:mm a")
-    return `Start Time: ${raceTime} ${race.timezone}`
-  }
+    const raceTime = start.setZone(race.timezone).toFormat("DD, hh:mm a");
+    return `Start Time: ${raceTime} ${race.timezone}`;
+  };
 
   return (
     <>
       <h1>{`${race.raceName} Race Home`}</h1>
-      <p>
-        {getDistanceDisplay()}
-      </p>
-      <p>
-        {getStartTimeDisplay()}
-      </p>
+      <p>{getDistanceDisplay()}</p>
+      <p>{getStartTimeDisplay()}</p>
       {race.raceDetails.website && (
         <>
           <a
@@ -104,49 +100,51 @@ export function RaceHome({
         </>
       )}
 
-      <DataTable
-        columns={[
-          {
-            name: "Runner Name",
-            selector: (runner: Runner) => runner.runnerName,
-          },
-          {
-            name: "Bib Number",
-            selector: (runner: Runner) => runner.bibNumber,
-          },
-          {
-            name: "Distance Running",
-            selector: (runner: Runner) =>
-              `${runner.distance} Mile${runner.distance === 1 ? "" : "s"}`,
-          },
-          {
-            name: "Distance Covered",
-            omit: !hasStarted,
-            selector: (runner: Runner) => {
-              if (!allResults) return "";
-              const distance = runnerDistance(
-                allResults[String(runner.distance)].runners[runner.bibNumber]
-              );
-              if (!distance) return "";
-              const timeString = displayTime(
-                (distance.lastTime - race.startTime) / 1000,
-                true
-              );
-              return `${
-                distance.distance === runner.distance
-                  ? "Finished"
-                  : `${distance.distance} Mile${
-                      distance.distance === 1 ? "" : "s"
-                    }`
-              } in ${timeString}`;
+      {runnerArray.length > 0 && (
+        <DataTable
+          columns={[
+            {
+              name: "Runner Name",
+              selector: (runner: Runner) => runner.runnerName,
             },
-          },
-        ]}
-        data={runnerArray}
-        {...tableProps}
-        keyField="bibNumber"
-        noDataComponent={<p>There are no runners in this race yet.</p>}
-      />
+            {
+              name: "Bib Number",
+              selector: (runner: Runner) => runner.bibNumber,
+            },
+            {
+              name: "Distance Running",
+              selector: (runner: Runner) =>
+                `${runner.distance} Mile${runner.distance === 1 ? "" : "s"}`,
+            },
+            {
+              name: "Distance Covered",
+              omit: !hasStarted,
+              selector: (runner: Runner) => {
+                if (!allResults) return "";
+                const distance = runnerDistance(
+                  allResults[String(runner.distance)].runners[runner.bibNumber]
+                );
+                if (!distance) return "";
+                const timeString = displayTime(
+                  (distance.lastTime - race.startTime) / 1000,
+                  true
+                );
+                return `${
+                  distance.distance === runner.distance
+                    ? "Finished"
+                    : `${distance.distance} Mile${
+                        distance.distance === 1 ? "" : "s"
+                      }`
+                } in ${timeString}`;
+              },
+            },
+          ]}
+          data={runnerArray}
+          {...tableProps}
+          keyField="bibNumber"
+          noDataComponent={<p>There are no runners in this race yet.</p>}
+        />
+      )}
     </>
   );
 }

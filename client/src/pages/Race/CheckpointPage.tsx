@@ -164,9 +164,11 @@ export function CheckpointPage({
                         ) {
                           const thisTimestamp =
                             runner.checkpointInfo[checkpointIndex].timestamp;
-                          const previousTimestamp = checkpointIndex === 0 ? (race?.startTime || 0) + runner.offset :
-                            runner.checkpointInfo[checkpointIndex - 1]
-                              .timestamp;
+                          const previousTimestamp =
+                            checkpointIndex === 0
+                              ? (race?.startTime || 0) + runner.offset
+                              : runner.checkpointInfo[checkpointIndex - 1]
+                                  .timestamp;
                           if (
                             thisTimestamp !== undefined &&
                             previousTimestamp
@@ -213,9 +215,11 @@ export function CheckpointPage({
                         ) {
                           const thisTimestamp =
                             runner.checkpointInfo[checkpointIndex].timestamp;
-                          const previousTimestamp = checkpointIndex === 0 ? (race?.startTime || 0) + runner.offset :
-                            runner.checkpointInfo[checkpointIndex - 1]
-                              .timestamp;
+                          const previousTimestamp =
+                            checkpointIndex === 0
+                              ? (race?.startTime || 0) + runner.offset
+                              : runner.checkpointInfo[checkpointIndex - 1]
+                                  .timestamp;
                           if (thisTimestamp && previousTimestamp) {
                             const diff = thisTimestamp - previousTimestamp;
                             if (

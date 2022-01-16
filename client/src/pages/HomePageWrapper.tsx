@@ -29,12 +29,8 @@ export function HomePageWrapper(props: Props) {
   };
   return (
     <>
-      <div className="header" style={{paddingTop: 10}}>
-        <img
-          src={siteIcon}
-          style={{ height: 100, width: 100 }}
-          alt=""
-        />
+      <div className="header" style={{ paddingTop: 10 }}>
+        <img src={siteIcon} style={{ height: 100, width: 100 }} alt="" />
         <p
           style={{
             fontSize: 52,

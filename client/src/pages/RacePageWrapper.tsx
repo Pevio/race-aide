@@ -53,7 +53,7 @@ export function RacePageWrapper(props: Props) {
 
   return (
     <>
-      <div className="header" style={{paddingTop: 10, maxHeight: 80}}>
+      <div className="header" style={{ paddingTop: 10, maxHeight: 80 }}>
         <Link
           to="/"
           className="highlight-button"
@@ -64,7 +64,9 @@ export function RacePageWrapper(props: Props) {
         <div style={{ marginLeft: 10, fontSize: 44, marginTop: 16 }}>
           {race?.raceName || "Race Aide"}
         </div>
-        <div style={{ marginLeft: 20, marginTop: 40, fontSize: 16 }}>{race?.city}</div>
+        <div style={{ marginLeft: 20, marginTop: 40, fontSize: 16 }}>
+          {race?.city}
+        </div>
       </div>
       <div className="sider">
         {getSideMenuItem("Race Home", `/${raceId}`)}
