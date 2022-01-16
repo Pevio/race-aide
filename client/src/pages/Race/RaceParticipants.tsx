@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { RouteComponentProps, useLocation } from "react-router";
 import DataTable from "react-data-table-component";
-import { CheckpointDistance, Runner } from "../../types/generalTypes";
+import { CheckpointDistance, RaceDistance, Runner } from "../../types/generalTypes";
 import {
   getRaceDetails,
   updateRaceParticipants,
@@ -94,9 +94,9 @@ export function RaceParticipants({
           style={{ marginLeft: 10 }}
         >
           <option>Select a Distance</option>
-          {race?.raceDetails?.distances?.map((distance) => (
-            <option key={distance} value={String(distance)}>
-              {`${distance} Miles`}
+          {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
+            <option key={distance.distance} value={String(distance.distance)}>
+              {`${distance.distance} Miles`}
             </option>
           ))}
         </select>
@@ -370,9 +370,9 @@ export function RaceParticipants({
                 }
               >
                 <option key="none">Select a Distance</option>
-                {race?.raceDetails?.distances?.map((distance) => (
-                  <option key={distance} value={String(distance)}>
-                    {`${distance} Miles`}
+                {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
+                  <option key={distance.distance} value={String(distance.distance)}>
+                    {`${distance.distance} Miles`}
                   </option>
                 ))}
               </select>

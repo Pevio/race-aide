@@ -16,7 +16,7 @@ export interface FullRace extends Race {
 export interface RaceDetails {
   website?: string;
   registration?: string;
-  distances: number[];
+  distances: RaceDistance[];
   raceEmail?: string;
 }
 export interface RaceDistance {

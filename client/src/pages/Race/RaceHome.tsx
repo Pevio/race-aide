@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import DataTable from "react-data-table-component";
-import { RaceResult, Runner } from "../../types/generalTypes";
+import { RaceDistance, RaceResult, Runner } from "../../types/generalTypes";
 import { RouteComponentProps } from "react-router";
 import { tableProps } from "../../util/table";
 import { raceHasStarted, runnerDistance } from "../../util/resultsUtils";
@@ -41,8 +41,8 @@ export function RaceHome({
   const getDistanceDisplay = (): string => {
     const distances = race.raceDetails.distances;
     let result = `Distance${distances.length === 1 ? "" : "s"}: `;
-    distances.forEach((distance: number, index) => {
-      result += `${distance} Mile${distance === 1 ? "" : "s"}`;
+    distances.forEach((distance: RaceDistance, index) => {
+      result += `${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`;
       if (index < distances.length - 1) result += ", ";
     });
     return result;

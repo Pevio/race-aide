@@ -6,7 +6,7 @@ import TimePicker from "@mui/lab/TimePicker";
 import DatePicker from "@mui/lab/DatePicker";
 import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
-import { FullRace, RaceDetails } from "../types/generalTypes";
+import { FullRace, RaceDetails, RaceDistance } from "../types/generalTypes";
 import { timezoneDescriptions } from "../util/timeUtils";
 
 interface Props {
@@ -28,7 +28,10 @@ export function RaceDetailsForm(props: Props) {
   );
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
+
   const [newDistanceValue, setNewDistanceValue] = useState<number>(0);
+  const [newDistanceStartTime, setNewDistanceStartTime] = useState<number>(0);
+
   const hasStarted =
     props.defaultData?.startTime && props.defaultData.startTime < Date.now();
 
@@ -228,9 +231,9 @@ export function RaceDetailsForm(props: Props) {
           </p>
           <div style={{ marginTop: 5, marginBottom: 5 }}>
             {raceDetails.raceDetails?.distances?.map(
-              (distance: number, index: number) => (
-                <React.Fragment key={distance}>
-                  {`${distance} Mile${distance === 1 ? "" : "s"}`}
+              (distance: RaceDistance, index: number) => (
+                <React.Fragment key={distance.distance}>
+                  {`${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`}
                   <button
                     className="highlight-button"
                     style={{
@@ -280,13 +283,17 @@ export function RaceDetailsForm(props: Props) {
               onClick={() => {
                 if (
                   !newDistanceValue ||
-                  raceDetails.raceDetails?.distances.includes(newDistanceValue)
+                  raceDetails.raceDetails?.distances.some((distance: RaceDistance) => distance.distance === newDistanceValue)
                 )
                   return;
+                const newDistance: RaceDistance = {
+                  distance: newDistanceValue,
+                  startTime: 0
+                }
                 const newDistances = [
                   ...(raceDetails.raceDetails?.distances || []),
-                  newDistanceValue,
-                ].sort((num1, num2) => num1 - num2);
+                  newDistance,
+                ].sort((num1, num2) => num1.distance - num2.distance);
                 setRaceDetails({
                   ...raceDetails,
                   raceDetails: {

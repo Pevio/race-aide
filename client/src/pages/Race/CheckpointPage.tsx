@@ -11,6 +11,7 @@ import {
   Checkpoint,
   CheckpointDetails,
   CheckpointDistance,
+  RaceDistance,
   RaceResult,
 } from "../../types/generalTypes";
 import { updateRaceCheckpoints } from "../../state/actions/RaceDetails";
@@ -127,9 +128,9 @@ export function CheckpointPage({
           style={{ marginLeft: 10 }}
         >
           <option key="none-selected">Select a Distance</option>
-          {race?.raceDetails?.distances?.map((distance) => (
-            <option key={distance} value={String(distance)}>
-              {`${distance} Miles`}
+          {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
+            <option key={distance.distance} value={String(distance.distance)}>
+              {`${distance.distance} Miles`}
             </option>
           ))}
         </select>
@@ -302,6 +303,7 @@ export function CheckpointPage({
           data={Object.values(race?.checkpoints || {})}
           onRowClicked={onRowClicked}
           {...tableProps}
+          pointerOnHover={onRowClicked !== undefined}
         />
       )}
       {isAdmin && !showCheckpointForm && (
@@ -419,9 +421,9 @@ export function CheckpointPage({
                     }
                   >
                     <option key="not-selected">Select a Distance</option>
-                    {race?.raceDetails?.distances?.map((distance) => (
-                      <option key={distance} value={String(distance)}>
-                        {`${distance} Miles`}
+                    {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
+                      <option key={distance.distance} value={String(distance.distance)}>
+                        {`${distance.distance} Miles`}
                       </option>
                     ))}
                   </select>
