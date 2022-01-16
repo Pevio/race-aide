@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 export const timezoneDescriptions: Record<string, string> = {
   GMT: "Greenwich Mean Time",
   UTC: "Universal Coordinated Time",
@@ -32,6 +34,26 @@ export const timezoneDescriptions: Record<string, string> = {
   BET: "Brazil Eastern Time",
   CAT: "Central African Time",
 };
+
+export const combineDateTime = (date: Date | null, timeOfDay: Date | null, timezone?: string): number => {
+  if (!date || !timeOfDay) return 0;
+  const timeObj = DateTime.now()
+    .setZone(timezone)
+    .set({
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+      hour: timeOfDay.getHours(),
+      minute: timeOfDay.getMinutes(),
+    });
+  return timeObj.toMillis();
+}
+export const displayTimestamp = (millis?: number, timezone?: string): string => {
+  if (!millis) return "";
+  const resultTime = DateTime.fromMillis(millis);
+  if (timezone) resultTime.setZone(timezone)
+  return resultTime.toFormat("DD, hh:mm a");
+}
 
 export const displayTime = (
   seconds: number,

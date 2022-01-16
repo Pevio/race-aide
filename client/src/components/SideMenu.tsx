@@ -40,7 +40,7 @@ export function SideMenu(props: Props) {
           content: (
             <button
               className="highlight-button"
-              style={{ marginLeft: -4 }}
+              style={{ marginLeft: -4, marginTop: -2 }}
               onClick={() => {
                 setSideMenuState("EXPANDED");
               }}
