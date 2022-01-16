@@ -393,7 +393,7 @@ export function RaceParticipants({
                 onChange={(e) =>
                   setRunnerEditing({
                     ...runnerEditing,
-                    offset: Number.parseInt(e.target.value),
+                    offset: Number.parseInt(e.target.value || "0"),
                   })
                 }
               />

@@ -24,7 +24,7 @@ export const getRaceDetails =
         method: "GET",
       });
       const data = await res.json();
-
+      console.log(data)
       dispatch(setSelectedRace(data.race, data.returnCode === 0));
     } catch (error) {
       dispatch(setRaceLoading(false, false));
@@ -74,10 +74,14 @@ export const updateRaceDetails =
         }),
       });
       const data = await res.json();
-      if (data.returnCode === 0)
+      const success = data.returnCode === 0
+      if (success) {
         dispatch(
-          setSelectedRace({ ...race, ...data.race }, data.returnCode === 0)
+          setSelectedRace({ ...race, ...data.race }, true)
         );
+      } else {
+        setRaceLoading(false, false)
+      }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
     }

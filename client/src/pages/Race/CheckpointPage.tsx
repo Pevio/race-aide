@@ -443,7 +443,6 @@ export function CheckpointPage({
                     value={newDistance.distance || 0}
                     onChange={(e) => {
                       const newValue = Number.parseFloat(e.target.value || "0");
-                      if (!newValue) return;
                       setNewDistance({
                         ...newDistance,
                         distance: newValue,
