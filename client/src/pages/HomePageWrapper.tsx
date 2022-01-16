@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
+import { SideMenu } from "../components/SideMenu";
 import siteIcon from "../res/icon.png";
 
 interface Props {
@@ -41,12 +42,11 @@ export function HomePageWrapper(props: Props) {
           Race Aide
         </p>
       </div>
-      <div className="sider">
+      <SideMenu page={props.children}>
         {getSideMenuItem("Upcoming Races", "/")}
         {getSideMenuItem("Create Race", "/createrace")}
         {getSideMenuItem("About", "/about", false)}
-      </div>
-      <div className="page">{props.children}</div>
+      </SideMenu>
     </>
   );
 }

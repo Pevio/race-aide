@@ -2,6 +2,7 @@ import React, { CSSProperties, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router";
 import { Link, Redirect } from "react-router-dom";
+import { SideMenu } from "../components/SideMenu";
 import { getRaceDetails } from "../state/actions/RaceDetails";
 import { RootStore } from "../state/store";
 
@@ -68,7 +69,7 @@ export function RacePageWrapper(props: Props) {
           {race?.city}
         </div>
       </div>
-      <div className="sider">
+      <SideMenu page={raceIsLoaded ? props.children : undefined}>
         {getSideMenuItem("Race Home", `/${raceId}`)}
         {race && (
           <>
@@ -80,8 +81,7 @@ export function RacePageWrapper(props: Props) {
             {getSideMenuItem("Race Admin", `/${raceId}/admin`, false)}
           </>
         )}
-      </div>
-      {raceIsLoaded && <div className="page">{props.children}</div>}
+      </SideMenu>
     </>
   );
 }
