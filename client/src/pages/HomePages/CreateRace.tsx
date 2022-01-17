@@ -14,15 +14,20 @@ export function CreateRace() {
   );
 
   const onSubmit = (details: Partial<FullRace>) => {
+    setErrorMessage("")
     setSubmitClicked(true);
     dispatch(createRace(details));
   };
 
   const [submitClicked, setSubmitClicked] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   useEffect(() => {
     if (!loading && submitClicked) {
       if (success && race) {
         history.push(`/${race.raceId}`);
+      } else {
+        setErrorMessage("The race was unable to be saved")
       }
     }
   }, [loading]);
@@ -31,6 +36,7 @@ export function CreateRace() {
     <>
       <h1>Create a New Race</h1>
       <RaceDetailsForm isUpdate={false} onClickSubmit={onSubmit} />
+      {errorMessage && <p className="response-info">{errorMessage}</p>}
     </>
   );
 }

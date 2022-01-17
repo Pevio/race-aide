@@ -418,7 +418,6 @@ export function RaceParticipants({
               <label htmlFor="runner-dnf">Did Not Finish</label>
             </div>
             <div style={{ marginTop: 10 }}>
-              {errorMessage && <p>{errorMessage}</p>}
               <button
                 onClick={() => {
                   if (saveInProgress) return;
@@ -469,6 +468,7 @@ export function RaceParticipants({
                   Delete Runner
                 </button>
               )}
+              {errorMessage && <p className="response-info">{errorMessage}</p>}
             </div>
           </div>
         </>

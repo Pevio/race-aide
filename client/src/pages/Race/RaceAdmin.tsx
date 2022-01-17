@@ -120,7 +120,7 @@ export function RaceAdmin({ match, history }: RouteComponentProps<AdminProps>) {
               }}
               defaultData={raceData.race}
             />
-            {errorMessage && <p style={{ marginTop: 16 }}>{errorMessage}</p>}
+            {errorMessage && <p className="response-info">{errorMessage}</p>}
           </>
         )}
       </>

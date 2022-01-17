@@ -109,7 +109,7 @@ export function EditRacePasswords({
           Save Passwords
         </button>
       </div>
-      <p>{errorMessage}</p>
+      {errorMessage && <p className="response-info">{errorMessage}</p>}
     </>
   );
 }

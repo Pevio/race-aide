@@ -473,13 +473,15 @@ export function CheckpointPage({
               </div>
             </div>
             <div style={{ marginTop: 32 }}>
-              {errorMessage && <p>{errorMessage}</p>}
               {hasStarted && (
                 <p style={{ marginBottom: 16 }}>
                   The race has started. Be VERY CAREFUL when editing checkpoints
                   to ensure you don't lose race data!
                 </p>
               )}
+              <div>
+
+              
               <button
                 onClick={() => {
                   if (saveInProgress) return;
@@ -528,7 +530,9 @@ export function CheckpointPage({
                   Delete Checkpoint
                 </button>
               )}
+              </div>
             </div>
+            {errorMessage && <p className="response-info">{errorMessage}</p>}
           </div>
         </>
       )}
