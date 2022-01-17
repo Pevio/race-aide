@@ -15,14 +15,13 @@ import {
   RaceResult,
 } from "../../types/generalTypes";
 import { updateRaceCheckpoints } from "../../state/actions/RaceDetails";
-import { tableProps } from "../../util/table";
 import { displayTime } from "../../util/timeUtils";
 
 interface CheckpointProps {
   raceId: string;
 }
 
-export function CheckpointPage({
+export function ManuelEditEntries({
   match,
   history,
 }: RouteComponentProps<CheckpointProps>) {
@@ -38,7 +37,7 @@ export function CheckpointPage({
 
   return (
     <>
-      <h1>Edit Checkpoint Entries</h1>
+      <h1>Manually Edit Checkpoint Entries</h1>
       <p style={{ fontSize: 12 }}>
         If a volunteer misses a runner at a checkpoint, or enters the wrong bib
         number, use this page see reconcile issues and manually edit checkpoint

@@ -20,6 +20,7 @@ import {
   runnerDistance,
 } from "../../util/resultsUtils";
 import { tableProps } from "../../util/table";
+import { Link } from "react-router-dom";
 
 interface ParticipantsProps {
   raceId: string;
@@ -317,6 +318,12 @@ export function RaceParticipants({
           >
             Add or Edit Runner Information
           </button>
+          <Link
+            className="highlight-button"
+            to={`/${raceId}/manualeditentries`}
+          >
+            Manually Checkpoint Entries
+          </Link>
         </div>
       )}
       {hasWriteAccess && showRunnerForm && (

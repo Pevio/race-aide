@@ -5,6 +5,7 @@ import { RaceList } from "./HomePages/RaceList";
 import { AddCheckpointEntry } from "./Race/AddCheckpointEntry";
 import { CheckpointPage } from "./Race/CheckpointPage";
 import { EditRacePasswords } from "./Race/EditPasswords";
+import { ManuelEditEntries } from "./Race/ManualEditEntries";
 import { RaceAdmin } from "./Race/RaceAdmin";
 import { RaceHome } from "./Race/RaceHome";
 import { RaceParticipants } from "./Race/RaceParticipants";
@@ -31,6 +32,7 @@ const MainRouter = () => {
         path="/:raceId/addresults/:checkpointId"
         component={AddCheckpointEntry}
       />
+      <Route exact path="/:raceId/manualeditentries" component={ManuelEditEntries} />
 
       <Route>
         <Redirect to="/" />
