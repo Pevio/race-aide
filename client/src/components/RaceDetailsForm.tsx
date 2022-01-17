@@ -237,7 +237,7 @@ export function RaceDetailsForm(props: Props) {
                   <button
                     className="highlight-button"
                     style={{
-                      marginLeft: 2,
+                      marginLeft: 6,
                       marginRight:
                         raceDetails.raceDetails?.distances &&
                         index !== raceDetails.raceDetails.distances.length - 1
@@ -257,7 +257,7 @@ export function RaceDetailsForm(props: Props) {
                       });
                     }}
                   >
-                    remove
+                    Remove
                   </button>
                 </React.Fragment>
               )

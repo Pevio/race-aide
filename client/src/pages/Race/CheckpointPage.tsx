@@ -379,7 +379,7 @@ export function CheckpointPage({
                       {`${distance.raceDistance} Mile Race: ${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`}
                       <button
                         style={{
-                          marginLeft: 2,
+                          marginLeft: 6,
                           marginRight:
                             checkpointEditing?.distances &&
                             index !== checkpointEditing.distances.length - 1
