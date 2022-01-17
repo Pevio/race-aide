@@ -8,7 +8,7 @@ import {
   getIssues,
 } from "../../util/resultsUtils";
 import {
-  RaceIssues, CheckpointEntry
+  RaceIssues, CheckpointEntry, Runner
 } from "../../types/generalTypes";
 import { displayTime, displayTimestamp } from "../../util/timeUtils";
 import { Tabs } from "../../components/Tabs";
@@ -30,8 +30,8 @@ export function ManuelEditEntries({
   const issues: RaceIssues = getIssues(race);
 
   const [view, setViewState] = useState<string>(location.state?.manualEditView || "ISSUES")
-  const setView = (newView: string) => {
-    history.replace(location.pathname, {manualEditView: newView})
+  const setView = (newView: string, additionalStateParams: object = {}) => {
+    history.replace(location.pathname, {manualEditView: newView, ...additionalStateParams})
     setViewState(newView)
   }
   if (race && authorization !== "RACE_ADMIN") {
@@ -43,8 +43,31 @@ export function ManuelEditEntries({
     return (
       <>
         <p>
-          These are runners who skipped a checkpoint or who passed by the same checkpoint too many times. Click on one to edit or delete it.
+          These are runners who skipped a checkpoint or who passed by the same checkpoint too many times. Click on one to see full details for that runner.
         </p>
+        <DataTable
+          columns={[
+            {
+              name: "Runner Name"
+            },
+            {
+              name: "Bib Number"
+            },
+            {
+              name: "Total Checkpoints Passed"
+            },
+            {
+              name: "Issue"
+            }
+          ]}
+          data={[] as any[]}
+          {...tableProps}
+          pointerOnHover={true}
+          onRowClicked={(entry) => {
+            setView("MANUAL_EDIT", {bibNumber: entry.bibNumber});
+          }}
+          noDataComponent={<p>No runners have suspicious activity!</p>}
+        />
       </>
     )
   }
@@ -85,7 +108,7 @@ export function ManuelEditEntries({
           {...tableProps}
           pointerOnHover={true}
           onRowClicked={(entry) => setEntryEditing(entry)}
-          noDataComponent={<p>No runners have suspicious activity!</p>}
+          noDataComponent={<p>No unknown entries have been added!</p>}
         />
         {entryEditing &&
           <div style={{marginTop: 32}}>
@@ -121,6 +144,7 @@ export function ManuelEditEntries({
 
   const EditView = () => {
     const [bibNumber, setBibNumber] = useState<string | undefined>(location.state.bibNumber || undefined);
+    const [makingNewEntry, setMakingNewEntry] = useState<boolean>(true)
     const [data, setData] = useState<Partial<CheckpointEntry>>(location.state.checkpointEntry || {})
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [startTime, setStartTime] = useState<Date | null>(null);
@@ -128,17 +152,37 @@ export function ManuelEditEntries({
     const entries: CheckpointEntry[] = getCheckpointsByRunner(race, bibNumber);
 
     if (!bibNumber) {
+      const runners: Runner[] = Object.values(race?.runners || [])
       return (
         <>
-          <p>Select a runner to edit their checkpoint entries</p>
+          <p>Select a runner to edit their checkpoint entries.</p>
+          <DataTable
+            data={runners}
+            columns={[
+              {
+                name: "Runner Name"
+              },
+              {
+                name: "Bib Number"
+              },
+              {
+                name: "Distance Running"
+              },
+            ]}
+            noDataComponent={<p>This race doesn't have any runners.</p>}
+            {...tableProps}
+            pointerOnHover={true}
+            onRowClicked={(runner: Runner) => setBibNumber(runner.bibNumber)}
+          />
         </>
       )
     }
     return (
       <>
-        <div>
+        <div style={{marginBottom: 10}}>
           <button
             className="highlight-button"
+            style={{marginLeft: 0}}
             onClick={() => setBibNumber(undefined)}
           >
             Select a Different Runner
@@ -160,11 +204,10 @@ export function ManuelEditEntries({
             {
               name: "Race Time"
             },
-            {
-              name: "Race Distance"
-            }
           ]}
-          noDataComponent={<p>No unknown runner entries have been added.</p>}
+          noDataComponent={<p>No checkpoint entries have been added for this runner.</p>}
+          {...tableProps}
+          pointerOnHover={true}
         />
       </>
     )
@@ -180,7 +223,7 @@ export function ManuelEditEntries({
         return <EditView />;
     }
   }
-  
+
   return (
     <>
       <h1>Manually Edit Checkpoint Entries</h1>
