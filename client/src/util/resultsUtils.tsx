@@ -5,6 +5,7 @@ import {
   FullRace,
   Race,
   RaceDistance,
+  RaceIssues,
   RaceResult,
   RaceResultsFull,
   ResultCheckpointInfo,
@@ -132,3 +133,12 @@ export const runnerDistance = (runner?: RaceResult): RunnerDistance => {
     lastTime: lastDistance.timestamp - runner.offset * 1000,
   };
 };
+
+export const getIssues = (results: RaceResultsFull): RaceIssues => {
+  const result: RaceIssues = {
+    problemRunners: {},
+    unknownEntries: [],
+  }
+
+  return result;
+}

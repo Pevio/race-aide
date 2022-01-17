@@ -5,6 +5,7 @@
   --main-red: #fa103c;
   --main-red-faded: rgba(250, 16, 60, 0.5);
   --main-dark-red: #b10c31;
+  --tab-color: green;
 }
 
 .page {
@@ -51,7 +52,7 @@
   height: 55px;
 }
 .sider-bar-active {
-  background-color: green !important;
+  background-color: var(--tab-green) !important;
 }
 .sider-link {
   font-size: 16px !important;
@@ -59,6 +60,27 @@
   padding-left: 12px !important;
   padding-top: 14px !important;
   min-width: 140px !important;
+}
+
+.tab {
+  font-size: 16px;
+  padding: 0px 12px;
+  transition: 0.3s;
+}
+.tab:hover {
+  font-weight: bold;
+  border-bottom-width: 2px;
+}
+.tab:focus {
+  font-weight: bold;
+  border-bottom-width: 2px;
+}
+.tab-active {
+  border-bottom: 2px solid var(--tab-color) !important;
+  font-weight: bold;
+}
+.tab-inactive {
+  border-bottom: 1px solid grey
 }
 
 .datepicker {

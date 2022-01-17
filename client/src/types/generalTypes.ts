@@ -64,6 +64,15 @@ export interface ResultCheckpointInfo extends CheckpointDistance {
   timestamp?: number;
 }
 
+export interface RaceIssues {
+  problemRunners: Record<string, RaceResult>;
+  unknownEntries: UnknownEntry[]
+}
+export interface UnknownEntry {
+  checkpointNumber: string;
+  timestamp: number;
+}
+
 export interface RunnerDistance {
   lastTime: number; // If not provided
   distance: number;
