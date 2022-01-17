@@ -24,7 +24,6 @@ export const getRaceDetails =
         method: "GET",
       });
       const data = await res.json();
-      console.log(data)
       dispatch(setSelectedRace(data.race, data.returnCode === 0));
     } catch (error) {
       dispatch(setRaceLoading(false, false));
