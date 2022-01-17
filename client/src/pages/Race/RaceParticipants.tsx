@@ -93,13 +93,16 @@ export function RaceParticipants({
         <select
           onChange={(e) => {
             const value = e.target.value;
-            if (!value) setSelectedDistance(undefined);
+            if (!value) {
+              setSelectedDistance(undefined);
+              return
+            }
             setSelectedDistance(Number.parseFloat(e.target.value));
           }}
           value={selectedDistance || "ALL"}
           style={{ marginLeft: 10 }}
         >
-          <option>Select a Distance</option>
+          <option key="none-selected">Select a Distance</option>
           {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
             <option key={distance.distance} value={String(distance.distance)}>
               {`${distance.distance} Miles`}

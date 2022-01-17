@@ -121,7 +121,10 @@ export function CheckpointPage({
         <select
           onChange={(e) => {
             const value = e.target.value;
-            if (!value) setSelectedDistance(undefined);
+            if (!value) {
+              setSelectedDistance(undefined);
+              return
+            }
             setSelectedDistance(Number.parseFloat(e.target.value));
           }}
           value={selectedDistance || "ALL"}

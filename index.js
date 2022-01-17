@@ -544,13 +544,11 @@ app.post("/api/addcheckpointentry", (req, res) => {
         };
         switch (body.action) {
           case "CREATE":
-            console.log("create", Date.now())
             resultRunnersPassed[bibNumber].push(Date.now());
             break;
           case "DELETE":
             if (resultRunnersPassed[bibNumber]?.length > 0) {
               const lastTimeStamp = resultRunnersPassed[bibNumber][resultRunnersPassed[bibNumber].length - 1]
-              console.log(lastTimeStamp, Date.now(), lastTimeStamp + 10000000 - Date.now())
               if (lastTimeStamp + 10000000 < Date.now()) {
                 // You only have ten seconds to undo
                 returnError(res, 407)

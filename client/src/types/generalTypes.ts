@@ -72,6 +72,11 @@ export interface UnknownEntry {
   checkpointNumber: string;
   timestamp: number;
 }
+export interface CheckpointEntry {
+  checkpointNumber: string;
+  bibNumber: string;
+  timestamp: number;
+}
 
 export interface RunnerDistance {
   lastTime: number; // If not provided

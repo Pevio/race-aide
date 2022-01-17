@@ -2,6 +2,7 @@ import {
   Checkpoint,
   CheckpointDetails,
   CheckpointDistance,
+  CheckpointEntry,
   FullRace,
   Race,
   RaceDistance,
@@ -134,11 +135,30 @@ export const runnerDistance = (runner?: RaceResult): RunnerDistance => {
   };
 };
 
-export const getIssues = (results: RaceResultsFull): RaceIssues => {
-  const result: RaceIssues = {
+export const getIssues = (race?: FullRace): RaceIssues => {
+  const issues: RaceIssues = {
     problemRunners: {},
     unknownEntries: [],
   }
+  if (!race) return issues
+
+  // Get unknown entries
+  Object.values(race.checkpoints).forEach((check: Checkpoint) => {
+    if (check.runnersPassed["UNKNOWN_RUNNER"]) {
+      check.runnersPassed["UNKNOWN_RUNNER"].forEach((timestamp: number) => {
+        issues.unknownEntries.push({
+          checkpointNumber: check.checkpointNumber,
+          timestamp
+        })
+      })
+    }
+  })
+
+  return issues;
+}
+export const getCheckpointsByRunner = (race?: FullRace, bibNumber?: string): CheckpointEntry[] => {
+  if (!race || !bibNumber) return [];
+  const result: CheckpointEntry[] = [];
 
   return result;
 }
