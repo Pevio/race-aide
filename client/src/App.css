@@ -52,7 +52,7 @@
   height: 55px;
 }
 .sider-bar-active {
-  background-color: var(--tab-green) !important;
+  background-color: var(--tab-color) !important;
 }
 .sider-link {
   font-size: 16px !important;
@@ -64,23 +64,26 @@
 
 .tab {
   font-size: 16px;
-  padding: 0px 12px;
-  transition: 0.3s;
+  padding: 2px 16px 6px 16px;
+  transition-property: border;
+  background: none;
+  outline: none;
+  border: none;
+  cursor: pointer;
 }
 .tab:hover {
-  font-weight: bold;
-  border-bottom-width: 2px;
+  border-bottom-color: var(--tab-color);
 }
 .tab:focus {
-  font-weight: bold;
-  border-bottom-width: 2px;
+  border-bottom-color: var(--tab-color);
 }
 .tab-active {
-  border-bottom: 2px solid var(--tab-color) !important;
+  border-bottom: 4px solid var(--tab-color) !important;
   font-weight: bold;
+  padding-bottom: 8px;
 }
 .tab-inactive {
-  border-bottom: 1px solid grey
+  border-bottom: 2px solid grey !important;
 }
 
 .datepicker {
@@ -140,7 +143,7 @@
 
 .response-info {
   color: var(--main-red);
-  margin-top: 16;
+  margin-top: 16px;
   font-size: 16px;
 }
 

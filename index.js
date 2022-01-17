@@ -77,6 +77,8 @@ const responseMessages = {
   403: "Checkpoint already exists",
   405: "Invalid fields for checkpoint entry",
   406: "Invalid action for checkpoint entry",
+  407: "Too late to delete checkpoint entry",
+  408: "Nothing to delete"
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -362,7 +364,7 @@ app.post("/api/updateraceparticipants", (req, res) => {
       };
       switch (body.action) {
         case "CREATE":
-          if (runners[bodyRunner.bibNumber]) {
+          if (runners[bodyRunner.bibNumber] || bodyRunner.bibNumber === "UNKNOWN_RUNNER") {
             returnError(res, 303);
             return;
           }
@@ -501,12 +503,16 @@ app.post("/api/updateracecheckpoints", (req, res) => {
 
 app.post("/api/addcheckpointentry", (req, res) => {
   const body = req?.body || {};
-  if (!body.password || !body.raceId || !body.bibNumber || !body.checkpointNumber) {
+  if (!body.password || !body.raceId || !body.checkpointNumber) {
     returnError(res, 405);
     return;
   }
   if (!["CREATE", "DELETE"].includes(body.action)) {
     returnError(res, 406);
+    return;
+  }
+  if (body.bibNumber === "UNKNOWN_RUNNER") {
+    returnError(res, 303);
     return;
   }
 
@@ -531,17 +537,29 @@ app.post("/api/addcheckpointentry", (req, res) => {
         }
 
         const dbInfo = res2.rows[0];
+        const bibNumber = body.bibNumber || "UNKNOWN_RUNNER"
         const resultRunnersPassed = {
           ...dbInfo.runners_passed,
-          [body.bibNumber]: [...(dbInfo.runners_passed?.[body.bibNumber] || [])],
+          [bibNumber]: [...(dbInfo.runners_passed?.[bibNumber] || [])],
         };
         switch (body.action) {
           case "CREATE":
-            resultRunnersPassed[body.bibNumber].push(Date.now());
+            console.log("create", Date.now())
+            resultRunnersPassed[bibNumber].push(Date.now());
             break;
           case "DELETE":
-            if (resultRunnersPassed[body.bibNumber]?.length > 0) {
-              resultRunnersPassed[body.bibNumber].slice(resultRunnersPassed[body.bibNumber].length - 1, 1);
+            if (resultRunnersPassed[bibNumber]?.length > 0) {
+              const lastTimeStamp = resultRunnersPassed[bibNumber][resultRunnersPassed[bibNumber].length - 1]
+              console.log(lastTimeStamp, Date.now(), lastTimeStamp + 10000000 - Date.now())
+              if (lastTimeStamp + 10000000 < Date.now()) {
+                // You only have ten seconds to undo
+                returnError(res, 407)
+                return;
+              }
+              resultRunnersPassed[bibNumber].slice(resultRunnersPassed[bibNumber].length - 1, 1);
+            } else {
+              returnError(res, 408)
+              return;
             }
             break;
         }
@@ -556,7 +574,7 @@ app.post("/api/addcheckpointentry", (req, res) => {
             responseMessage: "GOOD",
             returnCode: 0,
             previousEntry: {
-              bibNumber: body.bibNumber,
+              bibNumber: bibNumber,
               checkpointNumber: body.checkpointNumber,
             },
           });

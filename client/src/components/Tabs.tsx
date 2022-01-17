@@ -15,7 +15,7 @@ interface Props {
 export function Tabs(props: Props) {
 
   return (
-    <div style={{...props.style, display: "flex", marginBottom: 32 }}>
+    <div style={{marginBottom: 32, marginTop: 32, ...props.style, display: "flex" }}>
       {props.tabs.map((tab: Tab, index: number) => (
         <button
           key={tab.key}

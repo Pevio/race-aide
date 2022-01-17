@@ -39,6 +39,7 @@ export function RaceParticipants({
 
   const hasWriteAccess =
     authorization === "RACE_ADMIN" || authorization === "RACE_ASSISTANT";
+  const isAdmin = authorization === "RACE_ADMIN"
 
   const [selectedDistance, setSelectedDistanceState] = useState<
     number | undefined
@@ -318,12 +319,17 @@ export function RaceParticipants({
           >
             Add or Edit Runner Information
           </button>
-          <Link
-            className="highlight-button"
-            to={`/${raceId}/manualeditentries`}
-          >
-            Manually Checkpoint Entries
-          </Link>
+          {isAdmin &&
+            <>
+              <br/><br/>
+              <Link
+                className="highlight-button"
+                to={`/${raceId}/manualeditentries`}
+              >
+                Manually Checkpoint Entries
+              </Link>
+            </>
+          }
         </div>
       )}
       {hasWriteAccess && showRunnerForm && (

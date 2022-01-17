@@ -191,7 +191,7 @@ export const addCheckpointEntry =
   (
     raceId: string,
     checkpointNumber: string,
-    bibNumber: string,
+    bibNumber: string | undefined,
     action: "CREATE" | "DELETE",
     password?: string
   ): ThunkActionType =>
