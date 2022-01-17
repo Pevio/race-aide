@@ -65,14 +65,16 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
     result[String(distance.distance)] = {
       runners: {},
       checkpoints: getDistanceCheckpoints(race, distance.distance),
-      startTime: distance.startTime
+      startTime: distance.startTime,
     };
   });
   Object.keys(race.runners).forEach((key: string) => {
     const runner: Runner = race.runners[key];
     const runnerResult: RaceResult = {
       ...runner,
-      offset: runner.offset + (result[String(runner.distance)].startTime - race.startTime),
+      offset:
+        runner.offset +
+        (result[String(runner.distance)].startTime - race.startTime),
       checkpointInfo: [],
     };
     const iterationIndecies: Record<string, number> = {};

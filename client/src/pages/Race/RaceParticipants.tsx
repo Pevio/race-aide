@@ -114,11 +114,17 @@ export function RaceParticipants({
           </button>
         )}
       </div>
-      {selectedDistance !== undefined &&
+      {selectedDistance !== undefined && (
         <p>
-          {`Start time for the ${selectedDistance} race: ${displayTimestamp(race?.raceDetails.distances.find((dis) => dis.distance === selectedDistance)?.startTime, race?.timezone, "hh:mm a")}`}
+          {`Start time for the ${selectedDistance} race: ${displayTimestamp(
+            race?.raceDetails.distances.find(
+              (dis) => dis.distance === selectedDistance
+            )?.startTime,
+            race?.timezone,
+            "hh:mm a"
+          )}`}
         </p>
-      }
+      )}
       {hasWriteAccess && showRunnerForm && selectedDistance !== undefined && (
         <p style={{ marginTop: 5 }}>Click a runner to edit their details.</p>
       )}

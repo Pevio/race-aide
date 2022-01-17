@@ -376,7 +376,9 @@ export function CheckpointPage({
                     <React.Fragment
                       key={`${distance.distance}-${distance.raceDistance}`}
                     >
-                      {`${distance.raceDistance} Mile Race: ${distance.distance} Mile${distance.distance === 1 ? "" : "s"}`}
+                      {`${distance.raceDistance} Mile Race: ${
+                        distance.distance
+                      } Mile${distance.distance === 1 ? "" : "s"}`}
                       <button
                         style={{
                           marginLeft: 6,
@@ -480,56 +482,54 @@ export function CheckpointPage({
                 </p>
               )}
               <div>
-
-              
-              <button
-                onClick={() => {
-                  if (saveInProgress) return;
-                  if (
-                    !race ||
-                    !checkpointEditing.checkpointNumber ||
-                    !checkpointEditing.distances?.length
-                  ) {
-                    setErrorMessage(
-                      "Make sure you have a Checkpoint Name and at least one distance"
-                    );
-                    return;
-                  }
-                  setErrorMessage("");
-                  setSaveInProgress(true);
-                  dispatch(
-                    updateRaceCheckpoints(
-                      race,
-                      checkpointEditing as Checkpoint,
-                      makingNewCheckpoint ? "CREATE" : "UPDATE",
-                      password
-                    )
-                  );
-                }}
-                className="clickable-button"
-              >
-                Save Checkpoint
-              </button>
-              {!makingNewCheckpoint && (
                 <button
-                  className="highlight-button"
-                  style={{ marginLeft: 16 }}
                   onClick={() => {
-                    if (!race || saveInProgress) return;
+                    if (saveInProgress) return;
+                    if (
+                      !race ||
+                      !checkpointEditing.checkpointNumber ||
+                      !checkpointEditing.distances?.length
+                    ) {
+                      setErrorMessage(
+                        "Make sure you have a Checkpoint Name and at least one distance"
+                      );
+                      return;
+                    }
+                    setErrorMessage("");
                     setSaveInProgress(true);
                     dispatch(
                       updateRaceCheckpoints(
                         race,
                         checkpointEditing as Checkpoint,
-                        "DELETE",
+                        makingNewCheckpoint ? "CREATE" : "UPDATE",
                         password
                       )
                     );
                   }}
+                  className="clickable-button"
                 >
-                  Delete Checkpoint
+                  Save Checkpoint
                 </button>
-              )}
+                {!makingNewCheckpoint && (
+                  <button
+                    className="highlight-button"
+                    style={{ marginLeft: 16 }}
+                    onClick={() => {
+                      if (!race || saveInProgress) return;
+                      setSaveInProgress(true);
+                      dispatch(
+                        updateRaceCheckpoints(
+                          race,
+                          checkpointEditing as Checkpoint,
+                          "DELETE",
+                          password
+                        )
+                      );
+                    }}
+                  >
+                    Delete Checkpoint
+                  </button>
+                )}
               </div>
             </div>
             {errorMessage && <p className="response-info">{errorMessage}</p>}

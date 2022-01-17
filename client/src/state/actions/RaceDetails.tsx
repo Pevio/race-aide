@@ -73,13 +73,11 @@ export const updateRaceDetails =
         }),
       });
       const data = await res.json();
-      const success = data.returnCode === 0
+      const success = data.returnCode === 0;
       if (success) {
-        dispatch(
-          setSelectedRace({ ...race, ...data.race }, true)
-        );
+        dispatch(setSelectedRace({ ...race, ...data.race }, true));
       } else {
-        setRaceLoading(false, false)
+        setRaceLoading(false, false);
       }
     } catch (error) {
       dispatch(setRaceLoading(false, false));

@@ -7,7 +7,11 @@ import DatePicker from "@mui/lab/DatePicker";
 import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
 import { FullRace, RaceDetails, RaceDistance } from "../types/generalTypes";
-import { combineDateTime, timezoneDescriptions, displayTimestamp } from "../util/timeUtils";
+import {
+  combineDateTime,
+  timezoneDescriptions,
+  displayTimestamp,
+} from "../util/timeUtils";
 
 interface Props {
   isUpdate: boolean;
@@ -221,132 +225,139 @@ export function RaceDetailsForm(props: Props) {
           </div>
         </>
       )}
-        <div className="container" style={{ marginTop: 32 }}>
-          <h3>Distances</h3>
-          <p style={{ fontSize: 12 }}>
-            For each race distance, add it here. Distances will always be in
-            miles and in the timezone you provided above. You must have at least one distance. To edit a distance, remove it and re-add it again.
-          </p>
-          <div style={{ marginTop: 5, marginBottom: 5 }}>
-            {raceDetails.raceDetails?.distances?.map(
-              (distance: RaceDistance, index: number) => (
-                <React.Fragment key={distance.distance}>
-                  {`${distance.distance} Mile${
-                    distance.distance === 1 ? "" : "s"
-                  } at ${displayTimestamp(distance.startTime, raceDetails.timezone, "hh:mm a")}`}
-                  <button
-                    className="highlight-button"
-                    style={{
-                      marginLeft: 6,
-                      marginRight:
-                        raceDetails.raceDetails?.distances &&
-                        index !== raceDetails.raceDetails.distances.length - 1
-                          ? 10
-                          : 0,
-                    }}
-                    onClick={() => {
-                      setRaceDetails({
-                        ...raceDetails,
-                        raceDetails: {
-                          ...raceDetails.raceDetails,
-                          distances:
-                            raceDetails.raceDetails?.distances?.filter(
-                              (oldDistance) => oldDistance !== distance
-                            ) || [],
-                        },
-                      });
-                    }}
-                  >
-                    Remove
-                  </button>
-                </React.Fragment>
-              )
-            )}
-          </div>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <div>
-              <h4>Add New Distance</h4>
-              <div style={{ marginTop: 10, display: "flex" }}>
-                <div style={{ marginRight: 5, paddingTop: 10 }}>
-                  Distance Start Date:
-                </div>
-                <DatePicker
-                  value={startDate}
-                  onChange={(newValue) => {
-                    setStartDate(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                  className="datepicker"
-                />
-              </div>
-
-              <div style={{marginTop: 10}}>
-                <div style={{marginRight: 5}}>Distance Start Time:</div>
-                <TimePicker
-                  value={newDistanceStartTime}
-                  onChange={(newValue) => {
-                    setNewDistanceStartTime(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                  minutesStep={1}
-                />
-              </div>
-              <div style={{ marginTop: 10, display: "flex" }}>
-                <div>Distance (Miles):</div>
-                <input
-                  style={{ marginLeft: 10 }}
-                  type="number"
-                  step="any"
-                  min={0}
-                  value={newDistanceValue}
-                  onChange={(e) => {
-                    const newDistance = Number.parseFloat(e.target.value || "0");
-                    setNewDistanceValue(newDistance);
-                  }}
-                />
-              </div>
-              <div style={{ marginTop: 10 }}>
+      <div className="container" style={{ marginTop: 32 }}>
+        <h3>Distances</h3>
+        <p style={{ fontSize: 12 }}>
+          For each race distance, add it here. Distances will always be in miles
+          and in the timezone you provided above. You must have at least one
+          distance. To edit a distance, remove it and re-add it again.
+        </p>
+        <div style={{ marginTop: 5, marginBottom: 5 }}>
+          {raceDetails.raceDetails?.distances?.map(
+            (distance: RaceDistance, index: number) => (
+              <React.Fragment key={distance.distance}>
+                {`${distance.distance} Mile${
+                  distance.distance === 1 ? "" : "s"
+                } at ${displayTimestamp(
+                  distance.startTime,
+                  raceDetails.timezone,
+                  "hh:mm a"
+                )}`}
                 <button
                   className="highlight-button"
+                  style={{
+                    marginLeft: 6,
+                    marginRight:
+                      raceDetails.raceDetails?.distances &&
+                      index !== raceDetails.raceDetails.distances.length - 1
+                        ? 10
+                        : 0,
+                  }}
                   onClick={() => {
-                    if (
-                      !newDistanceValue ||
-                      raceDetails.raceDetails?.distances.some(
-                        (distance: RaceDistance) =>
-                          distance.distance === newDistanceValue
-                      ) || !newDistanceStartDate || !newDistanceStartTime
-                    )
-                      return;
-                    const newDistance: RaceDistance = {
-                      distance: newDistanceValue,
-                      startTime: combineDateTime(
-                        newDistanceStartDate,
-                        newDistanceStartTime,
-                        raceDetails.timezone
-                      ),
-                    };
-                    const newDistances = [
-                      ...(raceDetails.raceDetails?.distances || []),
-                      newDistance,
-                    ].sort((d1, d2) => d1.distance - d2.distance);
                     setRaceDetails({
                       ...raceDetails,
                       raceDetails: {
                         ...raceDetails.raceDetails,
-                        distances: newDistances,
+                        distances:
+                          raceDetails.raceDetails?.distances?.filter(
+                            (oldDistance) => oldDistance !== distance
+                          ) || [],
                       },
                     });
-                    setNewDistanceValue(0);
-                    setNewDistanceStartDate(startDate);
-                    setNewDistanceStartTime(startTime);
                   }}
                 >
-                  Add Distance
+                  Remove
                 </button>
-              </div>
-            </div>
-          </LocalizationProvider>
+              </React.Fragment>
+            )
+          )}
         </div>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <div>
+            <h4>Add New Distance</h4>
+            <div style={{ marginTop: 10, display: "flex" }}>
+              <div style={{ marginRight: 5, paddingTop: 10 }}>
+                Distance Start Date:
+              </div>
+              <DatePicker
+                value={startDate}
+                onChange={(newValue) => {
+                  setStartDate(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+                className="datepicker"
+              />
+            </div>
+
+            <div style={{ marginTop: 10 }}>
+              <div style={{ marginRight: 5 }}>Distance Start Time:</div>
+              <TimePicker
+                value={newDistanceStartTime}
+                onChange={(newValue) => {
+                  setNewDistanceStartTime(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+                minutesStep={1}
+              />
+            </div>
+            <div style={{ marginTop: 10, display: "flex" }}>
+              <div>Distance (Miles):</div>
+              <input
+                style={{ marginLeft: 10 }}
+                type="number"
+                step="any"
+                min={0}
+                value={newDistanceValue}
+                onChange={(e) => {
+                  const newDistance = Number.parseFloat(e.target.value || "0");
+                  setNewDistanceValue(newDistance);
+                }}
+              />
+            </div>
+            <div style={{ marginTop: 10 }}>
+              <button
+                className="highlight-button"
+                onClick={() => {
+                  if (
+                    !newDistanceValue ||
+                    raceDetails.raceDetails?.distances.some(
+                      (distance: RaceDistance) =>
+                        distance.distance === newDistanceValue
+                    ) ||
+                    !newDistanceStartDate ||
+                    !newDistanceStartTime
+                  )
+                    return;
+                  const newDistance: RaceDistance = {
+                    distance: newDistanceValue,
+                    startTime: combineDateTime(
+                      newDistanceStartDate,
+                      newDistanceStartTime,
+                      raceDetails.timezone
+                    ),
+                  };
+                  const newDistances = [
+                    ...(raceDetails.raceDetails?.distances || []),
+                    newDistance,
+                  ].sort((d1, d2) => d1.distance - d2.distance);
+                  setRaceDetails({
+                    ...raceDetails,
+                    raceDetails: {
+                      ...raceDetails.raceDetails,
+                      distances: newDistances,
+                    },
+                  });
+                  setNewDistanceValue(0);
+                  setNewDistanceStartDate(startDate);
+                  setNewDistanceStartTime(startTime);
+                }}
+              >
+                Add Distance
+              </button>
+            </div>
+          </div>
+        </LocalizationProvider>
+      </div>
       <div className="container" style={{ marginTop: 32 }}>
         <h3>Extra Information</h3>
         <p style={{ margin: 0 }}>The following information is all optional:</p>

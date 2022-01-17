@@ -14,7 +14,7 @@ export function CreateRace() {
   );
 
   const onSubmit = (details: Partial<FullRace>) => {
-    setErrorMessage("")
+    setErrorMessage("");
     setSubmitClicked(true);
     dispatch(createRace(details));
   };
@@ -27,7 +27,7 @@ export function CreateRace() {
       if (success && race) {
         history.push(`/${race.raceId}`);
       } else {
-        setErrorMessage("The race was unable to be created.")
+        setErrorMessage("The race was unable to be created.");
       }
     }
   }, [loading]);
