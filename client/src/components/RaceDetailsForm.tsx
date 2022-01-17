@@ -225,7 +225,7 @@ export function RaceDetailsForm(props: Props) {
           <h3>Distances</h3>
           <p style={{ fontSize: 12 }}>
             For each race distance, add it here. Distances will always be in
-            miles. You must have at least one distance. To edit a distance, remove it and re-add it again.
+            miles and in the timezone you provided above. You must have at least one distance. To edit a distance, remove it and re-add it again.
           </p>
           <div style={{ marginTop: 5, marginBottom: 5 }}>
             {raceDetails.raceDetails?.distances?.map(
@@ -281,7 +281,7 @@ export function RaceDetailsForm(props: Props) {
               </div>
 
               <div style={{marginTop: 10}}>
-                <span>Distance Start Time:</span>
+                <div style={{marginRight: 5}}>Distance Start Time:</div>
                 <TimePicker
                   value={newDistanceStartTime}
                   onChange={(newValue) => {
@@ -314,7 +314,7 @@ export function RaceDetailsForm(props: Props) {
                       raceDetails.raceDetails?.distances.some(
                         (distance: RaceDistance) =>
                           distance.distance === newDistanceValue
-                      )
+                      ) || !newDistanceStartDate || !newDistanceStartTime
                     )
                       return;
                     const newDistance: RaceDistance = {

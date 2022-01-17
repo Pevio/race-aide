@@ -15,7 +15,7 @@ body {
   background-color: #f8f8f8;
 }
 :root {
-  --header-height: 100px;
+  --header-height: 90px;
   --sider-width: 170px;
   --background-light-grey: #f8f8f8;
 }

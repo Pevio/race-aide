@@ -27,7 +27,7 @@ export function CreateRace() {
       if (success && race) {
         history.push(`/${race.raceId}`);
       } else {
-        setErrorMessage("The race was unable to be saved")
+        setErrorMessage("The race was unable to be created.")
       }
     }
   }, [loading]);

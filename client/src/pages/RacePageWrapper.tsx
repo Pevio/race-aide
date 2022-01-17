@@ -54,11 +54,11 @@ export function RacePageWrapper(props: Props) {
 
   return (
     <>
-      <div className="header" style={{ paddingTop: 10, maxHeight: 80 }}>
+      <div className="header" style={{ paddingTop: 8 }}>
         <Link
           to="/"
           className="highlight-button"
-          style={{ fontSize: 52, marginTop: 8, minWidth: 50 }}
+          style={{ fontSize: 48, marginTop: 8, minWidth: 50 }}
         >
           {"<"}
         </Link>
