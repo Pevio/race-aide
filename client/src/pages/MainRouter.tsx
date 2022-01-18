@@ -32,7 +32,11 @@ const MainRouter = () => {
         path="/:raceId/addresults/:checkpointId"
         component={AddCheckpointEntry}
       />
-      <Route exact path="/:raceId/manualeditentries" component={ManuelEditEntries} />
+      <Route
+        exact
+        path="/:raceId/manualeditentries"
+        component={ManuelEditEntries}
+      />
 
       <Route>
         <Redirect to="/" />

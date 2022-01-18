@@ -59,9 +59,10 @@ export function RaceHome({
     <>
       <h1>{`${race.raceName} Race Home`}</h1>
       <p>{getStartTimeDisplay()}</p>
-      <p>{getDistanceDisplay()}</p>
+      <p style={{ marginTop: 5 }}>{getDistanceDisplay()}</p>
       {race.raceDetails.website && (
         <>
+          <br />
           <a
             href={formatURL(race.raceDetails.website)}
             target="_blank" // Open in new tab

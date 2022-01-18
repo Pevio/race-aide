@@ -80,7 +80,7 @@ const responseMessages = {
   407: "Too late to delete checkpoint entry",
   408: "Nothing to delete",
   409: "Existing checkpoint entry not found",
-  410: "Invalid fields for checkpoint entry modification"
+  410: "Invalid fields for checkpoint entry modification",
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -539,7 +539,7 @@ app.post("/api/addcheckpointentry", (req, res) => {
         }
 
         const dbInfo = res2.rows[0];
-        const bibNumber = body.bibNumber || "UNKNOWN_RUNNER"
+        const bibNumber = body.bibNumber || "UNKNOWN_RUNNER";
         const resultRunnersPassed = {
           ...dbInfo.runners_passed,
           [bibNumber]: [...(dbInfo.runners_passed?.[bibNumber] || [])],
@@ -550,15 +550,15 @@ app.post("/api/addcheckpointentry", (req, res) => {
             break;
           case "DELETE":
             if (resultRunnersPassed[bibNumber]?.length > 0) {
-              const lastTimeStamp = resultRunnersPassed[bibNumber][resultRunnersPassed[bibNumber].length - 1]
+              const lastTimeStamp = resultRunnersPassed[bibNumber][resultRunnersPassed[bibNumber].length - 1];
               if (lastTimeStamp + 10000000 < Date.now()) {
                 // You only have ten seconds to undo
-                returnError(res, 407)
+                returnError(res, 407);
                 return;
               }
               resultRunnersPassed[bibNumber].slice(resultRunnersPassed[bibNumber].length - 1, 1);
             } else {
-              returnError(res, 408)
+              returnError(res, 408);
               return;
             }
             break;
@@ -603,11 +603,11 @@ app.post("/api/modifycheckpointentry", (req, res) => {
     returnError(res, 410);
     return;
   }
-  if (body.action !== "DELETE" && (!body.checkpointEntry?.timestamp)) {
+  if (body.action !== "DELETE" && !body.checkpointEntry?.timestamp) {
     returnError(res, 410);
     return;
   }
-  if (body.action === "EDIT_BIB_NUMBER" && (!body.checkpointEntry?.oldBibNumber)) {
+  if (body.action === "EDIT_BIB_NUMBER" && !body.checkpointEntry?.oldBibNumber) {
     returnError(res, 410);
     return;
   }
@@ -633,67 +633,71 @@ app.post("/api/modifycheckpointentry", (req, res) => {
         }
 
         const dbInfo = res2.rows[0];
-        const resultRunnersPassed = dbInfo.runners_passed
-        const times = resultRunnersPassed[entry.bibNumber] || []
+        const resultRunnersPassed = dbInfo.runners_passed;
+        const times = resultRunnersPassed[entry.bibNumber] || [];
         switch (body.action) {
           case "CREATE":
-            times.push(entry.timestamp)
+            times.push(entry.timestamp);
             break;
           case "DELETE":
-            const deleteIndex = times.indexOf(entry.oldTimestamp)
+            const deleteIndex = times.indexOf(entry.oldTimestamp);
             if (deleteIndex === -1) {
-              returnError(res, 409)
-              return
+              returnError(res, 409);
+              return;
             }
-            times.splice(deleteIndex, 1)
+            times.splice(deleteIndex, 1);
             break;
           case "UPDATE":
-            const updateIndex = times.indexOf(entry.oldTimestamp)
+            const updateIndex = times.indexOf(entry.oldTimestamp);
             if (updateIndex === -1) {
-              returnError(res, 409)
-              return
+              returnError(res, 409);
+              return;
             }
-            times[updateIndex] = entry.timestamp
+            times[updateIndex] = entry.timestamp;
             break;
           case "EDIT_BIB_NUMBER":
-            const oldTimes = resultRunnersPassed[entry.oldBibNumber] || []
+            const oldTimes = resultRunnersPassed[entry.oldBibNumber] || [];
             console.log(oldTimes);
-            const oldIndex = oldTimes.indexOf(entry.timestamp)
+            const oldIndex = oldTimes.indexOf(entry.timestamp);
             if (oldIndex === -1) {
-              returnError(res, 409)
-              return
+              returnError(res, 409);
+              return;
             }
-            times.push(oldTimes[oldIndex])
-            oldTimes.splice(oldIndex, 1)
+            times.push(oldTimes[oldIndex]);
+            oldTimes.splice(oldIndex, 1);
             if (oldTimes.length === 0) {
-              delete resultRunnersPassed[entry.oldBibNumber]
+              delete resultRunnersPassed[entry.oldBibNumber];
             } else {
               resultRunnersPassed[entry.oldBibNumber] = oldTimes;
             }
         }
         if (times.length >= 1) {
-          times.sort((t1, t2) => t1 - t2)
+          times.sort((t1, t2) => t1 - t2);
           resultRunnersPassed[entry.bibNumber] = times;
         } else {
-          delete resultRunnersPassed[entry.bibNumber]
+          delete resultRunnersPassed[entry.bibNumber];
         }
 
-        client.query("UPDATE public.checkpoints SET runners_passed=$3 WHERE race_id=$1 AND checkpoint_number=$2", [body.raceId, body.checkpointEntry.checkpointNumber, resultRunnersPassed], (err2, res3) => {
-          if (err2) {
-            console.log(err);
-            returnError(res, 2);
-            return;
+        client.query(
+          "UPDATE public.checkpoints SET runners_passed=$3 WHERE race_id=$1 AND checkpoint_number=$2",
+          [body.raceId, body.checkpointEntry.checkpointNumber, resultRunnersPassed],
+          (err2, res3) => {
+            if (err2) {
+              console.log(err);
+              returnError(res, 2);
+              return;
+            }
+            res.json({
+              responseMessage: "GOOD",
+              returnCode: 0,
+              checkpoint: {
+                checkpointNumber: dbInfo.checkpoint_number,
+                distances: dbInfo.checkpoint_distances,
+                runnersPassed: resultRunnersPassed,
+              },
+            });
           }
-          res.json({
-            responseMessage: "GOOD",
-            returnCode: 0,
-            checkpoint: {
-              checkpointNumber: dbInfo.checkpoint_number,
-              distances: dbInfo.checkpoint_distances,
-              runnersPassed: resultRunnersPassed
-            },
-          });
-        });
+        );
       }
     );
   } catch (err) {

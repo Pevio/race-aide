@@ -72,10 +72,10 @@
   cursor: pointer;
 }
 .tab:hover {
-  border-bottom-color: var(--tab-color);
+  border-bottom-color: var(--tab-color) !important;
 }
 .tab:focus {
-  border-bottom-color: var(--tab-color);
+  border-bottom-color: var(--tab-color) !important;
 }
 .tab-active {
   border-bottom: 4px solid var(--tab-color) !important;

@@ -29,9 +29,11 @@ export function AddCheckpointEntry({
       if (!/[0-9]+$/.test(runnerList[i].bibNumber)) return true;
     }
     return false;
-  }
+  };
 
-  const [selectingNumbers, setSelectingNumbers] = useState<boolean>(!nonNumericBib())
+  const [selectingNumbers, setSelectingNumbers] = useState<boolean>(
+    !nonNumericBib()
+  );
   const [selectedBib, setSelectedBib] = useState<string>("");
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
   const [entryType, setEntryType] = useState<string>(""); // The type of save we are performing
@@ -40,7 +42,7 @@ export function AddCheckpointEntry({
   useEffect(() => {
     if (!loading && saveInProgress) {
       if (success) {
-        const thisBib = entryType === "CREATE" ? selectedBib : "UNKNOWN_RUNNER"
+        const thisBib = entryType === "CREATE" ? selectedBib : "UNKNOWN_RUNNER";
         const getUndoButton = () => (
           <button
             className="highlight-button"
@@ -56,34 +58,39 @@ export function AddCheckpointEntry({
                   password
                 )
               );
-              setEntryType("DELETE")
+              setEntryType("DELETE");
             }}
           >
             Undo
           </button>
-        )
+        );
 
         switch (entryType) {
           case "CREATE":
             const runnerInfo = race?.runners[selectedBib];
             const runnerPart = runnerInfo
-              ? `, ${runnerInfo.runnerName}, running ${runnerInfo.distance} mile${
-                  runnerInfo.distance === 1 ? "" : "s"
-                },`
+              ? `, ${runnerInfo.runnerName}, running ${
+                  runnerInfo.distance
+                } mile${runnerInfo.distance === 1 ? "" : "s"},`
               : "";
 
-
             setErrorMessage(
-              <>{`Bib Number ${selectedBib}${runnerPart} saved successfully! `}
+              <>
+                {`Bib Number ${selectedBib}${runnerPart} saved successfully! `}
                 {getUndoButton()}
               </>
             );
             break;
           case "DELETE":
-            setErrorMessage("Undo successful!")
+            setErrorMessage("Undo successful!");
             break;
           case "UNKNOWN":
-            setErrorMessage(<>{"Unknown runner saved successfully!"}{getUndoButton()}</>)
+            setErrorMessage(
+              <>
+                {"Unknown runner saved successfully!"}
+                {getUndoButton()}
+              </>
+            );
             break;
         }
 
@@ -159,14 +166,14 @@ export function AddCheckpointEntry({
                   password
                 )
               );
-              setEntryType("CREATE")
+              setEntryType("CREATE");
             }}
           >
             Submit
           </button>
           <button
             className="highlight-button"
-            style={{marginLeft: 32}}
+            style={{ marginLeft: 32 }}
             onClick={() => {
               if (saveInProgress) return;
               setSaveInProgress(true);
@@ -180,13 +187,15 @@ export function AddCheckpointEntry({
                   password
                 )
               );
-              setEntryType("UNKNOWN")
+              setEntryType("UNKNOWN");
             }}
           >
             Unknown Runner Passed
           </button>
         </div>
-        <p className="response-info" style={{color: "black"}}>{errorMessage}</p>
+        <p className="response-info" style={{ color: "black" }}>
+          {errorMessage}
+        </p>
       </div>
     </>
   );

@@ -218,12 +218,16 @@ export const addCheckpointEntry =
     }
   };
 
-export const modifyCheckpointEntry = (
-  race: FullRace,
-  checkpointEntry: CheckpointEntry & {oldTimestamp?: number, oldBibNumber?: string},
-  action: "CREATE" | "UPDATE" | "DELETE" | "EDIT_BIB_NUMBER",
-  password?: string,
-): ThunkActionType =>
+export const modifyCheckpointEntry =
+  (
+    race: FullRace,
+    checkpointEntry: CheckpointEntry & {
+      oldTimestamp?: number;
+      oldBibNumber?: string;
+    },
+    action: "CREATE" | "UPDATE" | "DELETE" | "EDIT_BIB_NUMBER",
+    password?: string
+  ): ThunkActionType =>
   async (dispatch: Dispatch) => {
     try {
       dispatch(setRaceLoading(true));
@@ -238,15 +242,20 @@ export const modifyCheckpointEntry = (
         }),
       });
       const data = await res.json();
-      const success = data.returnCode === 0
+      const success = data.returnCode === 0;
       if (success) {
-        dispatch(setSelectedRace({
-          ...race,
-          checkpoints: {
-            ...race.checkpoints,
-            [data.checkpoint.checkpointNumber]: data.checkpoint,
-          }
-        }, true));
+        dispatch(
+          setSelectedRace(
+            {
+              ...race,
+              checkpoints: {
+                ...race.checkpoints,
+                [data.checkpoint.checkpointNumber]: data.checkpoint,
+              },
+            },
+            true
+          )
+        );
       } else {
         dispatch(setRaceLoading(false, false));
       }

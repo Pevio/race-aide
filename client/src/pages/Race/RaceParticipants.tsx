@@ -35,11 +35,15 @@ export function RaceParticipants({
   const location: any = useLocation();
   const { race, authorization, password, loading, success, allResults } =
     useSelector((state: RootStore) => state.raceDetails);
+
   const hasStarted = raceHasStarted(race);
+  useEffect(() => {
+    if (hasStarted) dispatch(getRaceDetails(raceId));
+  }, [hasStarted]);
 
   const hasWriteAccess =
     authorization === "RACE_ADMIN" || authorization === "RACE_ASSISTANT";
-  const isAdmin = authorization === "RACE_ADMIN"
+  const isAdmin = authorization === "RACE_ADMIN";
 
   const [selectedDistance, setSelectedDistanceState] = useState<
     number | undefined
@@ -95,7 +99,7 @@ export function RaceParticipants({
             const value = e.target.value;
             if (!value) {
               setSelectedDistance(undefined);
-              return
+              return;
             }
             setSelectedDistance(Number.parseFloat(e.target.value));
           }}
@@ -322,9 +326,10 @@ export function RaceParticipants({
           >
             Add or Edit Runner Information
           </button>
-          {isAdmin &&
+          {isAdmin && (
             <>
-              <br/><br/>
+              <br />
+              <br />
               <Link
                 className="highlight-button"
                 to={`/${raceId}/manualeditentries`}
@@ -332,7 +337,7 @@ export function RaceParticipants({
                 Manually Checkpoint Entries
               </Link>
             </>
-          }
+          )}
         </div>
       )}
       {hasWriteAccess && showRunnerForm && (

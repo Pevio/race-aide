@@ -52,12 +52,12 @@ export function RaceDetailsForm(props: Props) {
       jsDate.setMonth(date.get("month") - 1);
       jsDate.setDate(date.get("day"));
       setStartDate(jsDate);
-      setNewDistanceStartDate(new Date(jsDate.getTime()))
+      setNewDistanceStartDate(new Date(jsDate.getTime()));
 
       const time = new Date();
       time.setHours(date.get("hour"), date.get("minute"), date.get("second"));
       setStartTime(time);
-      setNewDistanceStartTime(new Date(time.getTime()))
+      setNewDistanceStartTime(new Date(time.getTime()));
     } else {
       setStartDate(null);
       setStartTime(null);
@@ -147,7 +147,8 @@ export function RaceDetailsForm(props: Props) {
             value={startDate}
             onChange={(newValue) => {
               setStartDate(newValue);
-              if (newValue) setNewDistanceStartDate(new Date(newValue.getTime()));
+              if (newValue)
+                setNewDistanceStartDate(new Date(newValue.getTime()));
             }}
             renderInput={(params) => <TextField {...params} />}
             className="datepicker"
@@ -161,7 +162,8 @@ export function RaceDetailsForm(props: Props) {
             value={startTime}
             onChange={(newValue) => {
               setStartTime(newValue);
-              if (newValue) setNewDistanceStartTime(new Date(newValue.getTime()));
+              if (newValue)
+                setNewDistanceStartTime(new Date(newValue.getTime()));
             }}
             renderInput={(params) => <TextField {...params} />}
             minutesStep={1}
@@ -292,7 +294,9 @@ export function RaceDetailsForm(props: Props) {
             </div>
 
             <div style={{ marginTop: 10 }}>
-              <div style={{ marginRight: 5, paddingTop: 10 }}>Distance Start Time:</div>
+              <div style={{ marginRight: 5, paddingTop: 10 }}>
+                Distance Start Time:
+              </div>
               <TimePicker
                 value={newDistanceStartTime}
                 onChange={(newValue) => {

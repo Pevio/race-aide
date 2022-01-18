@@ -123,7 +123,7 @@ export function CheckpointPage({
             const value = e.target.value;
             if (!value) {
               setSelectedDistance(undefined);
-              return
+              return;
             }
             setSelectedDistance(Number.parseFloat(e.target.value));
           }}
