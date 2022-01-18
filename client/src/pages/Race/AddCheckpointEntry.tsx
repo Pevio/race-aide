@@ -40,36 +40,42 @@ export function AddCheckpointEntry({
   useEffect(() => {
     if (!loading && saveInProgress) {
       if (success) {
+        const thisBib = entryType === "CREATE" ? selectedBib : "UNKNOWN_RUNNER"
+        const getUndoButton = () => (
+          <button
+            className="highlight-button"
+            onClick={() => {
+              setSaveInProgress(true);
+              setErrorMessage("");
+              dispatch(
+                addCheckpointEntry(
+                  raceId,
+                  checkpointId,
+                  thisBib,
+                  "DELETE",
+                  password
+                )
+              );
+              setEntryType("DELETE")
+            }}
+          >
+            Undo
+          </button>
+        )
+
         switch (entryType) {
           case "CREATE":
-            const thisBib = selectedBib
             const runnerInfo = race?.runners[selectedBib];
             const runnerPart = runnerInfo
               ? `, ${runnerInfo.runnerName}, running ${runnerInfo.distance} mile${
                   runnerInfo.distance === 1 ? "" : "s"
                 },`
               : "";
+
+
             setErrorMessage(
               <>{`Bib Number ${selectedBib}${runnerPart} saved successfully! `}
-                <button
-                  className="highlight-button"
-                  onClick={() => {
-                    setSaveInProgress(true);
-                    setErrorMessage("");
-                    dispatch(
-                      addCheckpointEntry(
-                        raceId,
-                        checkpointId,
-                        thisBib,
-                        "DELETE",
-                        password
-                      )
-                    );
-                    setEntryType("DELETE")
-                  }}
-                >
-                  Undo
-                </button>
+                {getUndoButton()}
               </>
             );
             break;
@@ -77,7 +83,7 @@ export function AddCheckpointEntry({
             setErrorMessage("Undo successful!")
             break;
           case "UNKNOWN":
-            setErrorMessage("Unknown runner saved successfully!")
+            setErrorMessage(<>{"Unknown runner saved successfully!"}{getUndoButton()}</>)
             break;
         }
 
