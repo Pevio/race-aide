@@ -595,15 +595,19 @@ app.post("/api/modifycheckpointentry", (req, res) => {
   }
   const entry = body.checkpointEntry;
 
-  if (!["CREATE", "UPDATE", "DELETE"].includes(body.action)) {
+  if (!["CREATE", "UPDATE", "DELETE", "EDIT_BIB_NUMBER"].includes(body.action)) {
     returnError(res, 406);
     return;
   }
-  if (body.action !== "CREATE" && !entry.oldTimestamp) {
+  if (body.action !== "CREATE" && body.action !== "EDIT_BIB_NUMBER" && !entry.oldTimestamp) {
     returnError(res, 410);
     return;
   }
   if (body.action !== "DELETE" && (!body.checkpointEntry?.timestamp)) {
+    returnError(res, 410);
+    return;
+  }
+  if (body.action === "EDIT_BIB_NUMBER" && (!body.checkpointEntry?.oldBibNumber)) {
     returnError(res, 410);
     return;
   }
@@ -634,7 +638,6 @@ app.post("/api/modifycheckpointentry", (req, res) => {
         switch (body.action) {
           case "CREATE":
             times.push(entry.timestamp)
-            times.sort((t1, t2) => t1 - t2)
             break;
           case "DELETE":
             const deleteIndex = times.indexOf(entry.oldTimestamp)
@@ -652,8 +655,24 @@ app.post("/api/modifycheckpointentry", (req, res) => {
             }
             times[updateIndex] = entry.timestamp
             break;
+          case "EDIT_BIB_NUMBER":
+            const oldTimes = resultRunnersPassed[entry.oldBibNumber] || []
+            console.log(oldTimes);
+            const oldIndex = oldTimes.indexOf(entry.timestamp)
+            if (oldIndex === -1) {
+              returnError(res, 409)
+              return
+            }
+            times.push(oldTimes[oldIndex])
+            oldTimes.splice(oldIndex, 1)
+            if (oldTimes.length === 0) {
+              delete resultRunnersPassed[entry.oldBibNumber]
+            } else {
+              resultRunnersPassed[entry.oldBibNumber] = oldTimes;
+            }
         }
         if (times.length >= 1) {
+          times.sort((t1, t2) => t1 - t2)
           resultRunnersPassed[entry.bibNumber] = times;
         } else {
           delete resultRunnersPassed[entry.bibNumber]

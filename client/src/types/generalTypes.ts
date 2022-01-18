@@ -69,8 +69,9 @@ export interface RaceIssues {
   problemRunners: Record<string, RunnerIssue>;
   unknownEntries: UnknownEntry[]
 }
-export interface RunnerIssue extends RaceResult {
+export interface RunnerIssue extends Runner {
   issue: string;
+  checkpointEntries: CheckpointEntry[];
 }
 export interface UnknownEntry {
   checkpointNumber: string;

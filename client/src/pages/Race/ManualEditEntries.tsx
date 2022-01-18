@@ -67,21 +67,25 @@ export function ManuelEditEntries({
     return (
       <>
         <p>
-          These are runners who skipped a checkpoint or who passed by the same checkpoint too many times. Click on one to see full details for that runner.
+          These are runners who skipped a checkpoint or who passed by the same checkpoint too many times. Click on one to see full checkpoint details for that runner.
         </p>
         <DataTable
           columns={[
             {
-              name: "Runner Name"
+              name: "Runner Name",
+              selector: (issue) => issue.runnerName
             },
             {
-              name: "Bib Number"
+              name: "Bib Number",
+              selector: (issue) => issue.bibNumber
             },
             {
-              name: "Total Checkpoints Passed"
+              name: "Total Checkpoints Passed",
+              selector: (issue) => issue.checkpointEntries.length
             },
             {
-              name: "Issue"
+              name: "Issue",
+              selector: (issue) => issue.issue
             }
           ]}
           data={Object.values(issues.problemRunners)}
@@ -89,7 +93,6 @@ export function ManuelEditEntries({
           pointerOnHover={true}
           onRowClicked={(entry) => {
             setView("MANUAL_EDIT", {bibNumber: entry.bibNumber});
-            setErrorMessage("")
           }}
           noDataComponent={<p>No runners have suspicious activity!</p>}
         />
@@ -100,9 +103,10 @@ export function ManuelEditEntries({
     const [entryEditing, setEntryEditing] = useState<{
       checkpointNumber: string,
       timestamp: number,
-      bibNumber?: string;
+      bibNumber: string;
     } | undefined>(undefined)
-
+    const [enteredBibNumber, setEnteredBibNumber] = useState<string>("")
+    
     return (
       <>
         <p>
@@ -143,20 +147,39 @@ export function ManuelEditEntries({
           onRowClicked={(entry) => {
             setEntryEditing(entry)
             setErrorMessage("")
+            setEnteredBibNumber(entry.bibNumber === "UNKNOWN_RUNNER" ? "" : entry.bibNumber)
           }}
           noDataComponent={<p>No unknown entries have been added!</p>}
         />
         {entryEditing &&
           <div style={{marginTop: 32}}>
             <h2>Edit Unknown Checkpoint Entry</h2>
-            <div>
-
+            <p style={{fontSize: 12}}>You can give this entry to an actual bib number, or remove it entirely.</p>
+            <div style={{marginTop: 10}}>
+              <span>Bib Number:</span>
+              <input
+                style={{marginLeft: 5}}
+                value={enteredBibNumber || ""}
+                type="text"
+                onChange={(e) => setEnteredBibNumber(e.target.value || "")}
+              />
             </div>
-            <div>
+            <div style={{marginTop: 12}}>
               <button
                 className="clickable-button"
                 onClick={() => {
-
+                  if (!race || saveInProgress || !enteredBibNumber) return;
+                  setSaveInProgress(true)
+                  dispatch(modifyCheckpointEntry(
+                    race,
+                    {
+                      ...entryEditing,
+                      bibNumber: enteredBibNumber,
+                      oldBibNumber: entryEditing.bibNumber
+                    },
+                    "EDIT_BIB_NUMBER",
+                    password
+                  ))
                 }}
               >
                 Apply Bib Number
@@ -165,7 +188,17 @@ export function ManuelEditEntries({
                 className="highlight-button"
                 style={{marginLeft: 32}}
                 onClick={() => {
-                  
+                  if (!race || saveInProgress) return;
+                  setSaveInProgress(true)
+                  dispatch(modifyCheckpointEntry(
+                    race,
+                    {
+                      ...entryEditing,
+                      oldTimestamp: entryEditing.timestamp,
+                    },
+                    "DELETE",
+                    password
+                  ))
                 }}
               >
                 Delete Entry
@@ -173,7 +206,6 @@ export function ManuelEditEntries({
             </div>
           </div>
         }
-        
       </>
     )
   }

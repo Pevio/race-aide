@@ -142,7 +142,29 @@ export const getIssues = (race?: FullRace): RaceIssues => {
     unknownEntries: [],
   }
   if (!race) return issues
-
+  const routes: Record<string, CheckpointDistance[]> = {}
+  race.raceDetails.distances.forEach((distance: RaceDistance) => {
+    routes[String(distance.distance)] = getDistanceCheckpoints(race, distance.distance);
+  })
+  Object.values(race.runners).forEach((runner) => {
+    const allCheckpoints: CheckpointEntry[] = getCheckpointsByRunner(race, runner.bibNumber);
+    const runnerRoute = routes[String(runner.distance)]
+    let issue: string | undefined = undefined;
+    for (let i = 0; i < allCheckpoints.length; i++) {
+      if (allCheckpoints[i].checkpointNumber !== runnerRoute[i].checkpointNumber) {
+        issue = "Checkpoints out of order";
+        break;
+      }
+    }
+    if (!issue && allCheckpoints.length > runnerRoute.length) issue = "Too many checkpoint entries"
+    if (issue) {
+      issues.problemRunners[runner.bibNumber] = {
+        ...runner,
+        checkpointEntries: allCheckpoints,
+        issue
+      }
+    }
+  })
   // Get unknown entries
   Object.values(race.checkpoints).forEach((check: Checkpoint) => {
     Object.keys(check.runnersPassed).forEach((key: string) => {
@@ -180,6 +202,7 @@ export const getCheckpointsByRunner = (race?: FullRace, bibNumber?: string): Che
         })
       })
     }
+    result.sort((c1, c2) => c1.timestamp - c2.timestamp)
   })
   return result;
 }

@@ -220,8 +220,8 @@ export const addCheckpointEntry =
 
 export const modifyCheckpointEntry = (
   race: FullRace,
-  checkpointEntry: CheckpointEntry,
-  action: "CREATE" | "UPDATE" | "DELETE",
+  checkpointEntry: CheckpointEntry & {oldTimestamp?: number, oldBibNumber?: string},
+  action: "CREATE" | "UPDATE" | "DELETE" | "EDIT_BIB_NUMBER",
   password?: string,
 ): ThunkActionType =>
   async (dispatch: Dispatch) => {
