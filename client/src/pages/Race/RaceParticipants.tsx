@@ -301,7 +301,7 @@ export function RaceParticipants({
           data={runnerArray}
           {...tableProps}
           keyField="bibNumber"
-          noDataComponent={<p>There are no runners in this race yet.</p>}
+          noDataComponent={<p>There are no runners for this distance yet.</p>}
           pointerOnHover={hasWriteAccess && showRunnerForm}
           onRowClicked={
             hasWriteAccess && showRunnerForm

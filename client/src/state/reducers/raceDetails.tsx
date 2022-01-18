@@ -63,7 +63,14 @@ export default function raceDetails(
         const jsonFromStorage = localStorage.getItem(
           `race-password-${action.payload.race.raceId}`
         );
-        if (jsonFromStorage) storage = JSON.parse(jsonFromStorage);
+        if (jsonFromStorage) {
+          storage = JSON.parse(jsonFromStorage);
+        } else {
+          storage = {
+            password: undefined,
+            authorization: undefined,
+          }
+        }
       }
 
       const results: RaceResultsFull | undefined =
