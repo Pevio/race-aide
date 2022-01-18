@@ -58,8 +58,8 @@ export function RaceHome({
   return (
     <>
       <h1>{`${race.raceName} Race Home`}</h1>
-      <p>{getDistanceDisplay()}</p>
       <p>{getStartTimeDisplay()}</p>
+      <p>{getDistanceDisplay()}</p>
       {race.raceDetails.website && (
         <>
           <a

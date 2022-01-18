@@ -28,7 +28,7 @@ export interface Runner {
   bibNumber: string; // Key
   runnerName: string;
   distance: number;
-  offset: number; // If this runner is starting in a different wave
+  offset: number; // In seconds - If this runner is starting in a different wave
   dnf?: boolean;
 }
 
@@ -47,7 +47,7 @@ export interface CheckpointDetails {
 export interface CheckpointDistance {
   checkpointNumber: string;
   distance: number;
-  id: string;
+  id: string; // combines the above fields into a unique id for the race
 }
 
 // Results for a single runner
@@ -59,18 +59,23 @@ export interface RaceDistanceResults {
 }
 export interface RaceResult extends Runner {
   checkpointInfo: ResultCheckpointInfo[];
+  // Offset here is milliseconds off from the start of the race, with distance start time and original runner offset taken into account.
 }
 export interface ResultCheckpointInfo extends CheckpointDistance {
   timestamp?: number;
 }
 
 export interface RaceIssues {
-  problemRunners: Record<string, RaceResult>;
+  problemRunners: Record<string, RunnerIssue>;
   unknownEntries: UnknownEntry[]
+}
+export interface RunnerIssue extends RaceResult {
+  issue: string;
 }
 export interface UnknownEntry {
   checkpointNumber: string;
   timestamp: number;
+  bibNumber: string;
 }
 export interface CheckpointEntry {
   checkpointNumber: string;
@@ -82,6 +87,7 @@ export interface RunnerDistance {
   lastTime: number; // If not provided
   distance: number;
 }
+
 export type RaceAuthorization = "RACE_ADMIN" | "RACE_ASSISTANT";
 export const RaceAuthorizationDescription: Record<RaceAuthorization, string> = {
   RACE_ADMIN: "Race Admin",

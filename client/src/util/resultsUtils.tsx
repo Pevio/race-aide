@@ -75,7 +75,7 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
     const runnerResult: RaceResult = {
       ...runner,
       offset:
-        runner.offset +
+        (runner.offset * 1000) +
         (result[String(runner.distance)].startTime - race.startTime),
       checkpointInfo: [],
     };
@@ -117,12 +117,13 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
 };
 
 export const runnerAtCheckpoint = (
-  runner: RaceResult,
-  checkpointIndex: number
+  runner?: RaceResult,
+  checkpointIndex?: number
 ): number | undefined => {
+  if (runner === undefined || checkpointIndex === undefined) return undefined;
   const timestamp = runner.checkpointInfo[checkpointIndex]?.timestamp;
   if (!timestamp) return undefined;
-  return timestamp - runner.offset * 1000;
+  return timestamp - runner.offset;
 };
 export const runnerDistance = (runner?: RaceResult): RunnerDistance => {
   if (!runner || runner.dnf) return { distance: 0, lastTime: 0 };
@@ -131,7 +132,7 @@ export const runnerDistance = (runner?: RaceResult): RunnerDistance => {
   if (!lastDistance?.timestamp) return { distance: 0, lastTime: 0 };
   return {
     distance: lastDistance.distance,
-    lastTime: lastDistance.timestamp - runner.offset * 1000,
+    lastTime: lastDistance.timestamp - runner.offset,
   };
 };
 
@@ -144,14 +145,24 @@ export const getIssues = (race?: FullRace): RaceIssues => {
 
   // Get unknown entries
   Object.values(race.checkpoints).forEach((check: Checkpoint) => {
-    if (check.runnersPassed["UNKNOWN_RUNNER"]) {
-      check.runnersPassed["UNKNOWN_RUNNER"].forEach((timestamp: number) => {
-        issues.unknownEntries.push({
-          checkpointNumber: check.checkpointNumber,
-          timestamp
+    Object.keys(check.runnersPassed).forEach((key: string) => {
+      let isUnknown = false
+      if (key === "UNKNOWN_RUNNER") {
+        isUnknown = true;
+      } else {
+        if (!(key in race.runners)) isUnknown = true;
+      }
+
+      if (isUnknown) {
+        check.runnersPassed[key].forEach((timestamp: number) => {
+          issues.unknownEntries.push({
+            checkpointNumber: check.checkpointNumber,
+            timestamp,
+            bibNumber: key
+          })
         })
-      })
-    }
+      }
+    })
   })
 
   return issues;
@@ -159,6 +170,16 @@ export const getIssues = (race?: FullRace): RaceIssues => {
 export const getCheckpointsByRunner = (race?: FullRace, bibNumber?: string): CheckpointEntry[] => {
   if (!race || !bibNumber) return [];
   const result: CheckpointEntry[] = [];
-
+  Object.values(race.checkpoints).forEach((checkpoint: Checkpoint) => {
+    if (bibNumber in checkpoint.runnersPassed) {
+      checkpoint.runnersPassed[bibNumber].forEach((timestamp) => {
+        result.push({
+          checkpointNumber: checkpoint.checkpointNumber,
+          timestamp,
+          bibNumber
+        })
+      })
+    }
+  })
   return result;
 }

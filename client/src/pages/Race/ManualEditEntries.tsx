@@ -2,17 +2,24 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../state/store";
 import { Redirect, RouteComponentProps, useLocation } from "react-router";
+import TextField from "@mui/material/TextField";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import TimePicker from "@mui/lab/TimePicker";
+import DatePicker from "@mui/lab/DatePicker";
 import DataTable from "react-data-table-component";
 import {
   getCheckpointsByRunner,
   getIssues,
 } from "../../util/resultsUtils";
 import {
-  RaceIssues, CheckpointEntry, Runner
+  RaceIssues, CheckpointEntry, Runner, Checkpoint
 } from "../../types/generalTypes";
-import { displayTime, displayTimestamp } from "../../util/timeUtils";
+import { combineDateTime, displayTime, displayTimestamp } from "../../util/timeUtils";
 import { Tabs } from "../../components/Tabs";
 import { tableProps } from "../../util/table";
+import { useEffect } from "react";
+import { modifyCheckpointEntry } from "../../state/actions/RaceDetails";
 
 interface CheckpointProps {
   raceId: string;
@@ -29,11 +36,28 @@ export function ManuelEditEntries({
     useSelector((state: RootStore) => state.raceDetails);
   const issues: RaceIssues = getIssues(race);
 
+  
+  const [saveInProgress, setSaveInProgress] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<React.ReactNode>("")
+
   const [view, setViewState] = useState<string>(location.state?.manualEditView || "ISSUES")
   const setView = (newView: string, additionalStateParams: object = {}) => {
     history.replace(location.pathname, {manualEditView: newView, ...additionalStateParams})
     setViewState(newView)
+    setErrorMessage("");
   }
+
+  useEffect(() => {
+    if (!loading && saveInProgress) {
+      if (success) {
+        setErrorMessage("Save successful!")
+      } else {
+        setErrorMessage("An error occurred. Please validate all data and try again.")
+      }
+      setSaveInProgress(false)
+    }
+  }, [loading])
+
   if (race && authorization !== "RACE_ADMIN") {
     return <Redirect to={`/${raceId}`} />;
   }
@@ -60,11 +84,12 @@ export function ManuelEditEntries({
               name: "Issue"
             }
           ]}
-          data={[] as any[]}
+          data={Object.values(issues.problemRunners)}
           {...tableProps}
           pointerOnHover={true}
           onRowClicked={(entry) => {
             setView("MANUAL_EDIT", {bibNumber: entry.bibNumber});
+            setErrorMessage("")
           }}
           noDataComponent={<p>No runners have suspicious activity!</p>}
         />
@@ -81,7 +106,8 @@ export function ManuelEditEntries({
     return (
       <>
         <p>
-          These are entries where the race assistants couldn't catch the bib number of the runner. Click on one to give it a bib number or delete it.
+          These are entries where the race assistants couldn't catch the bib number of the runner, or entered a bib number that doesn't exist.
+          Click on one to give it a bib number or delete it.
           Race Time is based on the start time of the race, not nessecarily the start time of the runner's distance.
         </p>
         <DataTable
@@ -89,6 +115,13 @@ export function ManuelEditEntries({
             {
               name: "Checkpoint",
               selector: (entry) => entry.checkpointNumber
+            },
+            {
+              name: "Bib Number",
+              selector: (entry) => {
+                if (entry.bibNumber === "UNKNOWN_ENTRY") return "Unknown Runner";
+                return entry.bibNumber
+              }
             },
             {
               name: "Real Time",
@@ -107,7 +140,10 @@ export function ManuelEditEntries({
           data={issues.unknownEntries}
           {...tableProps}
           pointerOnHover={true}
-          onRowClicked={(entry) => setEntryEditing(entry)}
+          onRowClicked={(entry) => {
+            setEntryEditing(entry)
+            setErrorMessage("")
+          }}
           noDataComponent={<p>No unknown entries have been added!</p>}
         />
         {entryEditing &&
@@ -145,9 +181,20 @@ export function ManuelEditEntries({
   const EditView = () => {
     const [bibNumber, setBibNumber] = useState<string | undefined>(location.state.bibNumber || undefined);
     const [makingNewEntry, setMakingNewEntry] = useState<boolean>(true)
-    const [data, setData] = useState<Partial<CheckpointEntry>>(location.state.checkpointEntry || {})
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [startTime, setStartTime] = useState<Date | null>(null);
+    const [checkpointNumber, setCheckpointNumber] = useState<string>("")
+    const [oldTimestamp, setOldTimestamp] = useState<number>(0)
+    const [entryDate, setEntryDate] = useState<Date | null>(null);
+    const [entryTime, setEntryTime] = useState<Date | null>(null);
+    const clearForm = (): void => {
+      setMakingNewEntry(true);
+      setCheckpointNumber("")
+      setOldTimestamp(0)
+      if (race) {
+        setEntryDate(new Date(race.startTime))
+        setEntryTime(new Date(race.startTime))
+      }
+      setErrorMessage("")
+    }
 
     const entries: CheckpointEntry[] = getCheckpointsByRunner(race, bibNumber);
 
@@ -160,23 +207,38 @@ export function ManuelEditEntries({
             data={runners}
             columns={[
               {
-                name: "Runner Name"
+                name: "Runner Name",
+                selector: (runner) => runner.runnerName
               },
               {
-                name: "Bib Number"
+                name: "Bib Number",
+                selector: (runner) => runner.bibNumber
               },
               {
-                name: "Distance Running"
+                name: "Distance Running",
+                selector: runner => runner.distance
               },
             ]}
             noDataComponent={<p>This race doesn't have any runners.</p>}
             {...tableProps}
             pointerOnHover={true}
-            onRowClicked={(runner: Runner) => setBibNumber(runner.bibNumber)}
+            onRowClicked={(runner: Runner) => {
+              setBibNumber(runner.bibNumber)
+              clearForm()
+            }}
           />
         </>
       )
     }
+    const getResultEntry = () => {
+      return {
+        bibNumber,
+        checkpointNumber,
+        timestamp: combineDateTime(entryDate, entryTime, race?.timezone || ""),
+        oldTimestamp: makingNewEntry ? undefined : oldTimestamp
+      }
+    }
+
     return (
       <>
         <div style={{marginBottom: 10}}>
@@ -191,24 +253,133 @@ export function ManuelEditEntries({
         <p>
           Here, you can add or remove checkpoint entry you like from the bib number you have selected.
         </p>
-        <p>{`Runner ${race?.runners[bibNumber].runnerName || ""}, bib number ${bibNumber}`}</p>
+        <h3>{`Runner ${race?.runners[bibNumber].runnerName || ""}`}</h3>
+        <p>{`Bib Number: ${bibNumber}`}</p>
         <DataTable
           data={entries}
           columns={[
             {
-              name: "Checkpoint Number"
+              name: "Checkpoint Number",
+              selector: (entry: CheckpointEntry) => entry.checkpointNumber
             },
             {
-              name: "Real Time"
+              name: "Real Time",
+              selector: (entry: CheckpointEntry) => displayTimestamp(entry.timestamp)
             },
             {
-              name: "Race Time"
+              name: "Race Time",
+              selector: (entry) => {
+                const runner = race?.runners[bibNumber]
+                const distanceDetails = race?.raceDetails.distances.find((dis) => dis.distance === runner?.distance);
+                if (!distanceDetails || !runner) return "-"
+                return displayTime((entry.timestamp - runner.offset - race.startTime) / 1000, true)
+              }
             },
           ]}
           noDataComponent={<p>No checkpoint entries have been added for this runner.</p>}
           {...tableProps}
           pointerOnHover={true}
+          onRowClicked={(entry: CheckpointEntry) => {
+            setMakingNewEntry(false)
+            setCheckpointNumber(entry.checkpointNumber)
+            setEntryDate(new Date(entry.timestamp))
+            setEntryTime(new Date(entry.timestamp))
+            setOldTimestamp(entry.timestamp)
+            setErrorMessage("")
+          }}
         />
+        <div style={{position: "relative", marginTop: 32, marginBottom: 10}}>
+          <h2>{`${makingNewEntry ? "Add New" : "Edit"} Checkpoint Entry`}</h2>
+          <button
+            className="highlight-button"
+            style={{position: "absolute", right: 0}}
+            onClick={clearForm}
+          >
+            Create Checkpoint Entry
+          </button>
+        </div>
+        {makingNewEntry ?
+            <div>
+              <span>Checkpoint Name: </span>
+              <select
+                value={checkpointNumber || ""}
+                onChange={(e) => setCheckpointNumber(e.target.value || "")}
+              >
+                <option value="">
+                  Select a Checkpoint
+                </option>
+                {Object.values(race?.checkpoints || []).map((check: Checkpoint) => (
+                  <option key={check.checkpointNumber} value={check.checkpointNumber}>
+                    {check.checkpointNumber}
+                  </option>
+                ))}
+              </select>
+            </div>
+          :
+          <>
+            <p style={{marginTop: 10}}>{`Checkpoint Name: ${checkpointNumber}`}</p>
+            <p style={{marginTop: 5, fontSize: 12}}>To change this runner checkpoint number that applies to this entry, delete this entry and create a new one.</p>
+          </>
+        }
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <div style={{ marginTop: 10, display: "flex" }}>
+            <div style={{ marginRight: 5, paddingTop: 10 }}>
+              Checkpoint Entry Date:
+            </div>
+            <DatePicker
+              value={entryDate}
+              onChange={(newValue) => {
+                setEntryDate(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+              className="datepicker"
+            />
+          </div>
+          <div style={{ marginTop: 10, display: "flex" }}>
+            <div style={{ marginRight: 5, paddingTop: 10 }}>
+              Checkpoint Entry Time:
+            </div>
+            <TimePicker
+              value={entryTime}
+              onChange={(newValue) => {
+                setEntryTime(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+              minutesStep={1}
+              views={["hours", "minutes", "seconds"]}
+            />
+          </div>
+        </LocalizationProvider>
+        <div style={{marginTop: 10}}>
+          <button
+            className="clickable-button"
+            onClick={() => {
+              if (!race || !checkpointNumber || !entryDate || !entryTime || saveInProgress) return;
+              setSaveInProgress(true)
+              dispatch(modifyCheckpointEntry(
+                race, 
+                getResultEntry(),
+                makingNewEntry ? "CREATE" : "UPDATE",
+                password
+              ))
+            }}
+          >
+            Save Checkpoint Entry
+          </button>
+          {!makingNewEntry &&
+            <button
+              className="highlight-button"
+              style={{marginLeft: 16}}
+              onClick={() => {
+                if (!race || saveInProgress) return;
+                setSaveInProgress(true)
+                dispatch(modifyCheckpointEntry(race, getResultEntry(), "DELETE", password))
+              }}
+            >
+              Delete Checkpoint Entry
+            </button>
+          }
+        </div>
       </>
     )
   }
@@ -242,6 +413,7 @@ export function ManuelEditEntries({
         ]}
       />
       {getTabContent()}
+      {errorMessage && <p className="response-info">{errorMessage}</p>}
     </>
   );
 }

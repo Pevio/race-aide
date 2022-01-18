@@ -78,7 +78,9 @@ const responseMessages = {
   405: "Invalid fields for checkpoint entry",
   406: "Invalid action for checkpoint entry",
   407: "Too late to delete checkpoint entry",
-  408: "Nothing to delete"
+  408: "Nothing to delete",
+  409: "Existing checkpoint entry not found",
+  410: "Invalid fields for checkpoint entry modification"
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -574,6 +576,102 @@ app.post("/api/addcheckpointentry", (req, res) => {
             previousEntry: {
               bibNumber: bibNumber,
               checkpointNumber: body.checkpointNumber,
+            },
+          });
+        });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    returnError(res, 1);
+  }
+});
+
+app.post("/api/modifycheckpointentry", (req, res) => {
+  const body = req?.body || {};
+  if (!body.password || !body.raceId || !body.checkpointEntry || !body.checkpointEntry?.checkpointNumber || !body.checkpointEntry?.bibNumber) {
+    returnError(res, 410);
+    return;
+  }
+  const entry = body.checkpointEntry;
+
+  if (!["CREATE", "UPDATE", "DELETE"].includes(body.action)) {
+    returnError(res, 406);
+    return;
+  }
+  if (body.action !== "CREATE" && !entry.oldTimestamp) {
+    returnError(res, 410);
+    return;
+  }
+  if (body.action !== "DELETE" && (!body.checkpointEntry?.timestamp)) {
+    returnError(res, 410);
+    return;
+  }
+
+  try {
+    client.query(
+      "SELECT races.race_id, admin_password, checkpoint_number, checkpoint_distances, runners_passed from public.races JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1 AND checkpoint_number = $2",
+      [body.raceId, entry.checkpointNumber],
+      (err, res2) => {
+        if (err) {
+          console.log(err);
+          returnError(res, 2);
+          return;
+        }
+        if (res2.rows.length === 0) {
+          returnError(res, 3);
+          return;
+        }
+        // Authenticate and allow either password to work
+        if (decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
+          returnError(res, 201);
+          return;
+        }
+
+        const dbInfo = res2.rows[0];
+        const resultRunnersPassed = dbInfo.runners_passed
+        const times = resultRunnersPassed[entry.bibNumber] || []
+        switch (body.action) {
+          case "CREATE":
+            times.push(entry.timestamp)
+            times.sort((t1, t2) => t1 - t2)
+            break;
+          case "DELETE":
+            const deleteIndex = times.indexOf(entry.oldTimestamp)
+            if (deleteIndex === -1) {
+              returnError(res, 409)
+              return
+            }
+            times.splice(deleteIndex, 1)
+            break;
+          case "UPDATE":
+            const updateIndex = times.indexOf(entry.oldTimestamp)
+            if (updateIndex === -1) {
+              returnError(res, 409)
+              return
+            }
+            times[updateIndex] = entry.timestamp
+            break;
+        }
+        if (times.length >= 1) {
+          resultRunnersPassed[entry.bibNumber] = times;
+        } else {
+          delete resultRunnersPassed[entry.bibNumber]
+        }
+
+        client.query("UPDATE public.checkpoints SET runners_passed=$3 WHERE race_id=$1 AND checkpoint_number=$2", [body.raceId, body.checkpointEntry.checkpointNumber, resultRunnersPassed], (err2, res3) => {
+          if (err2) {
+            console.log(err);
+            returnError(res, 2);
+            return;
+          }
+          res.json({
+            responseMessage: "GOOD",
+            returnCode: 0,
+            checkpoint: {
+              checkpointNumber: dbInfo.checkpoint_number,
+              distances: dbInfo.checkpoint_distances,
+              runnersPassed: resultRunnersPassed
             },
           });
         });

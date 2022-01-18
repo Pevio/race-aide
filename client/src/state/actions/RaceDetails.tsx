@@ -1,6 +1,7 @@
 import { Dispatch } from "redux";
 import {
   Checkpoint,
+  CheckpointEntry,
   FullRace,
   RaceAuthorization,
   Runner,
@@ -212,6 +213,43 @@ export const addCheckpointEntry =
       const data = await res.json();
 
       dispatch(setRaceLoading(false, data.returnCode === 0));
+    } catch (error) {
+      dispatch(setRaceLoading(false, false));
+    }
+  };
+
+export const modifyCheckpointEntry = (
+  race: FullRace,
+  checkpointEntry: CheckpointEntry,
+  action: "CREATE" | "UPDATE" | "DELETE",
+  password?: string,
+): ThunkActionType =>
+  async (dispatch: Dispatch) => {
+    try {
+      dispatch(setRaceLoading(true));
+      const res = await fetch("/api/modifycheckpointentry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          raceId: race.raceId,
+          checkpointEntry,
+          password,
+          action,
+        }),
+      });
+      const data = await res.json();
+      const success = data.returnCode === 0
+      if (success) {
+        dispatch(setSelectedRace({
+          ...race,
+          checkpoints: {
+            ...race.checkpoints,
+            [data.checkpoint.checkpointNumber]: data.checkpoint,
+          }
+        }, true));
+      } else {
+        dispatch(setRaceLoading(false, false));
+      }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
     }
