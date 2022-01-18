@@ -293,7 +293,7 @@ export function RaceDetailsForm(props: Props) {
               />
             </div>
 
-            <div style={{ marginTop: 10 }}>
+            <div style={{ marginTop: 10, display: "flex" }}>
               <div style={{ marginRight: 5, paddingTop: 10 }}>
                 Distance Start Time:
               </div>

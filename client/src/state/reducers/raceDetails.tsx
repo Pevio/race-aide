@@ -64,8 +64,10 @@ export default function raceDetails(
           `race-password-${action.payload.race.raceId}`
         );
         if (jsonFromStorage) {
+          // We're signed in
           storage = JSON.parse(jsonFromStorage);
         } else {
+          // Not signed in
           storage = {
             password: undefined,
             authorization: undefined,
@@ -96,6 +98,7 @@ export default function raceDetails(
       if (state.race) {
         const storageKey = `race-password-${state.race.raceId}`;
         if (action.payload.password) {
+          // Save the updated passwords and authorization
           localStorage.setItem(
             storageKey,
             JSON.stringify({
@@ -104,6 +107,7 @@ export default function raceDetails(
             })
           );
         } else {
+          // We're logging out; remove the password
           localStorage.removeItem(storageKey);
         }
       }
