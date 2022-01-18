@@ -285,8 +285,9 @@ export function ManuelEditEntries({
         <p>
           Here, you can add or remove checkpoint entry you like from the bib number you have selected.
         </p>
-        <h3>{`Runner ${race?.runners[bibNumber].runnerName || ""}`}</h3>
+        <h3>{`Runner: ${race?.runners[bibNumber].runnerName || ""}`}</h3>
         <p>{`Bib Number: ${bibNumber}`}</p>
+        <p>{`Distance: ${race?.runners[bibNumber].distance || 0} mile${race?.runners[bibNumber].distance === 1 ? "" : "s"}`}</p>
         <DataTable
           data={entries}
           columns={[
