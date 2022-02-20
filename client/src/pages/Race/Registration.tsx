@@ -111,10 +111,9 @@ export function Registration({
       />
           <hr style={{ marginTop: 32 }} />
           <div className="container" style={{ marginTop: 32 }}>
-            <h3>Runner Check-In</h3>
             <div style={{ display: "flex", position: "relative" }}>
               <h2>{makingNewRunner ? "Add Runner" : "Edit Runner"}</h2>
-              <button
+              {!makingNewRunner && <button
                 style={{ position: "absolute", right: 0 }}
                 className="highlight-button"
                 onClick={() => {
@@ -123,7 +122,7 @@ export function Registration({
                 }}
               >
                 Add New Runner
-              </button>
+              </button>}
             </div>
             <div style={{ marginTop: 10 }}>
               <span>Runner Name:</span>
