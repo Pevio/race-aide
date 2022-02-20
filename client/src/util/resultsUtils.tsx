@@ -125,7 +125,6 @@ export const runnerAtCheckpoint = (
   return timestamp - runner.offset;
 };
 export const runnerDistance = (runner?: RaceResult): RunnerDistance => {
-  console.log(runner);
   if (!runner || runner.dnf) return { distance: 0, lastTime: 0 };
   const lastDistance: ResultCheckpointInfo | undefined =
     runner.checkpointInfo[runner.checkpointInfo.length - 1];
@@ -164,7 +163,8 @@ export const getIssues = (race?: FullRace): RaceIssues => {
         break;
       }
     }
-    if (!issue && allCheckpoints.length > runnerRoute.length)
+    
+    if (!issue && (allCheckpoints.length > runnerRoute.length))
       issue = "Too many checkpoint entries";
     if (issue) {
       issues.problemRunners[runner.bibNumber] = {

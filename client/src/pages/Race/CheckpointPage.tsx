@@ -300,6 +300,21 @@ export function CheckpointPage({
               name: "Checkpoint Name",
               selector: (check) => check.checkpointNumber,
             },
+            {
+              name: "Races",
+              selector: (check) => {
+                const distances: Set<number> = new Set<number>()
+                check.distances.forEach((d: CheckpointDetails) => {
+                  distances.add(d.raceDistance)
+                })
+                const distanceArray = Array.from(distances).sort((a, b) => a - b);
+                let result = ""
+                distanceArray.forEach((d, i) => {
+                  result = `${result} Mile Race${i > 0 ? ", " : ""}${d}`
+                })
+                return result;
+              }
+            }
           ]}
           keyField="checkpointNumber"
           key="generic-checkpoints"

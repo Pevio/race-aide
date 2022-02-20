@@ -334,7 +334,7 @@ export function RaceParticipants({
                 className="highlight-button"
                 to={`/${raceId}/manualeditentries`}
               >
-                Manually Checkpoint Entries
+                Manually Edit Checkpoint Entries
               </Link>
             </>
           )}
@@ -430,7 +430,7 @@ export function RaceParticipants({
                 }
               />
             </div>
-            <div style={{ marginTop: 10 }}>
+            {hasStarted && <div style={{ marginTop: 10 }}>
               <input
                 type="checkbox"
                 id="runner-dnf"
@@ -443,7 +443,7 @@ export function RaceParticipants({
                 }
               />
               <label htmlFor="runner-dnf">Did Not Finish</label>
-            </div>
+            </div>}
             <div style={{ marginTop: 10 }}>
               <button
                 onClick={() => {
