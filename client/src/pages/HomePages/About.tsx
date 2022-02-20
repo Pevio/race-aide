@@ -24,20 +24,20 @@ export function About() {
         directors.
       </p>
       <p style={pTagStyles}>
-        <b>Ease of use:</b> Your assistants at checkpoints and aid stations
-        don't need to know the map of the race or who the runners are; they must
+        <b>Ease of Use:</b> Your assistants at checkpoints and aid stations
+        don't need to know the map of the race or who the runners are; they
         only need to see the bib number of runners to log times. Friends
-        following along will see where favorite runners are at.
+        following along will see where their favorite runners are at.
       </p>
       <p style={pTagStyles}>
         <b>Metrics:</b> Wondering which leg of the race was the most difficult?
-        Want to know if the winner made a massive comback? Race Aide will give
+        Want to know if the winner made a massive comeback? Race Aide will give
         you all the statistics you need for your race. If you want more, you can
         copy the raw data to do what you like with it.
       </p>
       <p style={pTagStyles}>
         <b>Safety:</b> If a runner gets lost, Race Aide will tell you the last
-        checkpoint they were at, greatly assiting in potential searches by
+        checkpoint they were at, greatly assisting in potential searches by
         reducing the land area where the runner might be. You will also not have
         to do a head count at the end of the race, since your results page will
         already be populated with checkpoint data.

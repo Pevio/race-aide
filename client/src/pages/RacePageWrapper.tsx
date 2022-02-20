@@ -54,7 +54,7 @@ export function RacePageWrapper(props: Props) {
 
   return (
     <>
-      <div className="header" style={{ paddingTop: 8 }}>
+      <div className="header" style={{ paddingTop: 8, flexWrap: "nowrap" }}>
         <Link
           to="/"
           className="highlight-button"

@@ -75,8 +75,7 @@ export const compileResults = (race: FullRace): RaceResultsFull => {
     const runnerResult: RaceResult = {
       ...runner,
       offset:
-        runner.offset * 1000 +
-        (result[String(runner.distance)].startTime - race.startTime),
+        runner.offset,
       checkpointInfo: [],
     };
     const iterationIndecies: Record<string, number> = {};
@@ -126,13 +125,14 @@ export const runnerAtCheckpoint = (
   return timestamp - runner.offset;
 };
 export const runnerDistance = (runner?: RaceResult): RunnerDistance => {
+  console.log(runner);
   if (!runner || runner.dnf) return { distance: 0, lastTime: 0 };
   const lastDistance: ResultCheckpointInfo | undefined =
     runner.checkpointInfo[runner.checkpointInfo.length - 1];
   if (!lastDistance?.timestamp) return { distance: 0, lastTime: 0 };
   return {
     distance: lastDistance.distance,
-    lastTime: lastDistance.timestamp - runner.offset,
+    lastTime: lastDistance.timestamp - (runner.offset * 1000),
   };
 };
 

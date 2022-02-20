@@ -76,7 +76,7 @@ export function RaceDetailsForm(props: Props) {
       <div style={{ marginTop: 10 }}>
         <label htmlFor={key}>{`${description}:`}</label>
         <input
-          style={{ marginLeft: 10, width: 300 }}
+          style={{ marginLeft: 10, width: 320 }}
           type={type}
           id={key}
           // @ts-ignore

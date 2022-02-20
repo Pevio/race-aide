@@ -54,7 +54,7 @@ export function SideMenu(props: Props) {
         return {
           content: (
             <>
-              <div style={{ marginBottom: 24 }}>
+              <div style={{ marginBottom: 18 }}>
                 <button
                   className="highlight-button"
                   onClick={() => {
