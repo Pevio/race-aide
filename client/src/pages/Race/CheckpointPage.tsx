@@ -310,7 +310,7 @@ export function CheckpointPage({
                 const distanceArray = Array.from(distances).sort((a, b) => a - b);
                 let result = ""
                 distanceArray.forEach((d, i) => {
-                  result = `${result} Mile Race${i > 0 ? ", " : ""}${d}`
+                  result = `${result}${i > 0 ? ", " : ""}${d} Mile Race`
                 })
                 return result;
               }
