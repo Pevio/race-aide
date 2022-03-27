@@ -64,7 +64,7 @@ export function Registration({
 
   return (
     <>
-      <h1>{`Race ${hasStarted ? "Results" : "Participants"}`}</h1>
+      <h1>Race Registration</h1>
       <p style={{ marginTop: 5 }}>Click a runner to edit their details.</p>
       <DataTable
         columns={[

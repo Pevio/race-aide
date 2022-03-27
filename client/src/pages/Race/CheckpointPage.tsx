@@ -173,7 +173,7 @@ export function CheckpointPage({
               name: "Distance",
               selector: (check) =>
                 check.distance +
-                " Miles" +
+                ` Miles${check.distance === 1 ? "" : "s"}` +
                 (check.distance === selectedDistance ? " (End)" : ""),
               id: "distance",
               compact: true,
