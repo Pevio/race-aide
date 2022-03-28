@@ -48,6 +48,15 @@ const decrypt = (encrypted, key) => {
   }
 };
 
+const isValidString = (str) => {
+  if (!str) return false;
+  // allows letters numbers, hyphens, and underscores
+  if (!/^[A-Za-z0-9-_]+$/.test(str)) {
+    return false;
+  }
+  return true;
+}
+
 // API Util Functions
 const responseMessages = {
   0: "GOOD",
@@ -57,30 +66,32 @@ const responseMessages = {
   4: "Invalid JSON in body",
 
   // Create Race
-  101: "Missing fields for create race",
-  102: "raceId already exists",
-  103: "Invalid race ID",
+  101: "Some fields are missing. Make sure you have all required fields filled out and you have at least one distance.",
+  102: "The race ID already exists.",
+  103: "Invalid race ID.",
 
   // Race Details
-  201: "Invalid Password",
-  202: "Missing fields for update race",
+  201: "Invalid password.",
+  202: "Missing fields for update race.",
 
   // Race Participants
-  301: "Missing fields for race participants",
-  302: "Invalid action for race participant CRUD",
-  303: "Runner bibNumber already exists",
-  304: "Runner bibNumber does not exist",
-
+  301: "Missing fields for race participants.",
+  302: "Invalid action for race participant CRUD.",
+  303: "This runner's bib number already exists.",
+  304: "This bib number does not exist.",
+  305: "Invalid bib number.",
+  
   // Race Checkpoints
-  401: "Missing fields for race checkpoints",
-  402: "Invalid action for race checkpoint CRUD",
-  403: "Checkpoint already exists",
-  405: "Invalid fields for checkpoint entry",
-  406: "Invalid action for checkpoint entry",
-  407: "Too late to delete checkpoint entry",
-  408: "Nothing to delete",
-  409: "Existing checkpoint entry not found",
-  410: "Invalid fields for checkpoint entry modification",
+  401: "Missing fields for race checkpoints.",
+  402: "Invalid action for race checkpoint CRUD.",
+  403: "A checkpoint with this checkpoint name already exists.",
+  405: "Invalid fields for checkpoint entry.",
+  406: "Invalid action for checkpoint entry.",
+  407: "Too late to delete checkpoint entry.",
+  408: "Nothing to delete.",
+  409: "Existing checkpoint entry not found.",
+  410: "Invalid fields for checkpoint entry modification.",
+  411: "Invalid Checkpoint Name."
 };
 const returnError = (res, returnCode = 1, data = {}, status = 400) => {
   res.status(status);
@@ -116,14 +127,14 @@ app.post("/api/createrace", (req, res) => {
     }
 
     // allows letters numbers, hyphens, and underscores
-    if (!/^[A-Za-z0-9-_]+$/.test(race.raceId)) {
+    if (isValidString(race.raceId)) {
       returnError(res, 103);
       return;
     }
 
     const adminPassword = encrypt(genericKey, race.adminPassword);
     const checkpointPassword = encrypt(genericKey, race.checkpointPassword);
-    client.query("SELECT race_id from public.races WHERE race_id = $1", [req.raceId], (err, res3) => {
+    client.query("SELECT race_id, race_name from public.races WHERE race_id = $1", [race.raceId], (err, res3) => {
       if (res3.rows.length > 0) {
         returnError(res, 102);
         return;
@@ -344,6 +355,10 @@ app.post("/api/updateraceparticipants", (req, res) => {
     returnError(res, 301);
     return;
   }
+  if (isValidString(body.runner.bibNumber)) {
+    returnError(res, 305);
+    return;
+  }
   try {
     client.query("SELECT races.race_id, admin_password, runners from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id WHERE races.race_id=$1", [raceId], (err, res2) => {
       if (err) {
@@ -354,7 +369,7 @@ app.post("/api/updateraceparticipants", (req, res) => {
         returnError(res, 3);
         return;
       }
-      if (decrypt(res2.rows[0].admin_password, body.password) !== genericKey) {
+      if (decrypt(res2.rows[0].admin_password, body.password) !== genericKey && decrypt(res2.rows[0].admin_password, body.password)) {
         returnError(res, 201);
         return;
       }
@@ -424,6 +439,11 @@ app.post("/api/updateracecheckpoints", (req, res) => {
     returnError(res, 401);
     return;
   }
+  if (isValidString(body.checkpoint)) {
+    returnError(res, 411);
+    return;
+  }
+
   try {
     client.query(
       "SELECT races.race_id, admin_password, checkpoint_number, checkpoint_distances, runners_passed FROM public.races LEFT JOIN public.checkpoints ON races.race_id = checkpoints.race_id WHERE races.race_id=$1",

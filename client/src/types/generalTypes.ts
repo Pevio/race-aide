@@ -18,6 +18,7 @@ export interface RaceDetails {
   registration?: string;
   distances: RaceDistance[];
   raceEmail?: string;
+  divisions?: string[];
 }
 export interface RaceDistance {
   distance: number;
@@ -30,6 +31,7 @@ export interface Runner {
   distance: number;
   offset: number; // In seconds - If this runner is starting in a different wave
   dnf?: boolean;
+  division?: string;
 }
 
 export interface Checkpoint {

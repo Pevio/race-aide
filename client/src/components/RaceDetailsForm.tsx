@@ -40,6 +40,7 @@ export function RaceDetailsForm(props: Props) {
   const [newDistanceStartTime, setNewDistanceStartTime] = useState<Date | null>(
     null
   );
+  const [newDivisionValue, setNewDivisionValue] = useState<string | undefined>()
 
   useEffect(() => {
     setRaceDetails(getDefaultRaceDetails());
@@ -229,6 +230,82 @@ export function RaceDetailsForm(props: Props) {
           </div>
         </>
       )}
+      <div className="container" style={{ marginTop: 32 }}>
+        <h3>Divisions</h3>
+        <p style={{ marginTop: 10, fontSize: 12 }}>
+          Divisisions can be whatever you want them to be.
+        </p>
+        <div style={{ marginTop: 5, marginBottom: 5 }}>
+          {raceDetails.raceDetails?.divisions?.map(
+            (division: string, index: number) => (
+              <React.Fragment key={division}>
+                {division}
+                <button
+                  className="highlight-button"
+                  style={{
+                    marginLeft: 6,
+                    marginRight:
+                      raceDetails.raceDetails?.distances &&
+                      index !== raceDetails.raceDetails.distances.length - 1
+                        ? 10
+                        : 0,
+                  }}
+                  onClick={() => {
+                    setRaceDetails({
+                      ...raceDetails,
+                      raceDetails: {
+                        ...raceDetails.raceDetails,
+                        divisions:
+                          raceDetails.raceDetails?.divisions?.filter(
+                            (oldDiv) => oldDiv !== division
+                          ) || [],
+                      } as RaceDetails,
+                    });
+                  }}
+                >
+                  Remove
+                </button>
+              </React.Fragment>
+            )
+          )}
+        </div>
+        <div>
+          <h4>Add New Division</h4>
+          <div style={{ marginTop: 10, display: "flex" }}>
+            <label htmlFor="division-input">Division:</label>
+            <input
+              style={{ marginLeft: 10 }}
+              type="string"
+              value={newDivisionValue}
+              id="division-input"
+              onChange={(e) => {
+                setNewDivisionValue(e.target.value);
+              }}
+            />
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <button
+              className="highlight-button"
+              onClick={() => {
+                if (
+                  !newDivisionValue || raceDetails.raceDetails?.divisions?.includes(newDivisionValue)
+                )
+                  return;
+                setRaceDetails({
+                  ...raceDetails,
+                  raceDetails: {
+                    ...raceDetails.raceDetails,
+                    divisions: [...(raceDetails.raceDetails?.divisions || []), newDivisionValue],
+                  } as RaceDetails,
+                });
+                setNewDivisionValue("");
+              }}
+            >
+              Add Division
+            </button>
+          </div>
+        </div>
+      </div>
       <div className="container" style={{ marginTop: 32 }}>
         <h3>Distances</h3>
         <p style={{ fontSize: 12 }}>

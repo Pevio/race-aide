@@ -14,6 +14,7 @@ interface RaceListState {
   race?: FullRace;
   success: boolean;
   loading: boolean;
+  errorResponse?: string;
   password?: string;
   authorization?: RaceAuthorization;
   allResults?: RaceResultsFull;
@@ -35,6 +36,7 @@ export interface SetRaceLoading {
   payload: {
     isLoading: boolean;
     success: boolean;
+    errorMessage?: string;
   };
 }
 export interface SetRacePassword {
@@ -93,6 +95,7 @@ export default function raceDetails(
         ...state,
         loading: action.payload.isLoading,
         success: action.payload.success,
+        errorResponse: action.payload.errorMessage
       };
     case SET_RACE_PASSWORD:
       if (state.race) {

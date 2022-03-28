@@ -17,7 +17,6 @@ import {
 } from "../../util/resultsUtils";
 import { tableProps } from "../../util/table";
 
-
 interface ParticipantsProps {
   raceId: string;
 }
@@ -28,7 +27,7 @@ export function Registration({
 }: RouteComponentProps<ParticipantsProps>) {
   const { raceId } = match.params;
   const dispatch = useDispatch();
-  const { race, password, loading, success } =
+  const { race, password, loading, success, errorResponse } =
     useSelector((state: RootStore) => state.raceDetails);
 
   const hasStarted = raceHasStarted(race);
@@ -56,7 +55,7 @@ export function Registration({
         setErrorMessage("Runner information saved!");
         if (makingNewRunner) setRunnerEditing(getDefaultRunnerData());
       } else {
-        setErrorMessage("The runner could not be saved.");
+        setErrorMessage(`The runner could not be saved. ${errorResponse || ""}`);
       }
       setSaveInProgress(false);
     }
@@ -78,6 +77,13 @@ export function Registration({
             name: "Bib Number",
             selector: (runner) => runner.bibNumber,
             id: "bib",
+            compact: true,
+            grow: 2,
+          },
+          {
+            name: "Division",
+            selector: (runner) => runner.division,
+            id: "division",
             compact: true,
             grow: 2,
           },
@@ -178,6 +184,29 @@ export function Registration({
                     value={String(distance.distance)}
                   >
                     {`${distance.distance} Miles`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div style={{ marginTop: 10 }}>
+              <span>Division (Optional):</span>
+              <select
+                style={{ marginLeft: 10 }}
+                value={runnerEditing.division || "none"}
+                onChange={(e) =>
+                  setRunnerEditing({
+                    ...runnerEditing,
+                    division: e.target.value,
+                  })
+                }
+              >
+                <option key="none">Select a Division</option>
+                {race?.raceDetails?.divisions?.map((division: string) => (
+                  <option
+                    key={division}
+                    value={String(division)}
+                  >
+                    {division}
                   </option>
                 ))}
               </select>

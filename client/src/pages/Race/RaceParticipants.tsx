@@ -80,7 +80,7 @@ export function RaceParticipants({
           value={selectedDistance || "ALL"}
           style={{ marginLeft: 10 }}
         >
-          <option key="none-selected">Select a Distance</option>
+          <option key="none-selected" value="">Select a Distance</option>
           {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
             <option key={distance.distance} value={String(distance.distance)}>
               {`${distance.distance} Miles`}
@@ -141,6 +141,13 @@ export function RaceParticipants({
                       return r1.bibNumber.localeCompare(r2.bibNumber);
                     },
                     id: "bib",
+                    compact: true,
+                    grow: 2,
+                  },
+                  {
+                    name: "Division",
+                    selector: (runner) => runner.division,
+                    id: "division",
                     compact: true,
                     grow: 2,
                   },
@@ -249,6 +256,13 @@ export function RaceParticipants({
                     name: "Bib Number",
                     selector: (runner) => runner.bibNumber,
                     id: "bib",
+                    compact: true,
+                    grow: 2,
+                  },
+                  {
+                    name: "Division",
+                    selector: (runner) => runner.division,
+                    id: "division",
                     compact: true,
                     grow: 2,
                   },

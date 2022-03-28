@@ -9,7 +9,7 @@ import { useHistory } from "react-router";
 export function CreateRace() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { race, loading, success } = useSelector(
+  const { race, loading, success, errorResponse } = useSelector(
     (state: RootStore) => state.raceDetails
   );
 
@@ -27,7 +27,7 @@ export function CreateRace() {
       if (success && race) {
         history.push(`/${race.raceId}`);
       } else {
-        setErrorMessage("The race was unable to be created.");
+        setErrorMessage(`The race was unable to be created. ${errorResponse || ""}`);
       }
     }
   }, [loading]);

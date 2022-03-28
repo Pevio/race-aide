@@ -49,7 +49,7 @@ export const createRace =
         dispatch(setSelectedRace(data.race, true));
         dispatch(setRacePassword(race.adminPassword, "RACE_ADMIN"));
       } else {
-        dispatch(setRaceLoading(false, false));
+        dispatch(setRaceLoading(false, false, data.errorMessage));
       }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
@@ -78,7 +78,7 @@ export const updateRaceDetails =
       if (success) {
         dispatch(setSelectedRace({ ...race, ...data.race }, true));
       } else {
-        setRaceLoading(false, false);
+        setRaceLoading(false, false, data.responseMessage);
       }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
@@ -112,7 +112,7 @@ export const updateRaceParticipants =
           setSelectedRace({ ...originalRace, runners: data.runners }, true)
         );
       } else {
-        dispatch(setRaceLoading(false, false));
+        dispatch(setRaceLoading(false, false, data.responseMessage));
       }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
@@ -149,7 +149,7 @@ export const updateRaceCheckpoints =
           )
         );
       } else {
-        dispatch(setRaceLoading(false, false));
+        dispatch(setRaceLoading(false, false, data.responseMessage));
       }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
@@ -178,7 +178,7 @@ export const updateRacePasswords =
       });
       const data = await res.json();
       const success = data.returnCode === 0;
-      dispatch(setRaceLoading(false, success));
+      dispatch(setRaceLoading(false, success, data.responseMessage));
 
       if (success) {
         setRacePassword(newAdminPassword, "RACE_ADMIN");
@@ -257,7 +257,7 @@ export const modifyCheckpointEntry =
           )
         );
       } else {
-        dispatch(setRaceLoading(false, false));
+        dispatch(setRaceLoading(false, false, data.responseMessage));
       }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
@@ -286,11 +286,13 @@ export const setRacePassword = (
 });
 const setRaceLoading = (
   isLoading: boolean,
-  success: boolean = false
+  success: boolean = false,
+  errorMessage?: string
 ): SetRaceLoading => ({
   type: SET_RACE_LOADING,
   payload: {
     isLoading,
     success,
+    errorMessage
   },
 });

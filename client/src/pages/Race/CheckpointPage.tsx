@@ -29,7 +29,7 @@ export function CheckpointPage({
   const { raceId } = match.params;
   const location: any = useLocation();
   const dispatch = useDispatch();
-  const { race, authorization, password, loading, success, allResults } =
+  const { race, authorization, password, loading, success, errorResponse, allResults } =
     useSelector((state: RootStore) => state.raceDetails);
 
   const isAdmin = authorization === "RACE_ADMIN";
@@ -74,7 +74,7 @@ export function CheckpointPage({
         if (makingNewCheckpoint)
           setCheckpointEditing(getDefaultCheckpointData());
       } else {
-        setErrorMessage("The checkpoint could not be saved.");
+        setErrorMessage(`The checkpoint could not be saved. ${errorResponse || ""}`);
       }
       setSaveInProgress(false);
     }
@@ -105,6 +105,7 @@ export function CheckpointPage({
         }
       : undefined;
 
+  
   return (
     <>
       <h1>Race Checkpoints</h1>
@@ -173,7 +174,7 @@ export function CheckpointPage({
               name: "Distance",
               selector: (check) =>
                 check.distance +
-                ` Miles${check.distance === 1 ? "" : "s"}` +
+                ` Mile${check.distance === 1 ? "" : "s"}` +
                 (check.distance === selectedDistance ? " (End)" : ""),
               id: "distance",
               compact: true,
@@ -227,6 +228,13 @@ export function CheckpointPage({
                       return displayTime(totalTime / 1000 / runnersSeen);
                     },
                     id: "average",
+                    compact: true,
+                    grow: 2,
+                  },
+                  {
+                    name: "Average Speed",
+                    selector: () => "coming soon",
+                    id: "avg-speed",
                     compact: true,
                     grow: 2,
                   },
