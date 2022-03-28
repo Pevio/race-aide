@@ -537,6 +537,7 @@ app.post("/api/addcheckpointentry", (req, res) => {
     returnError(res, 303);
     return;
   }
+  const timestamp = body.timestamp || Date.now();
 
   try {
     client.query(
@@ -566,12 +567,12 @@ app.post("/api/addcheckpointentry", (req, res) => {
         };
         switch (body.action) {
           case "CREATE":
-            resultRunnersPassed[bibNumber].push(Date.now());
+            resultRunnersPassed[bibNumber].push(timestamp);
             break;
           case "DELETE":
             if (resultRunnersPassed[bibNumber]?.length > 0) {
               const lastTimeStamp = resultRunnersPassed[bibNumber][resultRunnersPassed[bibNumber].length - 1];
-              if (lastTimeStamp + 10000000 < Date.now()) {
+              if (lastTimeStamp + 10000000 < timestamp) {
                 // You only have ten seconds to undo
                 returnError(res, 407);
                 return;
