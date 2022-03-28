@@ -127,7 +127,7 @@ app.post("/api/createrace", (req, res) => {
     }
 
     // allows letters numbers, hyphens, and underscores
-    if (isValidString(race.raceId)) {
+    if (!isValidString(race.raceId)) {
       returnError(res, 103);
       return;
     }
@@ -355,7 +355,7 @@ app.post("/api/updateraceparticipants", (req, res) => {
     returnError(res, 301);
     return;
   }
-  if (isValidString(body.runner.bibNumber)) {
+  if (!isValidString(body.runner.bibNumber)) {
     returnError(res, 305);
     return;
   }
@@ -439,7 +439,7 @@ app.post("/api/updateracecheckpoints", (req, res) => {
     returnError(res, 401);
     return;
   }
-  if (isValidString(body.checkpoint)) {
+  if (!isValidString(body.checkpoint)) {
     returnError(res, 411);
     return;
   }

@@ -409,7 +409,7 @@ export function CheckpointPage({
               <p>
                 Each checkpoint can be used for any number of races, and any
                 number of different distances within a race. Make sure to
-                include a checkpoint for the end of the race
+                include a checkpoint for the end of the race.
               </p>
               <div style={{ marginTop: 5, marginBottom: 5 }}>
                 {checkpointEditing.distances?.map(
