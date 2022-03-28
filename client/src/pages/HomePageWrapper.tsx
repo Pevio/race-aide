@@ -36,7 +36,7 @@ export function HomePageWrapper(props: Props) {
           style={{
             fontSize: 48,
             marginLeft: 32,
-            marginTop: 16,
+            marginTop: 12,
           }}
         >
           Race Aide

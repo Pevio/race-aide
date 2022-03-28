@@ -86,6 +86,7 @@ export function Registration({
             id: "division",
             compact: true,
             grow: 2,
+            omit: !race?.raceDetails.divisions?.length
           },
           {
             name: "Distance",
@@ -115,188 +116,187 @@ export function Registration({
         }
         defaultSortFieldId={hasStarted ? "distance" : "name"}
       />
-          <hr style={{ marginTop: 32 }} />
-          <div className="container" style={{ marginTop: 32 }}>
-            <div style={{ display: "flex", position: "relative" }}>
-              <h2>{makingNewRunner ? "Add Runner" : "Edit Runner"}</h2>
-              {!makingNewRunner && <button
-                style={{ position: "absolute", right: 0 }}
-                className="highlight-button"
-                onClick={() => {
-                  setMakingNewRunner(true);
-                  setRunnerEditing(getDefaultRunnerData());
-                }}
-              >
-                Add New Runner
-              </button>}
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <span>Runner Name:</span>
+      <hr style={{ marginTop: 32 }} />
+      <div className="container" style={{ marginTop: 32 }}>
+        <div style={{ display: "flex", position: "relative" }}>
+          <h2>{makingNewRunner ? "Add Runner" : "Edit Runner"}</h2>
+          {!makingNewRunner && <button
+            style={{ position: "absolute", right: 0 }}
+            className="highlight-button"
+            onClick={() => {
+              setMakingNewRunner(true);
+              setRunnerEditing(getDefaultRunnerData());
+            }}
+          >
+            Add New Runner
+          </button>}
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <span>Runner Name:</span>
+          <input
+            type="text"
+            style={{ marginLeft: 10 }}
+            value={runnerEditing.runnerName || ""}
+            onChange={(e) =>
+              setRunnerEditing({
+                ...runnerEditing,
+                runnerName: e.target.value,
+              })
+            }
+          />
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <span>Bib Number:</span>
+          {makingNewRunner ? (
+            <>
               <input
                 type="text"
                 style={{ marginLeft: 10 }}
-                value={runnerEditing.runnerName || ""}
+                value={runnerEditing.bibNumber || ""}
                 onChange={(e) =>
                   setRunnerEditing({
                     ...runnerEditing,
-                    runnerName: e.target.value,
+                    bibNumber: e.target.value,
                   })
                 }
               />
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <span>Bib Number:</span>
-              {makingNewRunner ? (
-                <>
-                  <input
-                    type="text"
-                    style={{ marginLeft: 10 }}
-                    value={runnerEditing.bibNumber || ""}
-                    onChange={(e) =>
-                      setRunnerEditing({
-                        ...runnerEditing,
-                        bibNumber: e.target.value,
-                      })
-                    }
-                  />
-                  <p style={{fontSize: 12, color: ""}}>This may only contain letters, numbers, hyphens, and underscores.</p>
-                </>
-
-              ) : (
-                <>
-                  &nbsp;
-                  <span>{runnerEditing.bibNumber}</span>
-                </>
-              )}
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <span>Distance:</span>
-              <select
-                style={{ marginLeft: 10 }}
-                value={runnerEditing.distance || "none"}
-                onChange={(e) =>
-                  setRunnerEditing({
-                    ...runnerEditing,
-                    distance: Number.parseFloat(e.target.value),
-                  })
-                }
+              <p style={{fontSize: 12, color: ""}}>This may only contain letters, numbers, hyphens, and underscores.</p>
+            </>
+          ) : (
+            <>
+              &nbsp;
+              <span>{runnerEditing.bibNumber}</span>
+            </>
+          )}
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <span>Distance:</span>
+          <select
+            style={{ marginLeft: 10 }}
+            value={runnerEditing.distance || "none"}
+            onChange={(e) =>
+              setRunnerEditing({
+                ...runnerEditing,
+                distance: Number.parseFloat(e.target.value),
+              })
+            }
+          >
+            <option key="none">Select a Distance</option>
+            {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
+              <option
+                key={distance.distance}
+                value={String(distance.distance)}
               >
-                <option key="none">Select a Distance</option>
-                {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
-                  <option
-                    key={distance.distance}
-                    value={String(distance.distance)}
-                  >
-                    {`${distance.distance} Miles`}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <span>Division (Optional):</span>
-              <select
-                style={{ marginLeft: 10 }}
-                value={runnerEditing.division || "none"}
-                onChange={(e) =>
-                  setRunnerEditing({
-                    ...runnerEditing,
-                    division: e.target.value,
-                  })
-                }
+                {`${distance.distance} Miles`}
+              </option>
+            ))}
+          </select>
+        </div>
+        {race?.raceDetails.divisions && race?.raceDetails.divisions?.length > 0 && <div style={{ marginTop: 10 }}>
+          <span>Division:</span>
+          <select
+            style={{ marginLeft: 10 }}
+            value={runnerEditing.division || "none"}
+            onChange={(e) =>
+              setRunnerEditing({
+                ...runnerEditing,
+                division: e.target.value,
+              })
+            }
+          >
+            <option key="none">Select a Division</option>
+            {race?.raceDetails?.divisions?.map((division: string) => (
+              <option
+                key={division}
+                value={String(division)}
               >
-                <option key="none">Select a Division</option>
-                {race?.raceDetails?.divisions?.map((division: string) => (
-                  <option
-                    key={division}
-                    value={String(division)}
-                  >
-                    {division}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <span>Start Offset (Seconds):</span>
-              <input
-                type="number"
-                style={{ marginLeft: 10 }}
-                value={runnerEditing.offset || 0}
-                onChange={(e) =>
-                  setRunnerEditing({
-                    ...runnerEditing,
-                    offset: Number.parseInt(e.target.value || "0"),
-                  })
-                }
-              />
-            </div>
-            {hasStarted && <div style={{ marginTop: 10 }}>
-              <input
-                type="checkbox"
-                id="runner-dnf"
-                checked={runnerEditing.dnf || false}
-                onChange={(e) =>
-                  setRunnerEditing({
-                    ...runnerEditing,
-                    dnf: e.target.checked,
-                  })
-                }
-              />
-              <label htmlFor="runner-dnf">Did Not Finish</label>
-            </div>}
-            <div style={{ marginTop: 10 }}>
-              <button
-                onClick={() => {
-                  if (saveInProgress) return;
-                  if (
-                    !runnerEditing.bibNumber ||
-                    !runnerEditing.runnerName ||
-                    !runnerEditing.distance ||
-                    !race
-                  ) {
-                    setErrorMessage("All fields must be filled out!");
-                    return;
-                  }
-                  setErrorMessage("");
+                {division}
+              </option>
+            ))}
+          </select>
+        </div>}
+        <div style={{ marginTop: 10 }}>
+          <span>Start Offset (Seconds):</span>
+          <input
+            type="number"
+            style={{ marginLeft: 10 }}
+            value={runnerEditing.offset || 0}
+            onChange={(e) =>
+              setRunnerEditing({
+                ...runnerEditing,
+                offset: Number.parseInt(e.target.value || "0"),
+              })
+            }
+          />
+        </div>
+        {hasStarted && <div style={{ marginTop: 10 }}>
+          <input
+            type="checkbox"
+            id="runner-dnf"
+            checked={runnerEditing.dnf || false}
+            onChange={(e) =>
+              setRunnerEditing({
+                ...runnerEditing,
+                dnf: e.target.checked,
+              })
+            }
+          />
+          <label htmlFor="runner-dnf">Did Not Finish</label>
+        </div>}
+        <div style={{ marginTop: 10 }}>
+          <button
+            onClick={() => {
+              if (saveInProgress) return;
+              if (
+                !runnerEditing.bibNumber ||
+                !runnerEditing.runnerName ||
+                !runnerEditing.distance ||
+                !race
+              ) {
+                setErrorMessage("All fields must be filled out!");
+                return;
+              }
+              setErrorMessage("");
 
-                  setSaveInProgress(true);
-                  dispatch(
-                    updateRaceParticipants(
-                      race,
-                      runnerEditing as Runner,
-                      makingNewRunner ? "CREATE" : "UPDATE",
-                      password
-                    )
-                  );
-                }}
-                className="clickable-button"
-              >
-                Save Runner
-              </button>
-              {!makingNewRunner && (
-                <button
-                  className="highlight-button"
-                  style={{ marginLeft: 32 }}
-                  onClick={() => {
-                    if (!race || saveInProgress) return;
-                    setErrorMessage("");
+              setSaveInProgress(true);
+              dispatch(
+                updateRaceParticipants(
+                  race,
+                  runnerEditing as Runner,
+                  makingNewRunner ? "CREATE" : "UPDATE",
+                  password
+                )
+              );
+            }}
+            className="clickable-button"
+          >
+            Save Runner
+          </button>
+          {!makingNewRunner && (
+            <button
+              className="highlight-button"
+              style={{ marginLeft: 32 }}
+              onClick={() => {
+                if (!race || saveInProgress) return;
+                setErrorMessage("");
 
-                    setSaveInProgress(true);
-                    dispatch(
-                      updateRaceParticipants(
-                        race,
-                        runnerEditing as Runner,
-                        "DELETE",
-                        password
-                      )
-                    );
-                  }}
-                >
-                  Delete Runner
-                </button>
-              )}
-              {errorMessage && <p className="response-info">{errorMessage}</p>}
-            </div>
-          </div>
+                setSaveInProgress(true);
+                dispatch(
+                  updateRaceParticipants(
+                    race,
+                    runnerEditing as Runner,
+                    "DELETE",
+                    password
+                  )
+                );
+              }}
+            >
+              Delete Runner
+            </button>
+          )}
+          {errorMessage && <p className="response-info">{errorMessage}</p>}
+        </div>
+      </div>
     </>
   );
 }

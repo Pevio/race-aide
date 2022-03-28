@@ -60,7 +60,7 @@ export function FailedCheckpoints({
     <>
       <h1>Failed Checkpoint Information</h1>
       <div>
-        <p>The following are checkpoints you recorded, but failed to be saved for one reason or another. You can attempt to save them again here, or delete them if </p>
+        <p>The following are checkpoints you recorded, but failed to be saved for one reason or another. You can attempt to save them again here, or delete them if they no longer apply.</p>
       </div>
       {errorMessage && <p className="response-info">{errorMessage}</p>}
       <DataTable<CheckpointEntry>
