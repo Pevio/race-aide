@@ -47,6 +47,7 @@ export function RaceParticipants({
   const [selectedDistance, setSelectedDistanceState] = useState<
     number | undefined
   >(location.state?.selectedDistance);
+  const [selectedDivision, setSelectedDivision] = useState<string | undefined>()
   const setSelectedDistance = (value: number | undefined) => {
     setSelectedDistanceState(value);
     history.replace(location.pathname, {
@@ -57,11 +58,13 @@ export function RaceParticipants({
 
   const checkpointInfo = getDistanceCheckpoints(race, selectedDistance);
   const allRunners: Runner[] = Object.values(race?.runners || []);
-  const runnerArray: Runner[] = selectedDistance
-    ? allRunners.filter(
-        (runner: Runner) => runner.distance === selectedDistance
-      )
-    : allRunners;
+  const runnerArray: Runner[] = allRunners.filter(
+      (runner: Runner) => {
+        if (selectedDistance !== undefined && runner.distance !== selectedDistance) return false;
+        if (selectedDivision && runner.division !== selectedDivision) return false;
+        return true;
+      }
+    )
 
   return (
     <>
@@ -87,16 +90,36 @@ export function RaceParticipants({
             </option>
           ))}
         </select>
-        {selectedDistance !== undefined && (
-          <button
-            className="highlight-button"
-            style={{ position: "absolute", right: 0 }}
-            onClick={() => dispatch(getRaceDetails(raceId))}
-          >
-            {`Refresh ${hasStarted ? "Results" : "Participants"}`}
-          </button>
-        )}
+        <button
+          className="highlight-button"
+          style={{ position: "absolute", right: 0 }}
+          onClick={() => dispatch(getRaceDetails(raceId))}
+        >
+          {`Refresh ${hasStarted ? "Results" : "Participants"}`}
+        </button>
       </div>
+      {race?.raceDetails?.divisions && race?.raceDetails?.divisions?.length > 0 && <div style={{marginTop: 10}}>
+        <span>Filter by Division:</span>
+        <select
+          onChange={(e) => {
+            const value = e.target.value;
+            if (!value) {
+              setSelectedDivision(undefined);
+              return;
+            }
+            setSelectedDivision(e.target.value);
+          }}
+          value={selectedDivision}
+          style={{ marginLeft: 10 }}
+        >
+          <option key="none-selected" value="">All Divisions</option>
+          {race?.raceDetails?.divisions?.map((division: string) => (
+            <option key={division} value={String(division)}>
+              {division}
+            </option>
+          ))}
+        </select>
+      </div>}
       {selectedDistance !== undefined && (
         <p>
           {`Start time for the ${selectedDistance} race: ${displayTimestamp(
@@ -150,6 +173,7 @@ export function RaceParticipants({
                     id: "division",
                     compact: true,
                     grow: 2,
+                    omit: !race?.raceDetails.divisions?.length || (selectedDivision !== undefined)
                   },
                   {
                     name: "Start Time Offset",
@@ -265,6 +289,7 @@ export function RaceParticipants({
                     id: "division",
                     compact: true,
                     grow: 2,
+                    omit: !race?.raceDetails.divisions?.length || (selectedDivision !== undefined)
                   },
                   {
                     name: "Distance",

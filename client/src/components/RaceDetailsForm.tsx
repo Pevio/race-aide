@@ -216,14 +216,14 @@ export function RaceDetailsForm(props: Props) {
             {getFormInputField(
               "adminPassword",
               "Admin Password",
-              "This is the password you will use to edit this race",
+              "This is the password you will use to edit this race.",
               false,
               "password"
             )}
             {getFormInputField(
               "checkpointPassword",
-              "Checkpoint Password",
-              "This is the password your assistants will use to enter checkpoint information",
+              "Assistant Password",
+              "This is the password your assistants will use to register runners and enter checkpoint information.",
               false,
               "password"
             )}
@@ -231,7 +231,7 @@ export function RaceDetailsForm(props: Props) {
         </>
       )}
       <div className="container" style={{ marginTop: 32 }}>
-        <h3>Divisions</h3>
+        <h3>Divisions (Optional)</h3>
         <p style={{ marginTop: 10, fontSize: 12 }}>
           Divisisions can be whatever you want them to be.
         </p>
