@@ -52,6 +52,7 @@ export function CheckpointPage({
   );
 
   const [makingNewCheckpoint, setMakingNewCheckpoint] = useState<boolean>(true);
+  const [deletingCheckpoint, setDeletingCheckpoint] = useState<boolean>(false);
   const getDefaultCheckpointData = (): Partial<Checkpoint> => {
     return {};
   };
@@ -71,11 +72,12 @@ export function CheckpointPage({
     if (!loading && saveInProgress) {
       if (success) {
         setErrorMessage("");
-        if (makingNewCheckpoint)
+        if (makingNewCheckpoint ||deletingCheckpoint)
           setCheckpointEditing(getDefaultCheckpointData());
       } else {
         setErrorMessage(`The checkpoint could not be saved. ${errorResponse || ""}`);
       }
+      setDeletingCheckpoint(false)
       setSaveInProgress(false);
     }
   }, [loading]);
@@ -558,7 +560,7 @@ export function CheckpointPage({
                     onClick={() => {
                       if (!race || saveInProgress) return;
                       setSaveInProgress(true);
-                      setShowCheckpointForm(false)
+                      setDeletingCheckpoint(false)
                       dispatch(
                         updateRaceCheckpoints(
                           race,
