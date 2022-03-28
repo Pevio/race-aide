@@ -153,7 +153,7 @@ export function CheckpointPage({
           </p>
         )}
       {selectedDistance ? (
-        <DataTable
+        <DataTable<CheckpointDistance>
           columns={[
             {
               name: "#",
@@ -302,7 +302,7 @@ export function CheckpointPage({
           onRowClicked={onRowClicked}
         />
       ) : (
-        <DataTable
+        <DataTable<Checkpoint>
           columns={[
             {
               name: "Checkpoint Name",
@@ -339,6 +339,18 @@ export function CheckpointPage({
             onClick={() => setShowCheckpointForm(true)}
           >
             DANGER: Add and Edit Checkpoints
+          </button>
+        </div>
+      )}
+      {isAdmin && !showCheckpointForm && (
+        <div style={{ marginTop: 32 }}>
+          <button
+            className="highlight-button"
+            onClick={() => {
+              history.push(`/${raceId}/failedcheckpoints`)
+            }}
+          >
+            View failed checkpoint entries
           </button>
         </div>
       )}

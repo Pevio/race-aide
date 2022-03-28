@@ -12,6 +12,7 @@ import { RaceAdmin } from "./Race/RaceAdmin";
 import { RaceHome } from "./Race/RaceHome";
 import { RaceParticipants } from "./Race/RaceParticipants";
 import { Registration } from "./Race/Registration";
+import { FailedCheckpoints } from "./Race/FailedCheckpoints";
 
 const MainRouter = () => {
   const { authorization } =useSelector((state: RootStore) => state.raceDetails);
@@ -29,6 +30,7 @@ const MainRouter = () => {
       <Route exact path="/:raceId/results" component={RaceParticipants} />
       <Route exact path="/:raceId/admin" component={RaceAdmin} />
       <Route exact path="/:raceId/checkpoints" component={CheckpointPage} />
+      <Route exact path="/:raceId/failedcheckpoints" component={FailedCheckpoints} />
       <Route
         exact
         path="/:raceId/editpasswords"

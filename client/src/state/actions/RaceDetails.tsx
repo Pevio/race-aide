@@ -188,13 +188,27 @@ export const updateRacePasswords =
     }
   };
 
+export const storeFailedCheckpointEntry = (raceId: string, checkpointNumber: string, bibNumber: string | undefined): void => {
+  const entries = getFailedCheckpointEntries(raceId)
+  entries.push({
+    checkpointNumber,
+    bibNumber: bibNumber || "UNKNOWN_RUNNER",
+    timestamp: Date.now(),
+  });
+  localStorage.setItem(`failed-checkponts-${raceId}`, JSON.stringify(entries));
+}
+export const getFailedCheckpointEntries = (raceId: string): CheckpointEntry[] => {
+  const entries: CheckpointEntry[] = JSON.parse((localStorage.getItem(`failed-checkponts-${raceId}`) || "[]"));
+  return entries;
+}
 export const addCheckpointEntry =
   (
     raceId: string,
     checkpointNumber: string,
     bibNumber: string | undefined,
     action: "CREATE" | "DELETE",
-    password?: string
+    password?: string,
+    timestamp?: number,
   ): ThunkActionType =>
   async (dispatch: Dispatch) => {
     try {
@@ -208,13 +222,20 @@ export const addCheckpointEntry =
           bibNumber,
           password,
           action,
+          timestamp,
         }),
       });
       const data = await res.json();
-
-      dispatch(setRaceLoading(false, data.returnCode === 0));
+      const success = data.returnCode === 0
+      dispatch(setRaceLoading(false, success, data.responseMessage));
+      if (!success && !timestamp) {
+        storeFailedCheckpointEntry(raceId, checkpointNumber, bibNumber)
+      }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
+      if (!timestamp) {
+        storeFailedCheckpointEntry(raceId, checkpointNumber, bibNumber)
+      }
     }
   };
 
