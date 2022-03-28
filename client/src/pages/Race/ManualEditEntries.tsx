@@ -278,7 +278,7 @@ export function ManuelEditEntries({
       return (
         <>
           <p>Select a runner to edit their checkpoint entries.</p>
-          <DataTable
+          <DataTable<Runner>
             data={runners}
             columns={[
               {
@@ -291,7 +291,7 @@ export function ManuelEditEntries({
               },
               {
                 name: "Distance Running",
-                selector: (runner) => runner.distance,
+                selector: (runner) => `${runner.distance} Mile${runner.distance === 1 ? "" : "s"}`,
               },
             ]}
             noDataComponent={<p>This race doesn't have any runners.</p>}
@@ -334,7 +334,7 @@ export function ManuelEditEntries({
           race?.runners[bibNumber].distance === 1 ? "" : "s"
         }`}</p>
         <p style={{ marginTop: 12, fontSize: 12 }}>
-          Here, you can add or remove checkpoint entry you like from the bib
+          Here, you can add or remove checkpoint entries from the bib
           number you have selected.
         </p>
         <DataTable
