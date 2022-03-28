@@ -558,6 +558,7 @@ export function CheckpointPage({
                     onClick={() => {
                       if (!race || saveInProgress) return;
                       setSaveInProgress(true);
+                      setShowCheckpointForm(false)
                       dispatch(
                         updateRaceCheckpoints(
                           race,

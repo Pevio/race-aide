@@ -355,10 +355,7 @@ app.post("/api/updateraceparticipants", (req, res) => {
     returnError(res, 301);
     return;
   }
-  if (!isValidString(body.runner.bibNumber)) {
-    returnError(res, 305);
-    return;
-  }
+
   try {
     client.query("SELECT races.race_id, admin_password, runners from public.races LEFT JOIN public.runners ON races.race_id = runners.race_id WHERE races.race_id=$1", [raceId], (err, res2) => {
       if (err) {
@@ -439,7 +436,7 @@ app.post("/api/updateracecheckpoints", (req, res) => {
     returnError(res, 401);
     return;
   }
-  if (!isValidString(body.checkpoint)) {
+  if (!isValidString(body.checkpoint.checkpointNumber) && body.action === "CREATE") {
     returnError(res, 411);
     return;
   }
@@ -473,7 +470,7 @@ app.post("/api/updateracecheckpoints", (req, res) => {
             break;
           case "DELETE":
             statement = "DELETE FROM public.checkpoints WHERE race_id = $1 AND checkpoint_number = $2";
-            params = [body.raceId, body.checkpoint.checkpointNumber, body.checkpoint.distances];
+            params = [body.raceId, body.checkpoint.checkpointNumber];
             break;
         }
 
