@@ -147,17 +147,21 @@ export function Registration({
             <div style={{ marginTop: 10 }}>
               <span>Bib Number:</span>
               {makingNewRunner ? (
-                <input
-                  type="text"
-                  style={{ marginLeft: 10 }}
-                  value={runnerEditing.bibNumber || ""}
-                  onChange={(e) =>
-                    setRunnerEditing({
-                      ...runnerEditing,
-                      bibNumber: e.target.value,
-                    })
-                  }
-                />
+                <>
+                  <input
+                    type="text"
+                    style={{ marginLeft: 10 }}
+                    value={runnerEditing.bibNumber || ""}
+                    onChange={(e) =>
+                      setRunnerEditing({
+                        ...runnerEditing,
+                        bibNumber: e.target.value,
+                      })
+                    }
+                  />
+                  <p style={{fontSize: 12, color: ""}}>This may only contain letters, numbers, hyphens, and underscores.</p>
+                </>
+
               ) : (
                 <>
                   &nbsp;

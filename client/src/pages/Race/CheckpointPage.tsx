@@ -360,7 +360,7 @@ export function CheckpointPage({
                 Add New Checkpoint
               </button>
             </div>
-            {makingNewCheckpoint && (
+            {makingNewCheckpoint ? (
               <div style={{ marginTop: 8 }}>
                 <span>Checkpoint Name:</span>
                 <input
@@ -374,8 +374,11 @@ export function CheckpointPage({
                     })
                   }
                 />
+                <p style={{fontSize: 12, color: ""}}>This may only contain letters, numbers, hyphens, and underscores.</p>
               </div>
-            )}
+            )
+              : <p>{`Checkpoint Name: ${checkpointEditing.checkpointNumber}`}</p>
+            }
             {hasStarted && !makingNewCheckpoint && (
               <div style={{ marginTop: 10 }}>
                 <button
@@ -503,7 +506,7 @@ export function CheckpointPage({
             <div style={{ marginTop: 32 }}>
               {hasStarted && (
                 <p style={{ marginBottom: 16 }}>
-                  The race has started. Be VERY CAREFUL when editing checkpoints
+                  This race has started. Be VERY CAREFUL when editing checkpoints
                   to ensure you don't lose race data!
                 </p>
               )}
