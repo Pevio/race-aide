@@ -49,7 +49,7 @@ export const createRace =
         dispatch(setSelectedRace(data.race, true));
         dispatch(setRacePassword(race.adminPassword, "RACE_ADMIN"));
       } else {
-        dispatch(setRaceLoading(false, false, data.errorMessage));
+        dispatch(setRaceLoading(false, false, data.responseMessage));
       }
     } catch (error) {
       dispatch(setRaceLoading(false, false));
