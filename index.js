@@ -432,6 +432,10 @@ app.post("/api/updateracecheckpoints", (req, res) => {
     returnError(res, 402);
     return;
   }
+  if (!body.checkpoint) {
+    returnError(res, 401)
+    return
+  }
   if (!body.password || !body.raceId || !body.checkpoint || !body.action) {
     returnError(res, 401);
     return;
@@ -502,6 +506,7 @@ app.post("/api/updateracecheckpoints", (req, res) => {
               break;
             case "UPDATE":
               checkpoints[body.checkpoint.checkpointNumber].distances = body.checkpoint.distances;
+              break;
             case "DELETE":
               delete checkpoints[body.checkpoint.checkpointNumber];
           }
