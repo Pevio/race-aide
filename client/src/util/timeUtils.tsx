@@ -58,8 +58,7 @@ export const displayTimestamp = (
   format: string = "DD, hh:mm a"
 ): string => {
   if (!millis) return "";
-  const resultTime = DateTime.fromMillis(millis);
-  if (timezone) resultTime.setZone(timezone);
+  const resultTime = DateTime.fromMillis(millis, {zone: timezone});
   return resultTime.toFormat(format);
 };
 
