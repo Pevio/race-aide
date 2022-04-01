@@ -9,7 +9,7 @@ export function About() {
       <h1>About Race Aide</h1>
       <p style={pTagStyles}>
         At Race Aide, you don't have to worry about tracking your race. With
-        easy solutions to keep track of your runners and their distances. Here
+        easy solutions to keep track of your runners and their distances, we take the complexity out of races and eliminate the need for GPS units on bibs. Here
         are some of our features:
       </p>
       <p style={pTagStyles}>
@@ -46,7 +46,6 @@ export function About() {
         <b>Accountability:</b> If a runner skips a checkpoint, you will know
         before they even "finish" the race.
       </p>
-      <p style={pTagStyles}>For more information, contact Peter Gossell.</p>
     </>
   );
 }
