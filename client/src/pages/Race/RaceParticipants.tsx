@@ -122,7 +122,7 @@ export function RaceParticipants({
       </div>}
       {selectedDistance !== undefined && (
         <p>
-          {`Start time for the ${selectedDistance} race: ${displayTimestamp(
+          {`Start time for the ${selectedDistance} mile race: ${displayTimestamp(
             race?.raceDetails.distances.find(
               (dis) => dis.distance === selectedDistance
             )?.startTime,

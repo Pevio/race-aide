@@ -133,7 +133,7 @@ export function CheckpointPage({
           value={selectedDistance || "ALL"}
           style={{ marginLeft: 10 }}
         >
-          <option key="none-selected">Select a Distance</option>
+          <option key="none-selected" value="">Select a Distance</option>
           {race?.raceDetails?.distances?.map((distance: RaceDistance) => (
             <option key={distance.distance} value={String(distance.distance)}>
               {`${distance.distance} Miles`}
@@ -330,6 +330,9 @@ export function CheckpointPage({
           key="generic-checkpoints"
           data={Object.values(race?.checkpoints || {})}
           onRowClicked={onRowClicked}
+          noDataComponent={
+            <p>No checkpoints have been added yet.</p>
+          }
           {...tableProps}
           pointerOnHover={onRowClicked !== undefined}
         />
