@@ -234,13 +234,6 @@ export function CheckpointPage({
                     grow: 2,
                   },
                   {
-                    name: "Average Speed",
-                    selector: () => "coming soon",
-                    id: "avg-speed",
-                    compact: true,
-                    grow: 2,
-                  },
-                  {
                     name: "Fastest Split",
                     selector: (check: CheckpointDistance) => {
                       if (!allResults) return "";
