@@ -239,14 +239,14 @@ export function RaceDetailsForm(props: Props) {
           {raceDetails.raceDetails?.divisions?.map(
             (division: string, index: number) => (
               <React.Fragment key={division}>
-                {division}
+                <span>{division}</span>
                 <button
                   className="highlight-button"
                   style={{
-                    marginLeft: 6,
+                    marginLeft: 4,
                     marginRight:
-                      raceDetails.raceDetails?.distances &&
-                      index !== raceDetails.raceDetails.distances.length - 1
+                      raceDetails.raceDetails?.divisions &&
+                      index !== raceDetails.raceDetails.divisions.length - 1
                         ? 10
                         : 0,
                   }}
