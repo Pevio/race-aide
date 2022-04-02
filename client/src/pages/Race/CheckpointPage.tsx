@@ -108,6 +108,9 @@ export function CheckpointPage({
       : undefined;
 
   
+  const distanceStartTime = race?.raceDetails.distances.find(
+    (dis) => dis.distance === selectedDistance
+  )?.startTime
   return (
     <>
       <h1>Race Checkpoints</h1>
@@ -210,7 +213,7 @@ export function CheckpointPage({
                             runner.checkpointInfo[checkpointIndex]?.timestamp;
                           const previousTimestamp =
                             checkpointIndex === 0
-                              ? (race?.startTime || 0) + runner.offset
+                              ? (distanceStartTime || race?.startTime || 0) + runner.offset
                               : runner.checkpointInfo[checkpointIndex - 1]
                                   ?.timestamp;
                           if (
@@ -258,7 +261,7 @@ export function CheckpointPage({
                             runner.checkpointInfo[checkpointIndex]?.timestamp;
                           const previousTimestamp =
                             checkpointIndex === 0
-                              ? (race?.startTime || 0) + runner.offset
+                              ? (distanceStartTime || race?.startTime || 0) + runner.offset
                               : runner.checkpointInfo[checkpointIndex - 1]
                                   ?.timestamp;
                           if (thisTimestamp && previousTimestamp) {
