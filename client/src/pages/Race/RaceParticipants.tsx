@@ -66,6 +66,9 @@ export function RaceParticipants({
       }
     )
 
+  const distanceStartTime = race?.raceDetails.distances.find(
+    (dis) => dis.distance === selectedDistance
+  )?.startTime
   return (
     <>
       <h1>{`Race ${hasStarted ? "Results" : "Participants"}`}</h1>
@@ -123,9 +126,7 @@ export function RaceParticipants({
       {selectedDistance !== undefined && (
         <p>
           {`Start time for the ${selectedDistance} mile race: ${displayTimestamp(
-            race?.raceDetails.distances.find(
-              (dis) => dis.distance === selectedDistance
-            )?.startTime,
+            distanceStartTime,
             race?.timezone,
             "hh:mm a"
           )}`}
@@ -201,7 +202,7 @@ export function RaceParticipants({
                           ]?.checkpointInfo[checkpointIndex]?.timestamp;
                         if (!timestamp) return "";
                         return displayTime(
-                          (timestamp - runner.offset * 1000 - race.startTime) /
+                          (timestamp - runner.offset * 1000 - (distanceStartTime || race.startTime)) /
                             1000,
                           true
                         );
