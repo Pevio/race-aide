@@ -135,8 +135,11 @@ export function RaceHome({
                 if (runnerResult?.dnf) return "DNF";
                 const distance = runnerDistance(runnerResult);
                 if (!distance.distance) return "0 Miles";
+                const distanceStartTime = race?.raceDetails.distances.find(
+                  (dis) => dis.distance === runner.distance
+                )?.startTime
                 const timeString = displayTime(
-                  (distance.lastTime - race.startTime) / 1000,
+                  (distance.lastTime - (distanceStartTime || race.startTime)) / 1000,
                   true
                 );
                 return `${
